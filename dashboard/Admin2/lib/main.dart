@@ -2,12 +2,14 @@ import 'package:admin2/widgets/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'controller/HousingController.dart';
 import 'controller/UserManagement_controller.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
 void main() {
   Get.put(UserManagementController());
+  Get.put(HousingController());
   runApp(const MyApp());
 }
 

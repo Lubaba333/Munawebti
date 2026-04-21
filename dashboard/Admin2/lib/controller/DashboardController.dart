@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../view/HousingScreen.dart';
 import '../view/ManageSchedulesScreen.dart';
 import '../view/Request.dart';
 import '../view/dashboard_home.dart';
@@ -33,14 +34,15 @@ class DashboardController extends GetxController {
     isSidebarExpanded.value = !isSidebarExpanded.value;
   }
 
-  final titles = ["Dashboard", "Users", "Schedules", "Requests", "Reports"];
+  final titles = ["Dashboard", "Users", "Schedules", "Requests", "Housing","Reports"];
 
   final pages = [
     const DashboardSection(),
     UserManagementScreen(), // هنا الـ Controller يجب أن يكون مسجل مسبقًا
     ManageSchedulesScreen(),
     RequestScreen(),
-    const Center(child: Text("Reports")),
+    BuildingsScreen(),
+    Text("Reports"),
   ];
 
   void changePage(int index) {
