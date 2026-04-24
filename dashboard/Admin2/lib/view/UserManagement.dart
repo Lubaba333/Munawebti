@@ -755,9 +755,7 @@ class UserManagementScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// ===================================================
-            /// TAB BAR
-            /// ===================================================
+
 
             Container(
 
