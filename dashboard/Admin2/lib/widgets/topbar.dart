@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../widgets/AppColors.dart';
 import '../../routes/app_routes.dart';
 import '../controller/DashboardController.dart';
+import '../controller/theme_controller.dart';
 
 class Topbar extends StatelessWidget {
   const Topbar({super.key});
@@ -27,46 +28,53 @@ class Topbar extends StatelessWidget {
       ),
       child: Row(
         children: [
+          /// ☰ Menu
           IconButton(
-            icon: const Icon(Icons.menu, size: 28),
-            onPressed: () {
-              controller.toggleSidebar(); // استدعاء دالة الفتح والإغلاق
-            },
+            icon: Icon(
+              Icons.menu,
+              size: 28,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: controller.toggleSidebar,
           ),
+
           /// 🟣 Title
           Obx(() {
             return Text(
               controller.titles[controller.selectedIndex.value],
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
             );
           }),
 
           const SizedBox(width: 30),
 
-          /// 🔍 Fancy Animated Search
+          /// 🔍 Search
           Expanded(
             child: _FancySearchField(),
           ),
 
           const SizedBox(width: 20),
 
-          /// 🌙 Dark Mode Toggle
+          /// 🌙 Theme toggle
           Obx(() {
             return _hoverIcon(
+              context: context,
               icon: controller.isDarkMode.value
                   ? Icons.dark_mode
                   : Icons.light_mode,
-              onTap: controller.toggleTheme,
+              onTap:Get.find<ThemeController>().toggleTheme,
             );
           }),
 
           const SizedBox(width: 10),
 
-          /// 🔔 Notifications (Hover)
+          /// 🔔 Notifications
           _hoverIcon(
+            context: context,
             icon: Icons.notifications_none,
             badge: "3",
             onTap: () {},
@@ -74,7 +82,7 @@ class Topbar extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          /// 👤 Profile Dropdown
+          /// 👤 Profile
           PopupMenuButton<String>(
             offset: const Offset(0, 50),
             shape: RoundedRectangleBorder(
@@ -96,25 +104,32 @@ class Topbar extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text("Admin",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("Super Admin",
-                        style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  children: [
+                    Text(
+                      "Admin",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                      ),
+                    ),
+                    Text(
+                      "Super Admin",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
                   ],
                 ),
-                const Icon(Icons.arrow_drop_down)
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Theme.of(context).iconTheme.color,
+                )
               ],
             ),
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: "profile",
-                child: Text("Profile"),
-              ),
-              const PopupMenuItem(
-                value: "logout",
-                child: Text("Logout"),
-              ),
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: "profile", child: Text("Profile")),
+              PopupMenuItem(value: "logout", child: Text("Logout")),
             ],
           ),
         ],
@@ -122,8 +137,9 @@ class Topbar extends StatelessWidget {
     );
   }
 
-  /// 🔥 Hover Icon Widget (Reusable)
+  /// 🔥 Hover Icon (Theme-aware)
   Widget _hoverIcon({
+    required BuildContext context,
     required IconData icon,
     String? badge,
     required VoidCallback onTap,
@@ -150,8 +166,9 @@ class Topbar extends StatelessWidget {
                   icon: Icon(
                     icon,
                     size: 26,
-                    color:
-                    isHover ? AppColors.primary : Colors.grey.shade700,
+                    color: isHover
+                        ? AppColors.primary
+                        : Theme.of(context).iconTheme.color,
                   ),
                 ),
               ),
@@ -168,7 +185,9 @@ class Topbar extends StatelessWidget {
                     child: Text(
                       badge,
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 10),
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 )
@@ -178,9 +197,9 @@ class Topbar extends StatelessWidget {
       },
     );
   }
+
 }
 
-/// 🔮 Fancy Search Field Widget
 class _FancySearchField extends StatefulWidget {
   @override
   State<_FancySearchField> createState() => _FancySearchFieldState();
@@ -203,19 +222,24 @@ class _FancySearchFieldState extends State<_FancySearchField> {
           height: 45,
           decoration: BoxDecoration(
             color: isFocused
-                ? Colors.white
-                : (isHover ? Colors.grey.shade50 : Colors.grey.shade100),
+                ? Theme.of(context).cardColor
+                : (isHover
+                ? Theme.of(context).cardColor.withOpacity(0.8)
+                : Theme.of(context).cardColor.withOpacity(0.6)),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isFocused
-                  ? AppColors.primary
+                  ? Theme.of(context).colorScheme.primary
                   : Colors.grey.shade300,
               width: 2,
             ),
             boxShadow: isFocused
                 ? [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.15),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withOpacity(0.15),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -228,8 +252,8 @@ class _FancySearchFieldState extends State<_FancySearchField> {
               Icon(
                 Icons.search,
                 color: isFocused
-                    ? AppColors.primary
-                    : (isHover ? AppColors.primary.withOpacity(0.7) : Colors.grey.shade700),
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 8),
               Expanded(

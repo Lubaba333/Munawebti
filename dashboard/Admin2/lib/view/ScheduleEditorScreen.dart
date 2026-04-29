@@ -46,11 +46,15 @@ class _ScheduleEditorScreenState
   }
 
   // ================= SEARCH =================
-  Widget _searchBar() {
+  Widget _searchBar(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 5),
       child: Focus(
         onFocusChange: (_) => setState(() {}),
+
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -58,22 +62,19 @@ class _ScheduleEditorScreenState
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
 
-            /// 🔥 الخلفية ثابتة (ما تتغير)
-            color: Colors.white,
+            color: theme.colorScheme.surface,
 
-            /// 🔥 الإطار فقط يتغير لونه
             border: Border.all(
               color: _focusNode.hasFocus
-                  ? const Color(0xFF5A0891) // نفس لون الايقونة
-                  : Colors.grey.shade300,
+                  ? theme.colorScheme.primary
+                  : theme.dividerColor,
               width: _focusNode.hasFocus ? 2.5 : 1,
             ),
 
-            /// ظل خفيف عند التركيز
             boxShadow: [
               if (_focusNode.hasFocus)
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.15),
+                  color: theme.colorScheme.primary.withOpacity(0.15),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -84,20 +85,20 @@ class _ScheduleEditorScreenState
             focusNode: _focusNode,
             onChanged: controller.search,
 
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              color: theme.textTheme.bodyLarge?.color,
             ),
 
             decoration: InputDecoration(
               hintText: "Search employee...",
-              hintStyle: TextStyle(color: Colors.grey.shade500),
+              hintStyle: TextStyle(color: theme.hintColor),
 
               prefixIcon: Icon(
                 Icons.search_rounded,
                 color: _focusNode.hasFocus
-                    ? const Color(0xFF8E2DE2)
-                    : Colors.grey,
+                    ? theme.colorScheme.primary
+                    : theme.hintColor,
               ),
 
               suffixIcon: Obx(() {
@@ -123,25 +124,26 @@ class _ScheduleEditorScreenState
 
   @override
   Widget build(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: theme.scaffoldBackgroundColor,
 
       // ================= APPBAR =================
-      appBar:PreferredSize(
+      appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: Container(
           decoration: BoxDecoration(gradient: headerGradient),
-          child: AppBar(
+          child:  AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Schedule Eidt",
-                style: TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22),
+            title: Text(
+              "Schedule Eidt",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
               ),
             ),
           ),
@@ -152,7 +154,7 @@ class _ScheduleEditorScreenState
         return Column(
           children: [
 
-            _searchBar(),
+            _searchBar(context),
 
             Expanded(
               child: AnimatedBuilder(
@@ -178,10 +180,10 @@ class _ScheduleEditorScreenState
                       // HEADER
                       Row(
                         children: [
-                          _cell("Employee", true),
+                          _cell(context, "Employee", true),
                           ...List.generate(
                             controller.days.value,
-                                (i) => _cell("D${i + 1}", true),
+                                (i) => _cell(context, "D${i + 1}", true),
                           ),
                         ],
                       ),
@@ -194,7 +196,7 @@ class _ScheduleEditorScreenState
 
                           return Row(
                             children: [
-                              _cell(item.employee, false),
+                              _cell(context, item.employee, false),
 
                               ...List.generate(
                                 controller.days.value,
@@ -280,7 +282,7 @@ class _ScheduleEditorScreenState
     });
   }
 
-  // ================= CELL BOX (ORIGINAL COLORS) =================
+  // ================= SHIFT BOX (KEEP COLORS) =================
   Widget _box(String value) {
     return Container(
       width: 110,
@@ -304,7 +306,11 @@ class _ScheduleEditorScreenState
     );
   }
 
-  Widget _cell(String text, bool header) {
+  // ================= CELL =================
+  Widget _cell(BuildContext context, String text, bool header) {
+
+    final theme = Theme.of(context);
+
     return Container(
       width: 120,
       height: 65,
@@ -312,20 +318,32 @@ class _ScheduleEditorScreenState
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: header
-            ? const Color(0xFF5A0891)
-            : Colors.grey.shade200,
+            ? theme.colorScheme.primary
+            : theme.colorScheme.surface,
+
         borderRadius: BorderRadius.circular(10),
+
+        boxShadow: [
+          if (!header)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+            ),
+        ],
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: header ? Colors.white : Colors.black,
+          color: header
+              ? Colors.white
+              : theme.textTheme.bodyMedium?.color,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
+  // ================= SHIFT COLORS (DO NOT TOUCH) =================
   List<Color> _getColor(String shift) {
     switch (shift) {
       case "M":

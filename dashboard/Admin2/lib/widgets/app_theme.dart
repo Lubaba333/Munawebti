@@ -7,7 +7,10 @@ class AppTheme {
     brightness: Brightness.light,
     scaffoldBackgroundColor: const Color(0xFFF5F7FB),
 
-    primaryColor: AppColors.primary,
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primary,
+      secondary: AppColors.primary,
+    ),
 
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
@@ -17,9 +20,13 @@ class AppTheme {
 
     cardColor: Colors.white,
 
+    iconTheme: const IconThemeData(color: Colors.black87),
+
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.black),
     ),
+
+    useMaterial3: true,
   );
 
   /// 🌙 Dark Theme
@@ -27,17 +34,25 @@ class AppTheme {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: const Color(0xFF1E1E2F),
 
-    primaryColor: AppColors.primary,
+    colorScheme: ColorScheme.dark(
+      primary: AppColors.primary,
+      secondary: AppColors.primary,
+    ),
 
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF2A2A40),
       elevation: 0,
+      iconTheme: IconThemeData(color: Colors.white),
     ),
 
     cardColor: const Color(0xFF2A2A40),
 
+    iconTheme: const IconThemeData(color: Colors.white70),
+
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.white),
     ),
+
+    useMaterial3: true,
   );
 }

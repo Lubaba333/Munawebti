@@ -43,14 +43,17 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
 
   @override
   Widget build(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: theme.scaffoldBackgroundColor,
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: Container(
           decoration: BoxDecoration(gradient: headerGradient),
-          child:  AppBar(
+          child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: Text(
@@ -67,50 +70,69 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
       body: Column(
         children: [
 
-          /// 🔥 FILTER (كما هو)
+          /// ================= FILTER =================
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
+
                 Expanded(
-                  child: Obx(() => DropdownButton<int>(
-                    isExpanded: true,
-                    hint: const Text("Month"),
-                    value: controller.selectedMonth.value,
-                    items: List.generate(12, (i) {
-                      return DropdownMenuItem(
-                        value: i + 1,
-                        child: Text("Month ${i + 1}"),
-                      );
-                    }),
-                    onChanged: (val) {
-                      controller.selectedMonth.value = val;
-                    },
+                  child: Obx(() => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      dropdownColor: theme.colorScheme.surface,
+                      value: controller.selectedMonth.value,
+                      hint: Text("Month", style: TextStyle(color: theme.hintColor)),
+                      underline: const SizedBox(),
+                      items: List.generate(12, (i) {
+                        return DropdownMenuItem(
+                          value: i + 1,
+                          child: Text("Month ${i + 1}"),
+                        );
+                      }),
+                      onChanged: (val) {
+                        controller.selectedMonth.value = val;
+                      },
+                    ),
                   )),
                 ),
 
                 const SizedBox(width: 10),
 
                 Expanded(
-                  child: Obx(() => DropdownButton<int>(
-                    isExpanded: true,
-                    hint: const Text("Year"),
-                    value: controller.selectedYear.value,
-                    items: List.generate(5, (i) {
-                      int year = DateTime.now().year - i;
-                      return DropdownMenuItem(
-                        value: year,
-                        child: Text("$year"),
-                      );
-                    }),
-                    onChanged: (val) {
-                      controller.selectedYear.value = val;
-                    },
+                  child: Obx(() => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      dropdownColor: theme.colorScheme.surface,
+                      value: controller.selectedYear.value,
+                      hint: Text("Year", style: TextStyle(color: theme.hintColor)),
+                      underline: const SizedBox(),
+                      items: List.generate(5, (i) {
+                        int year = DateTime.now().year - i;
+                        return DropdownMenuItem(
+                          value: year,
+                          child: Text("$year"),
+                        );
+                      }),
+                      onChanged: (val) {
+                        controller.selectedYear.value = val;
+                      },
+                    ),
                   )),
                 ),
 
                 IconButton(
-                  icon: const Icon(Icons.clear),
+                  icon: Icon(Icons.clear, color: theme.iconTheme.color),
                   onPressed: () {
                     controller.selectedMonth.value = null;
                     controller.selectedYear.value = null;
@@ -120,14 +142,13 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
             ),
           ),
 
-          /// 🔥 BODY
+          /// ================= BODY =================
           Expanded(
             child: Obx(() {
               final list = controller.filteredSchedules;
 
-              /// ❌ EMPTY STATE
               if (list.isEmpty) {
-                return _emptyState();
+                return _emptyState(context);
               }
 
               return GridView.builder(
@@ -141,15 +162,18 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
                 itemBuilder: (context, index) {
                   final schedule = list[index];
 
-                  /// ✨ ظهور انيميشن
-                  return AnimatedOpacity(
-                    duration: Duration(milliseconds: 400 + (index * 80)),
-                    opacity: 1,
-                    child: AnimatedScale(
-                      duration: Duration(milliseconds: 400 + (index * 80)),
-                      scale: 1,
-                      child: _floatingTile(schedule, index),
-                    ),
+                  return AnimatedBuilder(
+                    animation: _animController,
+                    builder: (context, child) {
+                      double offset =
+                          sin((_animController.value * 2 * pi) + index) * 6;
+
+                      return Transform.translate(
+                        offset: Offset(0, offset),
+                        child: child,
+                      );
+                    },
+                    child: _scheduleItem(context, schedule),
                   );
                 },
               );
@@ -158,29 +182,15 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
         ],
       ),
 
-      floatingActionButton: _addButton(),
-    );
-  }
-
-  // ================= FLOAT ANIMATION =================
-  Widget _floatingTile(dynamic schedule, int index) {
-    return AnimatedBuilder(
-      animation: _animController,
-      builder: (context, child) {
-        double offset =
-            sin((_animController.value * 2 * pi) + index) * 6;
-
-        return Transform.translate(
-          offset: Offset(0, offset),
-          child: child,
-        );
-      },
-      child: _scheduleItem(schedule),
+      floatingActionButton: _addButton(context),
     );
   }
 
   // ================= ITEM =================
-  Widget _scheduleItem(dynamic schedule) {
+  Widget _scheduleItem(BuildContext context, dynamic schedule) {
+
+    final theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () {
         Get.toNamed("/schedule", arguments: schedule);
@@ -196,30 +206,32 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
               ShaderMask(
                 shaderCallback: (bounds) {
                   return const LinearGradient(
-                    colors: [Color(0xFF8E2DE2), Color(0xFF5A0891)],
+                    colors: [
+                      Color(0xFF8E2DE2),
+                      Color(0xFF5A0891),
+                    ],
                   ).createShader(bounds);
                 },
                 child: const Icon(
                   Icons.calendar_month,
                   size: 140,
-                  color: Colors.white,
+                  color: Colors.white, // مهم تثبيت الأبيض هنا
                 ),
               ),
 
-              /// ✏️ EDIT ICON
               Positioned(
                 top: -6,
                 right: -6,
                 child: Container(
                   padding: const EdgeInsets.all(5),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.edit,
                     size: 18,
-                    color: Color(0xFF5A0891),
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),
@@ -230,9 +242,10 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
 
           Text(
             schedule.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
+              color: theme.textTheme.bodyLarge?.color,
             ),
           ),
 
@@ -241,7 +254,7 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
           Text(
             schedule.createdAt,
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: theme.hintColor,
               fontSize: 12,
             ),
           ),
@@ -250,32 +263,35 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
     );
   }
 
-  // ================= EMPTY STATE =================
-  Widget _emptyState() {
+  // ================= EMPTY =================
+  Widget _emptyState(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
 
           Icon(Icons.calendar_month,
-              size: 80, color: Colors.grey),
+              size: 80, color: theme.hintColor),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           Text(
             "No Schedules Found",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: theme.textTheme.bodyLarge?.color,
             ),
           ),
 
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
 
           Text(
             "Try changing filters or add a new schedule",
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: theme.hintColor),
           ),
         ],
       ),
@@ -283,16 +299,22 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen>
   }
 
   // ================= ADD BUTTON =================
-  Widget _addButton() {
+  Widget _addButton(BuildContext context) {
+
+    final theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () => Get.toNamed("/program"),
       child: Container(
         width: 65,
         height: 65,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
-            colors: [Color(0xFF8E2DE2), Color(0xFF5A0891)],
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.secondary,
+            ],
           ),
         ),
         child: const Icon(Icons.add, color: Colors.white, size: 32),
