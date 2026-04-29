@@ -36,7 +36,9 @@ class UserManagementScreen extends StatelessWidget {
 
     return Scaffold(
 
+
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
 
       appBar: PreferredSize(
         preferredSize:
@@ -147,6 +149,7 @@ class UserManagementScreen extends StatelessWidget {
   /// FILTERS
   /// =======================================================
 
+
   Widget _buildFilters(BuildContext context) {
 
     return Obx(() {
@@ -174,6 +177,7 @@ class UserManagementScreen extends StatelessWidget {
               duration:
               const Duration(
                 milliseconds: 400,
+
               ),
 
               margin:
@@ -186,12 +190,14 @@ class UserManagementScreen extends StatelessWidget {
                 horizontal: 18,
                 vertical: 8,
               ),
+
               decoration: BoxDecoration(
                 color: active
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.surface,
+                    ? AppColors.primary
+                    : Colors.white,
 
-                borderRadius: BorderRadius.circular(25),
+                borderRadius:
+                BorderRadius.circular(25),
               ),
 
               child: Text(
@@ -199,10 +205,12 @@ class UserManagementScreen extends StatelessWidget {
 
                 style: TextStyle(
                   color: active
+
                       ? Theme.of(context).colorScheme.onPrimary
                       : Theme.of(context).colorScheme.primary,
 
                   fontWeight: FontWeight.bold,
+
                 ),
               ),
             ),
@@ -538,18 +546,20 @@ class UserManagementScreen extends StatelessWidget {
             .height *
             0.88,
 
+
         decoration: BoxDecoration(
 
           gradient: LinearGradient(
             colors: [
               Theme.of(context).colorScheme.primaryContainer,
               Theme.of(context).colorScheme.surface,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
 
-          borderRadius: const BorderRadius.vertical(
+
+            ]),
+
+          borderRadius:
+          BorderRadius.vertical(
+
             top: Radius.circular(35),
           ),
         ),
@@ -750,6 +760,9 @@ class UserManagementScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
+            /// ===================================================
+            /// TAB BAR
+            /// ===================================================
 
 
             Container(
@@ -1302,9 +1315,10 @@ class UserManagementScreen extends StatelessWidget {
                               decoration:
                               BoxDecoration(
 
-                                color: Theme.of(context)
+                color: Theme.of(context)
                                     .colorScheme
                                     .surface,
+
 
                                 borderRadius:
                                 BorderRadius
@@ -1321,6 +1335,7 @@ class UserManagementScreen extends StatelessWidget {
                                       .colorScheme
                                       .onSurface,
                                 ),
+
                               ),
                             ),
                           ),
@@ -1889,7 +1904,9 @@ class UserManagementScreen extends StatelessWidget {
             padding: const EdgeInsets.all(12),
 
             decoration: BoxDecoration(
+
               color: Theme.of(context).colorScheme.secondaryContainer,
+
               borderRadius: BorderRadius.circular(18),
             ),
 
