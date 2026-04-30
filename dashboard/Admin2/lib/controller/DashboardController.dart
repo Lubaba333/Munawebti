@@ -7,6 +7,7 @@ import '../view/HousingScreen.dart';
 import '../view/ManageSchedulesScreen.dart';
 import '../view/Request.dart';
 import '../view/dashboard_home.dart';
+import '../view/violation.dart';
 import 'UserManagement_controller.dart';
 
 
@@ -42,7 +43,8 @@ class DashboardController extends GetxController {
     ManageSchedulesScreen(),
     RequestScreen(),
     BuildingsScreen(),
-    Text("Reports"),
+    ViolationScreen(),
+    //Text("Reports"),
   ];
 
   void changePage(int index) {

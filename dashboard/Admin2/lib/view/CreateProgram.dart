@@ -17,7 +17,7 @@ class CreateScheduleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -40,7 +40,18 @@ class CreateScheduleView extends StatelessWidget {
 
 
 
-      body: Obx(() {
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFFF5F3FF),
+                Color(0xFFEDE7F6),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Obx(() {
         return Column(
           children: [
             const SizedBox(height: 10),
@@ -70,7 +81,7 @@ class CreateScheduleView extends StatelessWidget {
           ],
         );
       }),
-    );
+    ));
   }
 
   Widget _buildStep(int step) {
@@ -418,7 +429,7 @@ class _StepReview extends StatelessWidget {
                             padding: const EdgeInsets.all(15),
 
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.95),
+                              color: Colors.white.withOpacity(0.7),
 
                               borderRadius: BorderRadius.circular(16),
 
@@ -678,11 +689,17 @@ Widget _card({required Widget child}) {
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Colors.white.withOpacity(0.75), // 🔥 شفافية
       borderRadius: BorderRadius.circular(14),
+
+      // 🔥 Glass effect خفيف
+      border: Border.all(
+        color: Colors.white.withOpacity(0.4),
+      ),
+
       boxShadow: [
         BoxShadow(
-          blurRadius: 10,
+          blurRadius: 12,
           color: Colors.black.withOpacity(0.05),
         )
       ],

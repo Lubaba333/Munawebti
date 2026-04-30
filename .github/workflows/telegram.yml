@@ -16,19 +16,10 @@ jobs:
     steps:
       - name: Send Telegram Notification
         run: |
+          PROJECT="Munawebti"
+
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
           -d parse_mode=Markdown \
-          -d text="✨ *New Update Uploaded* 🚀
-
-👤 *Developer:* \`${{ github.actor }}\`
-
- *Branch:* \`${{ github.ref_name }}\`
-
- *Repository:* \`${{ github.repository }}\`
-
- *Commit Message:* 
-_${{ github.event.head_commit.message }}_
-
-🔗 [View Changes](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+          -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+          -d text="🚀 *New Commit* to $PROJECT%0A%0A👨‍💻 *Author*: ${{ github.actor }}%0A🧩 *Module*: ${{ github.ref_name }}%0A📝 *Message*: ${{ github.event.head_commit.message }}%0A🌿 *Branch*: ${{ github.ref_name }}%0A%0A🔗 *Commit URL*: https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
