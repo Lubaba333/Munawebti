@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../model/login_model.dart';
 import '../routes/app_routes.dart';
+import '../services/api_service.dart';
 
 class AdminLoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
+  final ApiService _apiService = Get.find<ApiService>();
 
-  // Text Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // States
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
-  // Login function
   Future<void> login() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -22,30 +21,32 @@ class AdminLoginController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      // 🟣 محاكاة API (بدك تربطها مع ApiService تبعك)
-      await Future.delayed(const Duration(seconds: 2));
-
-      // مثال تحقق
-      if (emailController.text == "admin@test.com" &&
-          passwordController.text == "12345678") {
-
-        // ✅ النجاح → دخول
-        Get.offAllNamed(AppRoutes.dashboard);
-
-      } else {
-        // ❌ خطأ
-        errorMessage.value = "بيانات غير صحيحة";
-      }
-
-      // نجاح
-      Get.snackbar(
-        "نجاح",
-        "تم تسجيل الدخول",
-        snackPosition: SnackPosition.BOTTOM,
+      final response = await _apiService.post(
+        '/auth/admin/login',
+        {
+          'email': emailController.text.trim(),
+          'password': passwordController.text,
+        },
+        authRequired: false,
       );
 
-      // TODO: الانتقال للداشبورد
-      // Get.offAllNamed('/dashboard');
+      Welcome loginResponse = Welcome.fromJson(response);
+
+      if (loginResponse.statusCode == 200 || loginResponse.statusCode == 201) {
+
+        await _apiService.setToken(loginResponse.data.token);
+
+        Get.snackbar(
+          "success",
+          "Hey, you${loginResponse.data.admin.name}",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.1),
+        );
+
+        Get.offAllNamed(AppRoutes.dashboard);
+      } else {
+        errorMessage.value = loginResponse.message;
+      }
 
     } catch (e) {
       errorMessage.value = e.toString().replaceAll("Exception: ", "");

@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../routes/app_routes.dart';
+import '../services/api_service.dart';
 import '../view/HousingScreen.dart';
 import '../view/ManageSchedulesScreen.dart';
 import '../view/Request.dart';
@@ -50,4 +52,24 @@ class DashboardController extends GetxController {
   void changePage(int index) {
     selectedIndex.value = index;
   }
-}
+
+  Future<void> logout() async {
+  try {
+
+  final ApiService apiService = Get.find<ApiService>();
+  await apiService.setToken(''); // مسح التوكن
+
+
+  Get.snackbar(
+  "success",
+  "You have successfully logged out",
+  snackPosition: SnackPosition.BOTTOM,
+  backgroundColor: Colors.green.withOpacity(0.1),
+  );
+
+  Get.offAllNamed(AppRoutes.login);
+  } catch (e) {
+  Get.snackbar("Erorr", "Logout failed, please try again.");
+  }
+  }
+  }

@@ -90,7 +90,7 @@ class Topbar extends StatelessWidget {
             ),
             onSelected: (value) {
               if (value == "logout") {
-                Get.offAllNamed(AppRoutes.login);
+                controller.logout();
               }
             },
             child: Row(

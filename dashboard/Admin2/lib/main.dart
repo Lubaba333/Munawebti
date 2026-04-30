@@ -1,5 +1,6 @@
 import 'package:admin2/routes/app_pages.dart';
 import 'package:admin2/routes/app_routes.dart';
+import 'package:admin2/services/api_service.dart';
 import 'package:admin2/widgets/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ import 'controller/theme_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-
+  Get.put(ApiService());
   Get.put(UserManagementController());
   Get.put(HousingController());
   Get.put(ThemeController());
