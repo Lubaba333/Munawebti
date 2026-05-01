@@ -1,282 +1,117 @@
-/// =======================================================
-/// UserManagement_controller.dart
-/// =======================================================
-
 import 'package:get/get.dart';
+import '../model/user_model.dart';
+import '../services/api_service.dart';
 
-/// ================= ALERT MODEL =================
-class UserAlert {
-
-  String title;
-  String message;
-
-  String priority;
-
-  bool isRead;
-
-  DateTime createdAt;
-
-  UserAlert({
-    required this.title,
-    required this.message,
-    required this.priority,
-
-    this.isRead = false,
-
-    required this.createdAt,
-  });
-}
-
-/// ================= USER MODEL =================
-class User {
-
-  String name;
-  String role;
-
-  bool isActive;
-  bool isDeleted;
-
-  int warnings;
-  int bonuses;
-
-  int graduationYear;
-  String graduationPlace;
-  String graduationDate;
-
-  List<String> activityLog;
-
-  /// 🔔 ALERTS
-  List<UserAlert> alerts;
-
-  User({
-    required this.name,
-    required this.role,
-
-    this.isActive = true,
-    this.isDeleted = false,
-
-    this.warnings = 0,
-    this.bonuses = 0,
-
-    this.graduationYear = 0,
-    this.graduationPlace = "",
-    this.graduationDate = "",
-
-    this.activityLog = const [],
-
-    this.alerts = const [],
-  });
-}
-
-/// ================= CONTROLLER =================
 class UserManagementController extends GetxController {
 
-  /// ================= FILTER =================
-  var filter = "All".obs;
+  final ApiService _apiService = Get.find<ApiService>();
 
-  void setFilter(String value) {
-    filter.value = value;
+  var users = <UserModel>[].obs;
+  var isLoading = false.obs;
+  var filter = "Students".obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUsers();
   }
 
-  /// ================= USERS =================
-  var users = <User>[
+  Future<void> fetchUsers() async {
+    try {
+      isLoading.value = true;
 
-    User(
-      name: "Fatima Ali",
-      role: "Nurse",
+      String endpoint = filter.value == "Supervisors" ? '/admin/supervisors' : '/admin/students';
 
-      warnings: 1,
-      bonuses: 2,
+      final response = await _apiService.get(endpoint);
 
-      graduationYear: 2022,
-      graduationPlace: "Damascus University",
-      graduationDate: "2022-06-10",
 
-      activityLog: ["Created account"],
+      if (response['data'] != null && response['data']['data'] != null) {
+        List data = response['data']['data'];
 
-      alerts: [
-        UserAlert(
-          title: "Late Shift",
-          message: "You were late yesterday",
-          priority: "High",
-          createdAt: DateTime.now(),
-        )
-      ],
-    ),
 
-    User(
-      name: "Sara Ahmed",
-      role: "Student",
-
-      warnings: 0,
-      bonuses: 1,
-
-      graduationYear: 2023,
-      graduationPlace: "Ain Shams",
-      graduationDate: "2023-07-15",
-
-      activityLog: ["Joined system"],
-    ),
-
-    User(
-      name: "Lama Noor",
-      role: "Nurse",
-
-      warnings: 2,
-      bonuses: 3,
-
-      graduationYear: 2021,
-      graduationPlace: "Cairo University",
-      graduationDate: "2021-09-20",
-
-      activityLog: ["Warning issued"],
-    ),
-
-  ].obs;
-
-  /// ================= FILTER LOGIC =================
-  List<User> get filteredUsers {
-
-    if (filter.value == "All") {
-      return users.where((u) => !u.isDeleted).toList();
+        users.assignAll(data.map((e) => UserModel.fromJson(e, filter.value == "Supervisors" ? "Supervisor" : "Student")).toList());
+      }
+    } catch (e) {
+      Get.snackbar("خطأ", e.toString());
+    } finally {
+      isLoading.value = false;
     }
+  }
 
-    if (filter.value == "Nurses") {
-      return users
-          .where((u) =>
-      u.role == "Nurse" &&
-          !u.isDeleted)
-          .toList();
+  Future<void> addUser(UserModel user) async {
+    try {
+      String endpoint = user.role == "Student" ? '/admin/students' : '/admin/supervisors';
+
+
+      final response = await _apiService.post(endpoint, user.toJson());
+
+      if (response != null) {
+        fetchUsers();
+        Get.back();
+        Get.snackbar("success", "Added${user.role == "Student" ? 'student' : 'supervisors'} successfully");
+      }
+    } catch (e) {
+      Get.snackbar("Erorr", "The addition process failed: $e");
     }
+  }
 
-    if (filter.value == "Students") {
-      return users
-          .where((u) =>
-      u.role == "Student" &&
-          !u.isDeleted)
-          .toList();
+
+  Future<void> updateUser(UserModel user) async {
+    try {
+      if (user.id == null) return;
+
+      String endpoint = user.role == "Student"
+          ? '/admin/students/${user.id}'
+          : '/admin/supervisors/${user.id}';
+
+
+      final response = await _apiService.put(endpoint, user.toJson());
+
+      if (response != null) {
+        fetchUsers();
+        Get.back();
+        Get.snackbar("success", "The data has been updated successfully");
+      }
+    } catch (e) {
+      Get.snackbar("Erorr", "The modification process failed: $e");
     }
+  }
 
-    if (filter.value == "Deleted") {
-      return users
-          .where((u) => u.isDeleted)
-          .toList();
+
+  Future<void> toggleBlock(UserModel user) async {
+    try {
+      String type = user.role == "Student" ? 'students' : 'supervisors';
+      String action = user.isBlocked ? 'unblock' : 'block';
+
+      final response = await _apiService.post('/admin/$type/${user.id}/$action', {});
+
+      if (response != null) {
+        fetchUsers();
+        Get.snackbar("Ok", "The ban status has been successfully changed.");
+      }
+    } catch (e) {
+      Get.snackbar("Erorr", "An error occurred while changing the block status");
     }
-
-    return users
-        .where((u) => !u.isDeleted)
-        .toList();
   }
 
-  /// ================= ADD =================
-  void addUser(User user) {
+  // 5. حذف مستخدم (Delete)
+  Future<void> deleteUser(int id) async {
+    try {
+      String type = filter.value == "Supervisors" ? 'supervisors' : 'students';
+      final response = await _apiService.delete('/admin/$type/$id');
 
-    user.activityLog = [
-      "User created"
-    ];
-
-    users.add(user);
+      if (response != null) {
+        users.removeWhere((u) => u.id == id);
+        Get.snackbar("Delet", "The user has been deleted successfully");
+      }
+    } catch (e) {
+      Get.snackbar("Eroor", "The deletion process could not be completed.");
+    }
   }
 
-  /// ================= UPDATE =================
-  void updateUser(
-      int index,
-      User newUser,
-      ) {
 
-    newUser.activityLog =
-        users[index].activityLog;
-
-    newUser.alerts =
-        users[index].alerts;
-
-    newUser.activityLog.add(
-      "Profile updated",
-    );
-
-    users[index] = newUser;
-
-    users.refresh();
-  }
-
-  /// ================= SOFT DELETE =================
-  void softDelete(User user) {
-
-    user.isDeleted = true;
-
-    user.activityLog.add(
-      "Moved to deleted",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= RESTORE =================
-  void restoreUser(User user) {
-
-    user.isDeleted = false;
-
-    user.activityLog.add(
-      "Restored",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= ACTIVITY =================
-  void addActivity(
-      User user,
-      String log,
-      ) {
-
-    user.activityLog.add(log);
-
-    users.refresh();
-  }
-
-  /// ================= TOGGLE STATUS =================
-  void toggleUserStatus(User user) {
-
-    user.isActive = !user.isActive;
-
-    user.activityLog.add(
-      user.isActive
-          ? "Activated"
-          : "Deactivated",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= SEND ALERT =================
-  void sendAlert(
-      User user,
-      UserAlert alert,
-      ) {
-
-    user.alerts.add(alert);
-
-    user.activityLog.add(
-      "Alert sent: ${alert.title}",
-    );
-
-    users.refresh();
-
-    Get.snackbar(
-      "Alert Sent",
-      "${user.name} received a notification",
-      snackPosition: SnackPosition.TOP,
-    );
-  }
-
-  /// ================= READ ALERT =================
-  void markAlertAsRead(
-      User user,
-      UserAlert alert,
-      ) {
-
-    alert.isRead = true;
-
-    users.refresh();
+  void changeFilter(String newFilter) {
+    filter.value = newFilter;
+    fetchUsers();
   }
 }
