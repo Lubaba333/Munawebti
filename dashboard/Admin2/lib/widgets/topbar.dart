@@ -128,8 +128,8 @@ class Topbar extends StatelessWidget {
               ],
             ),
             itemBuilder: (context) => const [
-              PopupMenuItem(value: "profile", child: Text("Profile")),
-              PopupMenuItem(value: "logout", child: Text("Logout")),
+              PopupMenuItem(value: "profile", child: Text("الملف الشخصي")),
+              PopupMenuItem(value: "logout", child: Text("تسجيل الخروج")),
             ],
           ),
         ],
