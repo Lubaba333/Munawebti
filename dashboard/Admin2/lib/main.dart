@@ -15,7 +15,7 @@ import 'controller/theme_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  Get.lazyPut(()=>ApiService());
+  Get.put(ApiService());
   Get.put(UserManagementController());
   Get.put(HousingController());
   Get.put(ThemeController());

@@ -4,7 +4,6 @@ import '../model/login_model.dart';
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
 
-
 class AdminLoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final ApiService _apiService = Get.find<ApiService>();
@@ -31,18 +30,15 @@ class AdminLoginController extends GetxController {
         authRequired: false,
       );
 
-
       Welcome loginResponse = Welcome.fromJson(response);
 
-      // 2. التحقق باستخدام status_code (حسب الموديل الجديد هو int وليس bool)
       if (loginResponse.statusCode == 200 || loginResponse.statusCode == 201) {
 
-        // 3. الوصول للتوكن عبر data.token
         await _apiService.setToken(loginResponse.data.token);
 
         Get.snackbar(
           "success",
-          "Hey, you ${loginResponse.data.admin.name}", // الوصول لاسم الأدمن
+          "Hey, you${loginResponse.data.admin.name}",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.withOpacity(0.1),
         );

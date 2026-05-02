@@ -55,21 +55,21 @@ class DashboardController extends GetxController {
 
   Future<void> logout() async {
   try {
-  // 1. الوصول للـ ApiService لمسح التوكن من الذاكرة (SharedPreferences)
-  final apiService = Get.find<ApiService>();
-  await apiService.setToken(''); // مسح التوكن بجعله نص فارغ
 
-  // 2. إظهار رسالة تأكيد
+  final ApiService apiService = Get.find<ApiService>();
+  await apiService.setToken(''); // مسح التوكن
+
+
   Get.snackbar(
-  "Farewell",
+  "success",
   "You have successfully logged out",
   snackPosition: SnackPosition.BOTTOM,
+  backgroundColor: Colors.green.withOpacity(0.1),
   );
 
-  // 3. الانتقال لصفحة اللوجن وحذف كل الصفحات السابقة من الذاكرة
   Get.offAllNamed(AppRoutes.login);
   } catch (e) {
-  Get.snackbar("Erorr", "Log out failed");
+  Get.snackbar("Erorr", "Logout failed, please try again.");
   }
   }
   }
