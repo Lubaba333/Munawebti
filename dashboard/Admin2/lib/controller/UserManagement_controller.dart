@@ -1,282 +1,123 @@
-/// =======================================================
-/// UserManagement_controller.dart
-/// =======================================================
-
 import 'package:get/get.dart';
+import '../model/user_model.dart';
+import '../services/api_service.dart';
 
-/// ================= ALERT MODEL =================
-class UserAlert {
-
-  String title;
-  String message;
-
-  String priority;
-
-  bool isRead;
-
-  DateTime createdAt;
-
-  UserAlert({
-    required this.title,
-    required this.message,
-    required this.priority,
-
-    this.isRead = false,
-
-    required this.createdAt,
-  });
-}
-
-/// ================= USER MODEL =================
-class User {
-
-  String name;
-  String role;
-
-  bool isActive;
-  bool isDeleted;
-
-  int warnings;
-  int bonuses;
-
-  int graduationYear;
-  String graduationPlace;
-  String graduationDate;
-
-  List<String> activityLog;
-
-  /// 🔔 ALERTS
-  List<UserAlert> alerts;
-
-  User({
-    required this.name,
-    required this.role,
-
-    this.isActive = true,
-    this.isDeleted = false,
-
-    this.warnings = 0,
-    this.bonuses = 0,
-
-    this.graduationYear = 0,
-    this.graduationPlace = "",
-    this.graduationDate = "",
-
-    this.activityLog = const [],
-
-    this.alerts = const [],
-  });
-}
-
-/// ================= CONTROLLER =================
 class UserManagementController extends GetxController {
+  final ApiService _apiService = Get.find<ApiService>();
 
-  /// ================= FILTER =================
-  var filter = "All".obs;
+  var users = <UserModel>[].obs;
+  var isLoading = false.obs;
+  var filter = "Students".obs;
 
-  void setFilter(String value) {
-    filter.value = value;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUsers();
   }
 
-  /// ================= USERS =================
-  var users = <User>[
+  /// =========================
+  /// جلب قائمة المستخدمين
+  /// =========================
+  Future<void> fetchUsers() async {
+    try {
+      isLoading.value = true;
+      String endpoint = filter.value == "Supervisors" ? '/admin/supervisors' : '/admin/students';
 
-    User(
-      name: "Fatima Ali",
-      role: "Nurse",
+      final response = await _apiService.get(endpoint);
 
-      warnings: 1,
-      bonuses: 2,
+      if (response['data'] != null && response['data']['data'] != null) {
+        List data = response['data']['data'];
+        String currentRole = filter.value == "Supervisors" ? "Supervisor" : "Student";
 
-      graduationYear: 2022,
-      graduationPlace: "Damascus University",
-      graduationDate: "2022-06-10",
-
-      activityLog: ["Created account"],
-
-      alerts: [
-        UserAlert(
-          title: "Late Shift",
-          message: "You were late yesterday",
-          priority: "High",
-          createdAt: DateTime.now(),
-        )
-      ],
-    ),
-
-    User(
-      name: "Sara Ahmed",
-      role: "Student",
-
-      warnings: 0,
-      bonuses: 1,
-
-      graduationYear: 2023,
-      graduationPlace: "Ain Shams",
-      graduationDate: "2023-07-15",
-
-      activityLog: ["Joined system"],
-    ),
-
-    User(
-      name: "Lama Noor",
-      role: "Nurse",
-
-      warnings: 2,
-      bonuses: 3,
-
-      graduationYear: 2021,
-      graduationPlace: "Cairo University",
-      graduationDate: "2021-09-20",
-
-      activityLog: ["Warning issued"],
-    ),
-
-  ].obs;
-
-  /// ================= FILTER LOGIC =================
-  List<User> get filteredUsers {
-
-    if (filter.value == "All") {
-      return users.where((u) => !u.isDeleted).toList();
+        users.assignAll(data.map((e) => UserModel.fromJson(e, currentRole)).toList());
+      }
+    } catch (e) {
+      Get.snackbar("Fetch error", e.toString());
+    } finally {
+      isLoading.value = false;
     }
+  }
 
-    if (filter.value == "Nurses") {
-      return users
-          .where((u) =>
-      u.role == "Nurse" &&
-          !u.isDeleted)
-          .toList();
+  /// ==========================================
+  /// حفظ المستخدم (إضافة أو تعديل) - حل مشكلة 422
+  /// ==========================================
+  Future<void> saveUser(UserModel user, {bool isEdit = false}) async {
+    try {
+      isLoading.value = true;
+
+      // تحديد المسار الصحيح بناءً على الدور
+      String type = user.role == "Student" ? 'students' : 'supervisors';
+      String endpoint = isEdit ? '/admin/$type/${user.id}' : '/admin/$type';
+
+      // تحويل الكائن إلى Map
+      Map<String, dynamic> data = user.toJson();
+
+      if (isEdit) {
+        // 💡 هذه الإضافة هي الأهم لنجاح التعديل في لارافل
+        data["_method"] = "PUT";
+      }
+
+      // نستخدم دالة post دائماً ونضع _method بالداخل
+      final response = await _apiService.post(endpoint, data);
+
+      if (response != null) {
+        await fetchUsers(); // تحديث القائمة
+        Get.back(); // إغلاق الواجهة
+        Get.snackbar("success", isEdit ? "Data has been updated" : "User added");
+      }
+    } catch (e) {
+      print("❌ Update/Add Error: $e");
+      // إظهار رسالة الخطأ لمعرفة أي حقل فشل فيه الـ Validation
+      Get.snackbar("Operation failed", "Make sure the fields are correct:$e");
+    } finally {
+      isLoading.value = false;
     }
+  }
 
-    if (filter.value == "Students") {
-      return users
-          .where((u) =>
-      u.role == "Student" &&
-          !u.isDeleted)
-          .toList();
+  /// =========================
+  /// تبديل حالة الحظر (Block)
+  /// =========================
+  Future<void> toggleBlock(UserModel user) async {
+    try {
+      String type = user.role == "Student" ? 'students' : 'supervisors';
+      String action = user.isBlocked ? 'unblock' : 'block';
+
+      // إرسال طلب الحظر/إلغاء الحظر
+      final response = await _apiService.post('/admin/$type/${user.id}/$action', {});
+
+      if (response != null) {
+        await fetchUsers(); // تحديث الحالة في الواجهة
+        Get.snackbar("Status update", "The ban status has been successfully changed.");
+      }
+    } catch (e) {
+      Get.snackbar("Erorr", "The ban status change failed: $e");
     }
+  }
 
-    if (filter.value == "Deleted") {
-      return users
-          .where((u) => u.isDeleted)
-          .toList();
+  /// =========================
+  /// حذف مستخدم
+  /// =========================
+  Future<void> deleteUser(int id) async {
+    try {
+      String type = filter.value == "Supervisors" ? 'supervisors' : 'students';
+      final response = await _apiService.delete('/admin/$type/$id');
+
+      if (response != null) {
+        users.removeWhere((u) => u.id == id);
+        Get.snackbar("Delet", "The user has been deleted from the system.");
+      }
+    } catch (e) {
+      Get.snackbar("Erorr", "The deletion process could not be completed.");
     }
-
-    return users
-        .where((u) => !u.isDeleted)
-        .toList();
   }
 
-  /// ================= ADD =================
-  void addUser(User user) {
-
-    user.activityLog = [
-      "User created"
-    ];
-
-    users.add(user);
-  }
-
-  /// ================= UPDATE =================
-  void updateUser(
-      int index,
-      User newUser,
-      ) {
-
-    newUser.activityLog =
-        users[index].activityLog;
-
-    newUser.alerts =
-        users[index].alerts;
-
-    newUser.activityLog.add(
-      "Profile updated",
-    );
-
-    users[index] = newUser;
-
-    users.refresh();
-  }
-
-  /// ================= SOFT DELETE =================
-  void softDelete(User user) {
-
-    user.isDeleted = true;
-
-    user.activityLog.add(
-      "Moved to deleted",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= RESTORE =================
-  void restoreUser(User user) {
-
-    user.isDeleted = false;
-
-    user.activityLog.add(
-      "Restored",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= ACTIVITY =================
-  void addActivity(
-      User user,
-      String log,
-      ) {
-
-    user.activityLog.add(log);
-
-    users.refresh();
-  }
-
-  /// ================= TOGGLE STATUS =================
-  void toggleUserStatus(User user) {
-
-    user.isActive = !user.isActive;
-
-    user.activityLog.add(
-      user.isActive
-          ? "Activated"
-          : "Deactivated",
-    );
-
-    users.refresh();
-  }
-
-  /// ================= SEND ALERT =================
-  void sendAlert(
-      User user,
-      UserAlert alert,
-      ) {
-
-    user.alerts.add(alert);
-
-    user.activityLog.add(
-      "Alert sent: ${alert.title}",
-    );
-
-    users.refresh();
-
-    Get.snackbar(
-      "Alert Sent",
-      "${user.name} received a notification",
-      snackPosition: SnackPosition.TOP,
-    );
-  }
-
-  /// ================= READ ALERT =================
-  void markAlertAsRead(
-      User user,
-      UserAlert alert,
-      ) {
-
-    alert.isRead = true;
-
-    users.refresh();
+  /// =========================
+  /// تغيير الفلتر (طالبات/مشرفات)
+  /// =========================
+  void changeFilter(String newFilter) {
+    if (filter.value != newFilter) {
+      filter.value = newFilter;
+      fetchUsers();
+    }
   }
 }

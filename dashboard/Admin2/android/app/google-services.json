@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "67974807541",
+    "project_id": "munawebti",
+    "storage_bucket": "munawebti.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67974807541:android:2e15c778af7446d67deabc",
+        "android_client_info": {
+          "package_name": "com.example.admin2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDMGQEgKfqwJ-HGth3NUvHYYnscZcnp8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67974807541:android:9d13a9c4d79b29647deabc",
+        "android_client_info": {
+          "package_name": "com.example.studants"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDMGQEgKfqwJ-HGth3NUvHYYnscZcnp8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

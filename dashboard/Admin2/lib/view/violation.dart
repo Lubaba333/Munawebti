@@ -41,7 +41,7 @@ class ViolationScreen extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // ❌ تم حذف شريط البحث + الفلاتر بالكامل
+
 
           // 📄 LIST
           Expanded(

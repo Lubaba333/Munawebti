@@ -8,6 +8,8 @@ import '../services/api_service.dart';
 import '../view/HousingScreen.dart';
 import '../view/ManageSchedulesScreen.dart';
 import '../view/Request.dart';
+import '../view/SectionScreen.dart';
+import '../view/SubjectListScreen.dart';
 import '../view/dashboard_home.dart';
 import '../view/violation.dart';
 import 'UserManagement_controller.dart';
@@ -37,16 +39,16 @@ class DashboardController extends GetxController {
     isSidebarExpanded.value = !isSidebarExpanded.value;
   }
 
-  final titles = ["Dashboard", "Users", "Schedules", "Requests", "Housing","Reports"];
+  final titles = ["Dashboard", "Users", "Schedules", "Requests", "Housing","Sections","Subject"];
 
   final pages = [
     const DashboardSection(),
-    UserManagementScreen(), // هنا الـ Controller يجب أن يكون مسجل مسبقًا
+    UserManagementScreen(),
     ManageSchedulesScreen(),
     RequestScreen(),
     BuildingsScreen(),
-    ViolationScreen(),
-    //Text("Reports"),
+    SectionScreen(),
+    SubjectListScreen(),
   ];
 
   void changePage(int index) {

@@ -1,12 +1,8 @@
-/// =======================================================
-/// UserManagementScreen.dart
-/// =======================================================
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/UserManagement_controller.dart';
-import '../widgets/AppColors.dart';
+import '../model/user_model.dart';
 
 class UserManagementScreen extends StatelessWidget {
 
@@ -14,21 +10,22 @@ class UserManagementScreen extends StatelessWidget {
 
   final c = Get.put(UserManagementController());
 
-  final Gradient headerGradient =
+  final Gradient primaryGradient =
   const LinearGradient(
     colors: [
       Color(0xFF5A0891),
       Color(0xFF8E2DE2),
     ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
 
   final List<String> filters = [
-    "All",
-    "Nurses",
     "Students",
-    "Deleted",
+    "Supervisors",
   ];
 
+  /// ================= ANIMATION KEY =================
   final RxInt animationKey = 0.obs;
 
   @override
@@ -36,29 +33,27 @@ class UserManagementScreen extends StatelessWidget {
 
     return Scaffold(
 
+      backgroundColor: const Color(0xFFF5F3FF),
 
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
-
-
-
-
+      /// ================= APP BAR =================
       appBar: PreferredSize(
-        preferredSize:
-        const Size.fromHeight(70),
+
+        preferredSize: const Size.fromHeight(70),
 
         child: Container(
+
           decoration: BoxDecoration(
-            gradient: headerGradient,
+            gradient: primaryGradient,
           ),
 
           child: AppBar(
-            backgroundColor:
-            Colors.transparent,
+
+            backgroundColor: Colors.transparent,
 
             elevation: 0,
 
             title: const Text(
+
               "User Management",
 
               style: TextStyle(
@@ -69,32 +64,59 @@ class UserManagementScreen extends StatelessWidget {
         ),
       ),
 
+      /// ================= FAB =================
+      floatingActionButton: FloatingActionButton(
+
+        backgroundColor: const Color(0xFF8E2DE2),
+
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+
+        onPressed: () =>
+            _showUserForm(context),
+      ),
+
+      /// ================= BODY =================
       body: Column(
         children: [
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          /// ================= FILTERS =================
+          _buildFilters(),
 
-          _buildFilters(context),
+          const SizedBox(height: 12),
 
-
-
-          const SizedBox(height: 10),
-
-          /// ================= GRID =================
           Expanded(
             child: Obx(() {
 
-              final list =
-                  c.filteredUsers;
+              if (c.isLoading.value) {
+
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
               return AnimatedSwitcher(
 
-                duration:
-                const Duration(
+                duration: const Duration(
                   milliseconds: 500,
                 ),
+
+                transitionBuilder:
+                    (child, animation) {
+
+                  return FadeTransition(
+
+                    opacity: animation,
+
+                    child: ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
+                  );
+                },
 
                 child: GridView.builder(
 
@@ -102,8 +124,7 @@ class UserManagementScreen extends StatelessWidget {
                     animationKey.value,
                   ),
 
-                  padding:
-                  const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(8),
 
                   gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
@@ -116,14 +137,14 @@ class UserManagementScreen extends StatelessWidget {
                     childAspectRatio: 0.78,
                   ),
 
-                  itemCount: list.length,
+                  itemCount: c.users.length,
 
                   itemBuilder:
                       (context, i) {
 
                     return _animatedUser(
                       context,
-                      list[i],
+                      c.users[i],
                       i,
                     );
                   },
@@ -133,21 +154,6 @@ class UserManagementScreen extends StatelessWidget {
           ),
         ],
       ),
-
-      floatingActionButton:
-      FloatingActionButton(
-
-        backgroundColor:
-        AppColors.primary,
-
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-
-        onPressed: () =>
-            _showForm(context),
-      ),
     );
   }
 
@@ -155,14 +161,12 @@ class UserManagementScreen extends StatelessWidget {
   /// FILTERS
   /// =======================================================
 
-
-
-  Widget _buildFilters(BuildContext context) {
-
+  Widget _buildFilters() {
 
     return Obx(() {
 
       return Row(
+
         mainAxisAlignment:
         MainAxisAlignment.center,
 
@@ -175,7 +179,7 @@ class UserManagementScreen extends StatelessWidget {
 
             onTap: () {
 
-              c.setFilter(f);
+              c.changeFilter(f);
 
               animationKey.value++;
             },
@@ -183,14 +187,11 @@ class UserManagementScreen extends StatelessWidget {
             child: AnimatedContainer(
 
               duration:
-              const Duration(
-                milliseconds: 400,
-
-              ),
+              const Duration(milliseconds: 300),
 
               margin:
               const EdgeInsets.symmetric(
-                horizontal: 6,
+                horizontal: 5,
               ),
 
               padding:
@@ -199,32 +200,34 @@ class UserManagementScreen extends StatelessWidget {
                 vertical: 8,
               ),
 
-
               decoration: BoxDecoration(
-                color: active
-                    ? AppColors.primary
-                    : Colors.white,
+
+                gradient:
+                active ? primaryGradient : null,
+
+                color:
+                active ? null : Colors.white,
 
                 borderRadius:
-                BorderRadius.circular(25),
+                BorderRadius.circular(22),
 
+                border: Border.all(
+                  color: const Color(0xFF5A0891),
+                ),
               ),
 
               child: Text(
+
                 f,
 
                 style: TextStyle(
-                  color: active
 
-
-                      ? Theme.of(context).colorScheme.onPrimary
-                      : Theme.of(context).colorScheme.primary,
+                  color:
+                  active
+                      ? Colors.white
+                      : const Color(0xFF5A0891),
 
                   fontWeight: FontWeight.bold,
-
-
-
-
                 ),
               ),
             ),
@@ -240,7 +243,7 @@ class UserManagementScreen extends StatelessWidget {
 
   Widget _animatedUser(
       BuildContext context,
-      User user,
+      UserModel user,
       int index,
       ) {
 
@@ -265,7 +268,7 @@ class UserManagementScreen extends StatelessWidget {
     return TweenAnimationBuilder<double>(
 
       key: ValueKey(
-        user.name +
+        user.id.toString() +
             animationKey.value
                 .toString(),
       ),
@@ -323,206 +326,114 @@ class UserManagementScreen extends StatelessWidget {
 
   Widget _userCard(
       BuildContext context,
-      User user,
+      UserModel user,
       ) {
-
-    final isNurse =
-        user.role == "Nurse";
+    final isBlocked = user.isBlocked;
 
     return GestureDetector(
-
-      onTap: user.isDeleted
-          ? null
-          : () => _showDetails(
-        context,
-        user,
-      ),
+      onTap: () => _showDetails(context, user),
 
       child: Stack(
         children: [
 
-          /// ================= CARD =================
+          /// ================= CARD CONTENT =================
           Opacity(
+            opacity: isBlocked ? 0.5 : 1.0, // 🔴 يخلي الكارد رمادي خفيف
+            child: ColorFiltered(
+              colorFilter: isBlocked
+                  ? const ColorFilter.mode(
+                Colors.grey,
+                BlendMode.saturation,
+              )
+                  : const ColorFilter.mode(
+                Colors.transparent,
+                BlendMode.multiply,
+              ),
 
-            opacity:
-            user.isDeleted
-                ? 0.4
-                : 1,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
 
-            child: Column(
-              mainAxisSize:
-              MainAxisSize.min,
-
-              children: [
-
-                /// IMAGE
-                ClipRRect(
-                  borderRadius:
-                  BorderRadius.circular(
-                    50,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      user.role == "Supervisor"
+                          ? "assets/images/nurs.png"
+                          : "assets/images/student.png",
+                      width: 85,
+                      height: 85,
+                    ),
                   ),
 
-                  child: Image.asset(
+                  const SizedBox(height: 4),
 
-                    isNurse
-                        ? "assets/images/nurs.png"
-                        : "assets/images/student.png",
-
-                    width: 85,
-                    height: 85,
+                  Text(
+                    user.fullName,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 3),
-
-                /// NAME
-                Text(
-
-                  user.name,
-
-                  style: TextStyle(
-                    fontSize: 12,
-
-                    fontWeight:
-                    FontWeight.w600,
-
-                    decoration:
-                    user.isDeleted
-                        ? TextDecoration
-                        .lineThrough
-                        : null,
+                  Text(
+                    user.role,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey.shade700,
+                    ),
                   ),
-                ),
-
-                /// ROLE
-                Text(
-                  user.role,
-                  style:
-                  const TextStyle(
-                    fontSize: 10,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
-          /// ================= ALERT BADGE =================
-          if (user.alerts.isNotEmpty)
+          /// ================= BLOCK BADGE =================
+          if (isBlocked)
             Positioned(
               top: 5,
               left: 5,
-
-              child:
-              TweenAnimationBuilder(
-
-                tween: Tween(
-                  begin: -0.08,
-                  end: 0.08,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 3,
                 ),
-
-                duration:
-                const Duration(
-                  milliseconds: 700,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-
-                curve:
-                Curves.easeInOut,
-
-                builder:
-                    (context,
-                    value,
-                    child) {
-
-                  return Transform.rotate(
-                    angle:
-                    value as double,
-
-                    child: child,
-                  );
-                },
-
-                child: Container(
-
-                  padding:
-                  const EdgeInsets
-                      .all(6),
-
-                  decoration:
-                  BoxDecoration(
-
-                    color: Colors.red,
-
-                    shape:
-                    BoxShape.circle,
-
-                    boxShadow: [
-
-                      BoxShadow(
-                        color: Colors.red
-                            .withOpacity(
-                          0.4,
-                        ),
-
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-
-                  child: Text(
-
-                    "${user.alerts.length}",
-
-                    style:
-                    const TextStyle(
-                      color:
-                      Colors.white,
-
-                      fontSize: 10,
-
-                      fontWeight:
-                      FontWeight.bold,
-                    ),
+                child: const Text(
+                  "BLOCKED",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
 
-          /// ================= RESTORE BUTTON =================
-          if (user.isDeleted)
-            Positioned(
-              top: 0,
-              right: 5,
-
-              child: GestureDetector(
-
-                onTap: () {
-                  c.restoreUser(user);
-                },
-
-                child: Container(
-
-                  padding:
-                  const EdgeInsets
-                      .all(4),
-
-                  decoration:
-                  const BoxDecoration(
-                    color: Colors.red,
-                    shape:
-                    BoxShape.circle,
-                  ),
-
-                  child: const Icon(
-                    Icons.close,
-
-                    size: 12,
-
-                    color:
-                    Colors.white,
-                  ),
+          /// ================= EDIT BUTTON =================
+          Positioned(
+            top: 0,
+            right: 5,
+            child: GestureDetector(
+              onTap: () => _showUserForm(context, user: user),
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF8E2DE2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.edit,
+                  size: 12,
+                  color: Colors.white,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -532,1604 +443,405 @@ class UserManagementScreen extends StatelessWidget {
   /// DETAILS
   /// =======================================================
 
-  /// ===============================================================
-  /// PROFESSIONAL USER DETAILS UI
-  /// Replace ONLY _showDetails() method
-  /// ===============================================================
-
-  void _showDetails(
-      BuildContext context,
-      User user,
-      ) {
-
-    final tabController =
-    TabController(
-      length: 4,
-      vsync: Navigator.of(context),
-    );
+  void _showDetails(BuildContext context, UserModel user) {
 
     Get.bottomSheet(
 
       isScrollControlled: true,
 
-      Container(
+      Obx(() {
 
-        height:
-        MediaQuery.of(context)
-            .size
-            .height *
-            0.88,
+        final updatedUser =
+        c.users.firstWhereOrNull(
+                (e) => e.id == user.id);
 
+        if (updatedUser == null) {
+          return const SizedBox.shrink();
+        }
 
+        final bool isBlocked =
+            updatedUser.isBlocked;
 
-        decoration:
-        const BoxDecoration(
+        return Container(
 
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFF5F3FF),
-              Color(0xFFEDE7F6),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          height: Get.height * 0.82,
 
-          borderRadius:
-          BorderRadius.vertical(
-            top: Radius.circular(35),
-          ),
-        ),
+          decoration: const BoxDecoration(
 
-        child: Column(
-          children: [
+            gradient: LinearGradient(
+              colors: [
 
-            const SizedBox(height: 12),
-
-            /// ===================================================
-            /// HANDLE
-            /// ===================================================
-
-            Container(
-              width: 70,
-              height: 5,
-
-              decoration: BoxDecoration(
-                color: Colors.grey.shade400,
-
-                borderRadius:
-                BorderRadius.circular(20),
-              ),
+                Color(0xFF8E2DE2),
+                Color(0xFFD59EFA),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
 
-            const SizedBox(height: 20),
-
-
-            /// ===================================================
-            /// HEADER
-            /// ===================================================
-
-
-            Padding(
-              padding:
-              const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-
-              child: Row(
-                children: [
-
-                  /// IMAGE
-                  TweenAnimationBuilder(
-
-                    tween: Tween(
-                      begin: 0.8,
-                      end: 1.0,
-                    ),
-
-                    duration:
-                    const Duration(
-                      milliseconds: 700,
-                    ),
-
-                    curve:
-                    Curves.elasticOut,
-
-                    builder:
-                        (context,
-                        value,
-                        child) {
-
-                      return Transform.scale(
-                        scale:
-                        value as double,
-
-                        child: child,
-                      );
-                    },
-
-                    child: Container(
-
-                      decoration:
-                      BoxDecoration(
-
-                        shape:
-                        BoxShape.circle,
-
-                        boxShadow: [
-
-                          BoxShadow(
-                            color: Colors
-                                .deepPurple
-                                .withOpacity(
-                              0.25,
-                            ),
-
-                            blurRadius: 20,
-                          ),
-                        ],
-                      ),
-
-                      child: ClipRRect(
-
-                        borderRadius:
-                        BorderRadius
-                            .circular(
-                          50,
-                        ),
-
-                        child: Image.asset(
-
-                          user.role ==
-                              "Nurse"
-
-
-                              ? "assets/images/nurs.png"
-                              : "assets/images/student.png",
-
-                          width: 90,
-                          height: 90,
-
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 18),
-
-                  /// INFO
-                  Expanded(
-                    child: Column(
-
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-
-                      children: [
-
-                        Text(
-
-                          user.name,
-
-                          style:
-                          const TextStyle(
-                            fontSize: 22,
-
-                            fontWeight:
-                            FontWeight
-                                .bold,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 4,
-                        ),
-
-
-                        Text(
-
-                          user.role,
-
-                          style: TextStyle(
-                            color: Colors
-                                .grey
-                                .shade700,
-
-                            fontSize: 15,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 12,
-                        ),
-
-                        Row(
-                          children: [
-
-                            _statusChip(
-                              user.isActive
-                                  ? "Active"
-                                  : "Inactive",
-
-                              user.isActive
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-
-                            const SizedBox(
-                              width: 8,
-                            ),
-
-                            if (user
-                                .alerts
-                                .isNotEmpty)
-
-                              _statusChip(
-                                "${user.alerts.length} Alerts",
-
-                                Colors.orange,
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            borderRadius:
+            BorderRadius.vertical(
+              top: Radius.circular(35),
             ),
+          ),
 
-            const SizedBox(height: 20),
+          child: Column(
+            children: [
 
+              const SizedBox(height: 12),
 
+              TweenAnimationBuilder(
 
-            /// ===================================================
-            /// TAB BAR
-            /// ===================================================
+                tween: Tween(
+                  begin: 0.7,
+                  end: 1.0,
+                ),
 
+                duration: const Duration(
+                  milliseconds: 600,
+                ),
 
-            Container(
+                curve: Curves.easeOutBack,
 
-              margin:
-              const EdgeInsets.symmetric(
-                horizontal: 18,
-              ),
+                builder:
+                    (context, value, child) {
 
-              padding:
-              const EdgeInsets.all(5),
+                  return Transform.scale(
+                    scale: value as double,
+                    child: child,
+                  );
+                },
 
-              decoration: BoxDecoration(
+                child: Container(
 
-                color: Colors.white,
+                  width: 70,
+                  height: 5,
 
-                borderRadius:
-                BorderRadius.circular(
-                  18,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade500,
+
+                    borderRadius:
+                    BorderRadius.circular(20),
+                  ),
                 ),
               ),
 
-              child: TabBar(
+              const SizedBox(height: 20),
 
-                controller:
-                tabController,
+              Padding(
 
-                labelColor:
-                Colors.white,
-
-                unselectedLabelColor:
-                Colors.deepPurple,
-
-                indicator: BoxDecoration(
-
-                  color:
-                  Colors.deepPurple,
-
-                  borderRadius:
-                  BorderRadius.circular(
-                    14,
-                  ),
+                padding:
+                const EdgeInsets.symmetric(
+                  horizontal: 20,
                 ),
 
-                tabs: const [
+                child: Row(
+                  children: [
 
-                  Tab(text: "Overview"),
+                    TweenAnimationBuilder(
 
-                  Tab(text: "Alerts"),
+                      tween: Tween(
+                        begin: 0.8,
+                        end: 1.0,
+                      ),
 
-                  Tab(text: "Activity"),
+                      duration:
+                      const Duration(
+                        milliseconds: 700,
+                      ),
 
-                  Tab(text: "Actions"),
-                ],
-              ),
-            ),
+                      curve:
+                      Curves.elasticOut,
 
-            const SizedBox(height: 15),
+                      builder:
+                          (context,
+                          value,
+                          child) {
 
-            /// ===================================================
-            /// TAB VIEW
-            /// ===================================================
+                        return Transform.scale(
+                          scale:
+                          value as double,
 
-            Expanded(
+                          child: child,
+                        );
+                      },
 
-              child: TabBarView(
-
-                controller:
-                tabController,
-
-                children: [
-
-                  /// =================================================
-                  /// OVERVIEW
-                  /// =================================================
-
-                  SingleChildScrollView(
-
-                    padding:
-                    const EdgeInsets.all(18),
-
-                    child: Column(
-                      children: [
-
-                        _glassInfo(
-                          "Graduation Year",
-                          "${user.graduationYear}",
-                          Icons.calendar_month,
-                        ),
-
-                        _glassInfo(
-                          "Graduation Place",
-                          user.graduationPlace,
-                          Icons.location_on,
-                        ),
-
-                        _glassInfo(
-                          "Graduation Date",
-                          user.graduationDate,
-                          Icons.date_range,
-                        ),
-
-                        const SizedBox(
-                          height: 16,
-                        ),
-
-                        Row(
+                      child:ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Stack(
                           children: [
 
-                            Expanded(
-                              child: _statCard(
-                                "Warnings",
-                                user.warnings,
-                                Colors.red,
-                                Icons.warning,
-                              ),
+                            Image.asset(
+                              user.role == "Supervisor"
+                                  ? "assets/images/nurs.png"
+                                  : "assets/images/student.png",
+                              width: 85,
+                              height: 85,
+                              fit: BoxFit.cover,
                             ),
 
-                            const SizedBox(
-                              width: 12,
-                            ),
-
-                            Expanded(
-                              child: _statCard(
-                                "Bonuses",
-                                user.bonuses,
-                                Colors.green,
-                                Icons.star,
+                            /// 🔴 GREY OVERLAY WHEN BLOCKED
+                            if (user.isBlocked)
+                              Container(
+                                width: 85,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.6),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.block,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
                               ),
-                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-
-                  /// =================================================
-                  /// ALERTS
-                  /// =================================================
-
-                  Column(
-                    children: [
-
-                      const SizedBox(
-                        height: 10,
                       ),
-
-                      Expanded(
-
-                        child:
-                        user.alerts.isEmpty
-
-                            ? Center(
-                          child: Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment
-                                .center,
-
-                            children: [
-
-                              TweenAnimationBuilder(
-
-                                tween: Tween(
-                                  begin: 0.9,
-                                  end: 1.05,
-                                ),
-
-                                duration:
-                                const Duration(
-                                  milliseconds:
-                                  800,
-                                ),
-
-                                curve: Curves
-                                    .easeInOut,
-
-                                builder:
-                                    (context,
-                                    value,
-                                    child) {
-
-                                  return Transform
-                                      .scale(
-                                    scale:
-                                    value as double,
-
-                                    child: child,
-                                  );
-                                },
-
-                                child: Icon(
-                                  Icons
-                                      .notifications_none,
-
-                                  size: 90,
-
-                                  color: Colors
-                                      .grey
-                                      .shade400,
-                                ),
-                              ),
-
-                              const SizedBox(
-                                height: 14,
-                              ),
-
-                              Text(
-
-                                "No alerts yet",
-
-                                style: TextStyle(
-                                  fontSize: 16,
-
-                                  color: Colors
-                                      .grey
-                                      .shade700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-
-                            : ListView.builder(
-
-                          padding:
-                          const EdgeInsets
-                              .all(18),
-
-                          itemCount:
-                          user.alerts
-                              .length,
-
-                          itemBuilder:
-                              (context,
-                              index) {
-
-                            final alert =
-                            user.alerts[
-                            index];
-
-                            Color color =
-                                Colors.blue;
-
-                            if (alert.priority ==
-                                "High") {
-                              color =
-                                  Colors.red;
-                            }
-
-                            if (alert.priority ==
-                                "Critical") {
-                              color =
-                                  Colors.purple;
-                            }
-
-                            return Container(
-
-                              margin:
-                              const EdgeInsets
-                                  .only(
-                                bottom:
-                                14,
-                              ),
-
-                              padding:
-                              const EdgeInsets
-                                  .all(
-                                16,
-                              ),
-
-                              decoration:
-                              BoxDecoration(
-
-                                color:
-                                Colors.white,
-
-                                borderRadius:
-                                BorderRadius
-                                    .circular(
-                                  20,
-                                ),
-
-                                boxShadow: [
-
-                                  BoxShadow(
-                                    color: Colors
-                                        .black
-                                        .withOpacity(
-                                      0.05,
-                                    ),
-
-                                    blurRadius:
-                                    12,
-                                  ),
-                                ],
-                              ),
-
-                              child: Row(
-
-                                children: [
-
-                                  Container(
-
-                                    padding:
-                                    const EdgeInsets
-                                        .all(
-                                      10,
-                                    ),
-
-                                    decoration:
-                                    BoxDecoration(
-
-                                      color:
-                                      color.withOpacity(
-                                        0.12,
-                                      ),
-
-                                      shape:
-                                      BoxShape
-                                          .circle,
-                                    ),
-
-                                    child: Icon(
-                                      Icons
-                                          .notifications_active,
-
-                                      color:
-                                      color,
-                                    ),
-                                  ),
-
-                                  const SizedBox(
-                                    width: 14,
-                                  ),
-
-                                  Expanded(
-                                    child:
-                                    Column(
-
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment
-                                          .start,
-
-                                      children: [
-
-                                        Text(
-
-                                          alert.title,
-
-                                          style:
-                                          const TextStyle(
-                                            fontWeight:
-                                            FontWeight
-                                                .bold,
-
-                                            fontSize:
-                                            15,
-                                          ),
-                                        ),
-
-                                        const SizedBox(
-                                          height:
-                                          4,
-                                        ),
-
-                                        Text(
-                                          alert.message,
-                                        ),
-
-                                        const SizedBox(
-                                          height:
-                                          6,
-                                        ),
-
-                                        Text(
-
-                                          alert.priority,
-
-                                          style:
-                                          TextStyle(
-                                            color:
-                                            color,
-
-                                            fontWeight:
-                                            FontWeight
-                                                .bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      Padding(
-                        padding:
-                        const EdgeInsets
-                            .all(18),
-
-                        child: SizedBox(
-
-                          width:
-                          double.infinity,
-
-                          child:
-                          ElevatedButton.icon(
-
-                            style:
-                            ElevatedButton
-                                .styleFrom(
-
-                              backgroundColor:
-                              Colors.orange,
-
-                              padding:
-                              const EdgeInsets
-                                  .symmetric(
-                                vertical:
-                                15,
-                              ),
-
-                              shape:
-                              RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius
-                                    .circular(
-                                  18,
-                                ),
-                              ),
-                            ),
-
-                            onPressed: () {
-
-                              Get.back();
-
-                              _showAlertDialog(
-                                user,
-                              );
-                            },
-
-                            icon: const Icon(
-                              Icons.add_alert,
-                              color:
-                              Colors.white,
-                            ),
-
-                            label: const Text(
-                              "Send Alert",
-
-                              style:
-                              TextStyle(
-                                color: Colors
-                                    .white,
-
-                                fontWeight:
-                                FontWeight
-                                    .bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  /// =================================================
-                  /// ACTIVITY
-                  /// =================================================
-
-                  ListView.builder(
-
-                    padding:
-                    const EdgeInsets.all(
-                      18,
                     ),
 
-                    itemCount:
-                    user.activityLog
-                        .length,
+                    const SizedBox(width: 18),
 
-                    itemBuilder:
-                        (context, index) {
-
-                      return Row(
+                    Expanded(
+                      child: Column(
 
                         crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
+                        CrossAxisAlignment.start,
 
                         children: [
 
-                          Column(
-                            children: [
+                          Text(
 
-                              Container(
-                                width: 14,
-                                height: 14,
+                            updatedUser.fullName,
 
-                                decoration:
-                                const BoxDecoration(
-                                  color: Colors
-                                      .deepPurple,
-
-                                  shape: BoxShape
-                                      .circle,
-                                ),
-                              ),
-
-                              if (index !=
-                                  user.activityLog
-                                      .length -
-                                      1)
-
-                                Container(
-                                  width: 2,
-                                  height: 60,
-                                  color: Colors
-                                      .deepPurple
-                                      .withOpacity(
-                                    0.3,
-                                  ),
-                                ),
-                            ],
+                            style:
+                            const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
 
-                          const SizedBox(
-                            width: 12,
+                          const SizedBox(height: 4),
+
+                          Text(
+
+                            updatedUser.role,
+
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
+                              fontSize: 15,
+                            ),
                           ),
 
-                          Expanded(
-                            child: Container(
+                          const SizedBox(height: 8),
 
-                              margin:
-                              const EdgeInsets
-                                  .only(
-                                bottom:
-                                20,
-                              ),
+                          Text(
 
-                              padding:
-                              const EdgeInsets
-                                  .all(
-                                14,
-                              ),
+                            updatedUser.email ?? "",
 
-                              decoration:
-                              BoxDecoration(
-
-
-                color: Theme.of(context)
-                                    .colorScheme
-                                    .surface,
-
-
-
-                                borderRadius:
-                                BorderRadius
-                                    .circular(
-                                  16,
-                                ),
-                              ),
-
-                              child: Text(
-
-                                user.activityLog[index],
-
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface,
-                                ),
-
-
-                              ),
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
                             ),
                           ),
                         ],
-                      );
-                    },
-                  ),
-
-                  /// =================================================
-                  /// ACTIONS
-                  /// =================================================
-
-                  Padding(
-
-                    padding:
-                    const EdgeInsets.all(
-                      20,
+                      ),
                     ),
-
-                    child: Column(
-                      children: [
-
-                        _actionButton(
-
-                          title: "Edit User",
-
-                          icon: Icons.edit,
-
-                          color:
-                          Colors.deepPurple,
-
-                          onTap: () {
-
-                            Get.back();
-
-                            _showForm(
-                              context,
-                              user: user,
-                            );
-                          },
-                        ),
-
-                        const SizedBox(
-                          height: 14,
-                        ),
-
-                        _actionButton(
-
-                          title:
-                          user.isDeleted
-                              ? "Restore User"
-                              : "Delete User",
-
-                          icon:
-                          user.isDeleted
-                              ? Icons.restore
-                              : Icons.delete,
-
-                          color:
-                          user.isDeleted
-                              ? Colors.green
-                              : Colors.red,
-
-                          onTap: () {
-
-                            if (user
-                                .isDeleted) {
-
-                              c.restoreUser(
-                                user,
-                              );
-
-                            } else {
-
-                              c.softDelete(
-                                user,
-                              );
-                            }
-
-                            Get.back();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-    )
-    );
-  }
 
-  /// ===============================================================
-  /// STATUS CHIP
-  /// ===============================================================
+              const SizedBox(height: 35),
 
-  Widget _statusChip(
-      String text,
-      Color color,
-      ) {
+              Padding(
 
-    return Container(
-
-      padding:
-      const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
-
-      decoration: BoxDecoration(
-
-        color:
-        color.withOpacity(0.12),
-
-        borderRadius:
-        BorderRadius.circular(20),
-      ),
-
-      child: Text(
-
-        text,
-
-        style: TextStyle(
-          color: color,
-
-          fontWeight:
-          FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  /// ===============================================================
-  /// GLASS INFO CARD
-  /// ===============================================================
-
-  Widget _glassInfo(
-      String title,
-      String value,
-      IconData icon,
-      ) {
-
-    return Container(
-
-      margin:
-      const EdgeInsets.only(
-        bottom: 12,
-      ),
-
-      padding:
-      const EdgeInsets.all(16),
-
-      decoration: BoxDecoration(
-
-        color: Colors.white,
-
-        borderRadius:
-        BorderRadius.circular(18),
-
-        boxShadow: [
-
-          BoxShadow(
-            color:
-            Colors.black.withOpacity(
-              0.04,
-            ),
-
-            blurRadius: 10,
-          ),
-        ],
-      ),
-
-      child: Row(
-        children: [
-
-          Icon(
-            icon,
-            color: Colors.deepPurple,
-          ),
-
-          const SizedBox(width: 14),
-
-          Expanded(
-            child: Column(
-
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-              children: [
-
-                Text(
-                  title,
-
-                  style: TextStyle(
-                    color:
-                    Colors.grey.shade700,
-                  ),
+                padding:
+                const EdgeInsets.symmetric(
+                  horizontal: 20,
                 ),
 
-                const SizedBox(
-                  height: 3,
+                child: Column(
+                  children: [
+
+                    _actionButton(
+                      title: isBlocked ? "Unblock" : "Block",
+                      icon: isBlocked ? Icons.lock_open : Icons.lock,
+                      color: isBlocked ? Colors.green : Colors.orange,
+                      onTap: () async {
+                        await c.toggleBlock(updatedUser);
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    _actionButton(
+
+                      title: "Delete User",
+
+                      icon: Icons.delete,
+
+                      color: Colors.red,
+
+                      onTap: () {
+
+                        Get.back();
+
+                        c.deleteUser(updatedUser.id!);
+                      },
+                    ),
+                  ],
                 ),
-
-                Text(
-
-                  value,
-
-                  style:
-                  const TextStyle(
-                    fontWeight:
-                    FontWeight.bold,
-
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 
-  /// ===============================================================
-  /// STAT CARD
-  /// ===============================================================
+  /// =======================================================
+  /// USER FORM
+  /// =======================================================
+  void _showUserForm(BuildContext context, {UserModel? user}) {
+    final isEdit = user != null;
+    // نحدد الفلتر الحالي لنعرف أي واجهة نعرض (طالبة أم مشرفة)
+    final bool isStudentFilter = c.filter.value == "Students";
 
-  Widget _statCard(
-      String title,
-      int value,
-      Color color,
-      IconData icon,
-      ) {
+    // تعريف المتحكمات (Controllers) مع إسناد القيم في حال التعديل
+    final nameController = TextEditingController(text: user?.fullName ?? "");
+    final emailController = TextEditingController(text: user?.email ?? "");
+    final passwordController = TextEditingController();
+    final specController = TextEditingController(text: user?.specialization ?? "");
 
-    return Container(
-
-      padding:
-      const EdgeInsets.all(18),
-
-      decoration: BoxDecoration(
-
-        color: Colors.white,
-
-        borderRadius:
-        BorderRadius.circular(20),
-
-        boxShadow: [
-
-          BoxShadow(
-            color:
-            Colors.black.withOpacity(
-              0.04,
-            ),
-
-            blurRadius: 10,
-          ),
-        ],
-      ),
-
-      child: Column(
-        children: [
-
-          Container(
-
-            padding:
-            const EdgeInsets.all(10),
-
-            decoration: BoxDecoration(
-
-              color:
-              color.withOpacity(0.1),
-
-              shape:
-              BoxShape.circle,
-            ),
-
-            child: Icon(
-              icon,
-              color: color,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-
-            "$value",
-
-            style: TextStyle(
-
-              fontSize: 22,
-
-              fontWeight:
-              FontWeight.bold,
-
-              color: color,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(title),
-        ],
-      ),
+    // حقل المعرف (يأخذ قيمته بناءً على نوع المستخدم)
+    final identifierController = TextEditingController(
+      text: user?.role == "Student"
+          ? user?.studentIdentifier
+          : user?.supervisorIdentifier,
     );
-  }
 
-  /// ===============================================================
-  /// ACTION BUTTON
-  /// ===============================================================
+    // حقول خاصة بالطالبة (Required for Student Profile)
+    final phoneController = TextEditingController(text: user?.phoneNumber ?? "+9639");
+    final yearController = TextEditingController(text: user?.year ?? "4");
+    final avgController = TextEditingController(text: user?.annualAverage ?? "85.0");
 
-  Widget _actionButton({
+    // حقول خاصة بالمشرفة (Required for Supervisor Profile)
+    final certPlaceController = TextEditingController(text: user?.certificatePlace ?? "");
+    final certDateController = TextEditingController(text: user?.certificateDate ?? "2020-05-15");
 
-    required String title,
-
-    required IconData icon,
-
-    required Color color,
-
-    required VoidCallback onTap,
-  }) {
-
-    return SizedBox(
-
-      width: double.infinity,
-
-      child: ElevatedButton.icon(
-
-        style:
-        ElevatedButton.styleFrom(
-
-          backgroundColor: color,
-
-          padding:
-          const EdgeInsets.symmetric(
-            vertical: 10,
-          ),
-
-          shape:
-          RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(
-              18,
-            ),
-          ),
-        ),
-
-        onPressed: onTap,
-
-        icon: Icon(
-          icon,
+    Get.bottomSheet(
+      isScrollControlled: true,
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
-
-        label: Text(
-
-          title,
-
-          style: const TextStyle(
-            color: Colors.white,
-
-            fontWeight:
-            FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// =======================================================
-  /// SEND ALERT DIALOG
-  /// =======================================================
-
-  void _showAlertDialog(User user) {
-    final title = TextEditingController();
-    final message = TextEditingController();
-    final priority = "High".obs;
-
-    Get.dialog(
-      Center(
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: 300, // نفس فورم التعديل
-            padding: const EdgeInsets.all(12),
-
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFFFFF3E0),
-                  Color(0xFFFFE0B2),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(18),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom, // لرفع الواجهة عند ظهور الكيبورد
             ),
-
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-
-                children: [
-
-                  const Icon(
-                    Icons.warning_amber_rounded,
-                    size: 40,
-                    color: Colors.orange,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // العنوان
+                Text(
+                  isEdit ? "Edit data${user.role}" : "Add ${isStudentFilter ? 'student' : 'Supervisor'} New",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5A0891),
                   ),
+                ),
+                const SizedBox(height: 20),
 
-                  const SizedBox(height: 6),
+                // الحقول المشتركة
+                _field("full name", nameController),
+                _field("e-mail", emailController),
 
-                  const Text(
-                    "Send Alert",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                if (!isEdit)
+                  _field("Password (at least 8 characters)", passwordController, obscure: true),
 
-                  const SizedBox(height: 10),
+                _field("Specialization", specController),
 
-                  _field(
-                    "Title",
-                    title,
-                  ),
+                // حقل المعرف الديناميكي
+                _field(
+                  isStudentFilter ? "University number (Identifier)" : "Job identification number",
+                  identifierController,
+                ),
 
-                  _field(
-                    "Message",
-                    message,
-                    maxLines: 2,
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  Obx(() {
-                    return DropdownButtonFormField<String>(
-                      value: priority.value,
-                      items: ["Low", "Medium", "High", "Critical"]
-                          .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                          .toList(),
-                      onChanged: (v) => priority.value = v!,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 10,
-                        ),
-                        labelText: "Priority",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    );
-                  }),
-
-                  const SizedBox(height: 10),
-
-                  SizedBox(
-                    height: 34,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        c.sendAlert(
-                          user,
-                          UserAlert(
-                            title: title.text,
-                            message: message.text,
-                            priority: priority.value,
-                            createdAt: DateTime.now(),
-                          ),
-                        );
-
-                        Get.back();
-                      },
-                      child: const Text(
-                        "SEND",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ),
+                // عرض حقول الطالبة فقط إذا كان الفلتر "Students"
+                if (isStudentFilter) ...[
+                  _field("phone number", phoneController),
+                  _field("Academic year", yearController),
+                  _field("Annual rate", avgController),
                 ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-
-
-  void _showForm(
-      BuildContext context,
-      {User? user}
-      ) {
-
-    final name =
-    TextEditingController(
-      text: user?.name ?? '',
-    );
-
-    final role =
-    TextEditingController(
-      text: user?.role ?? '',
-    );
-
-    final year =
-    TextEditingController(
-      text: user?.graduationYear
-          .toString() ??
-          '',
-    );
-
-    final place =
-    TextEditingController(
-      text:
-      user?.graduationPlace ?? '',
-    );
-
-    final date =
-    TextEditingController(
-      text:
-      user?.graduationDate ?? '',
-    );
-
-    final warnings =
-    TextEditingController(
-      text:
-      user?.warnings.toString() ??
-          '0',
-    );
-
-    final bonuses =
-    TextEditingController(
-      text:
-      user?.bonuses.toString() ??
-          '0',
-    );
-
-    final isEdit =
-        user != null;
-    Get.dialog(
-      barrierDismissible: true,
-      useSafeArea: true,
-
-      Material(
-        color: Colors.black54, // خلفية داكنة
-
-        child: Center(
-          child: Container(
-            width: 300, // 🔥 هذا أهم شيء
-            padding: const EdgeInsets.all(12),
-
-            decoration: BoxDecoration(
-
-
-              color: Theme.of(context).colorScheme.secondaryContainer,
-
-
-              borderRadius: BorderRadius.circular(18),
-            ),
-
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // 🔥 مهم جداً
-                children: [
-
-                  Text(
-
-                    isEdit
-                        ? "Edit User"
-                        : "Add New User",
-
-                    style:
-                    const TextStyle(
-                      fontSize: 18,
-
-                      fontWeight:
-                      FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 15,
-                  ),
-
-                  _field(
-                    "Name",
-                    name,
-                  ),
-
-                  _field(
-                    "Role",
-                    role,
-                  ),
-
-                  _field(
-                    "Graduation Year",
-                    year,
-                  ),
-
-                  _field(
-                    "Graduation Place",
-                    place,
-                  ),
-
-                  _field(
-                    "Graduation Date",
-                    date,
-                  ),
-
-                  Row(
-                    children: [
-
-                      Expanded(
-                        child: _field(
-                          "Warnings",
-                          warnings,
-                        ),
-                      ),
-
-                      const SizedBox(
-                        width: 10,
-                      ),
-
-                      Expanded(
-                        child: _field(
-                          "Bonuses",
-                          bonuses,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(
-                    height: 18,
-                  ),
-
-                  SizedBox(
-                    width:
-                    double.infinity,
-
-                    height: 45,
-
-                    child:
-                    ElevatedButton(
-
-                      style:
-                      ElevatedButton
-                          .styleFrom(
-
-                        backgroundColor:
-                        Colors
-                            .deepPurple,
-
-                        shape:
-                        RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius
-                              .circular(
-                            15,
-                          ),
-                        ),
-                      ),
-
-                      onPressed: () {
-
-                        final newUser =
-                        User(
-
-                          name:
-                          name.text,
-
-                          role:
-                          role.text,
-
-                          graduationYear:
-                          int.tryParse(
-                            year.text,
-                          ) ??
-                              0,
-
-                          graduationPlace:
-                          place.text,
-
-                          graduationDate:
-                          date.text,
-
-                          warnings:
-                          int.tryParse(
-                            warnings
-                                .text,
-                          ) ??
-                              0,
-
-                          bonuses:
-                          int.tryParse(
-                            bonuses
-                                .text,
-                          ) ??
-                              0,
-
-                          activityLog:
-                          user
-                              ?.activityLog ??
-                              [],
-
-                          alerts:
-                          user
-                              ?.alerts ??
-                              [],
-                        );
-
-                        if (isEdit) {
-
-                          final index =
-                          c.users.indexOf(
-                            user!,
-                          );
-
-                          c.updateUser(
-                            index,
-                            newUser,
-                          );
-
-                        } else {
-
-                          c.addUser(
-                            newUser,
-                          );
-                        }
-
-                        Get.back();
-                      },
-
-                      child:
-                      const Text(
-
-                        "SAVE",
-
-                        style:
-                        TextStyle(
-                          color: Colors
-                              .white,
-
-                          fontWeight:
-                          FontWeight
-                              .bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                // عرض حقول المشرفة فقط إذا كان الفلتر "Supervisors"
+                if (!isStudentFilter) ...[
+                  _field("Place to obtain the certificate", certPlaceController),
+                  _field("Date of certification (YYYY-MM-DD)", certDateController),
                 ],
-              ),
+
+                const SizedBox(height: 25),
+
+                // زر الحفظ
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5A0891),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () {
+                      // التحقق من الحقول الأساسية
+                      if (nameController.text.isEmpty || emailController.text.isEmpty) {
+                        Get.snackbar("alert", "Please fill in the required fields.");
+                        return;
+                      }
+
+                      // بناء كائن المستخدم الجديد مع التأكد من إرسال كافة الحقول لتجنب 422
+                      UserModel updatedUser = UserModel(
+                        id: user?.id,
+                        fullName: nameController.text,
+                        email: emailController.text,
+                        password: passwordController.text.isNotEmpty ? passwordController.text : null,
+                        specialization: specController.text,
+                        phoneNumber: phoneController.text, // مهم للطالبات
+
+                        // حقول الطالبة
+                        studentIdentifier: isStudentFilter ? identifierController.text : null,
+                        year: isStudentFilter ? yearController.text : null,
+                        annualAverage: isStudentFilter ? avgController.text : null,
+                        isResident: true, // قيمة افتراضية
+
+                        // حقول المشرفة
+                        supervisorIdentifier: !isStudentFilter ? identifierController.text : null,
+                        certificatePlace: !isStudentFilter ? certPlaceController.text : null,
+                        certificateDate: !isStudentFilter ? certDateController.text : null,
+
+                        role: isEdit
+                            ? user.role
+                            : (isStudentFilter ? "Student" : "Supervisor"),
+                      );
+
+                      // استدعاء دالة الحفظ الموحدة في الكنترولر
+                      c.saveUser(updatedUser, isEdit: isEdit);
+                    },
+                    child: Text(
+                      isEdit ? "Save modifications" : "Add user",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
             ),
           ),
         ),
@@ -2144,28 +856,101 @@ class UserManagementScreen extends StatelessWidget {
   Widget _field(
       String hint,
       TextEditingController c, {
-        int maxLines = 1,
-        bool compact = false,
+        bool obscure = false,
       }) {
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+
+      padding:
+      const EdgeInsets.only(bottom: 12),
+
       child: TextField(
+
         controller: c,
-        maxLines: maxLines,
+
+        obscureText: obscure,
+
         decoration: InputDecoration(
-          isDense: compact, // 👈 أهم نقطة
-          contentPadding: compact
-              ? const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 10,
-          )
-              : const EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: 12,
-          ),
+
+          filled: true,
+
+          fillColor:
+          const Color(0xFFF8F5FF),
+
           labelText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+
+          labelStyle: TextStyle(
+            color: Colors.grey.shade700,
+          ),
+
+          contentPadding:
+          const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 14,
+          ),
+
+          border:
+          OutlineInputBorder(
+
+            borderRadius:
+            BorderRadius.circular(14),
+
+            borderSide:
+            BorderSide.none,
+          ),
+
+          enabledBorder:
+          OutlineInputBorder(
+
+            borderRadius:
+            BorderRadius.circular(14),
+
+            borderSide:
+            BorderSide.none,
+          ),
+
+          focusedBorder:
+          OutlineInputBorder(
+
+            borderRadius:
+            BorderRadius.circular(14),
+
+            borderSide:
+            const BorderSide(
+              color: Color(0xFF8E2DE2),
+              width: 1.3,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// =======================================================
+  /// ACTION BUTTON
+  /// =======================================================
+
+  Widget _actionButton({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        ),
+        onPressed: onTap,
+        icon: Icon(icon, color: Colors.white),
+        label: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
