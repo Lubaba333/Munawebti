@@ -701,237 +701,138 @@ class UserManagementScreen extends StatelessWidget {
   /// =======================================================
   /// USER FORM
   /// =======================================================
+  void _showUserForm(BuildContext context, {UserModel? user}) {
+    final isEdit = user != null;
+    // نحدد الفلتر الحالي لنعرف أي واجهة نعرض (طالبة أم مشرفة)
+    final bool isStudentFilter = c.filter.value == "Students";
 
-  void _showUserForm(
-      BuildContext context, {
-        UserModel? user,
-      }) {
+    // تعريف المتحكمات (Controllers) مع إسناد القيم في حال التعديل
+    final nameController = TextEditingController(text: user?.fullName ?? "");
+    final emailController = TextEditingController(text: user?.email ?? "");
+    final passwordController = TextEditingController();
+    final specController = TextEditingController(text: user?.specialization ?? "");
 
-    final isEdit =
-        user != null;
-
-    final nameController =
-    TextEditingController(
-      text: user?.fullName ?? "",
-    );
-
-    final emailController =
-    TextEditingController(
-      text: user?.email ?? "",
-    );
-
-    final passwordController =
-    TextEditingController();
-
-    final specController =
-    TextEditingController(
-      text: user?.specialization ?? "",
-    );
-
-    final identifierController =
-    TextEditingController(
-
-      text:
-      user?.role == "Student"
+    // حقل المعرف (يأخذ قيمته بناءً على نوع المستخدم)
+    final identifierController = TextEditingController(
+      text: user?.role == "Student"
           ? user?.studentIdentifier
           : user?.supervisorIdentifier,
     );
 
+    // حقول خاصة بالطالبة (Required for Student Profile)
+    final phoneController = TextEditingController(text: user?.phoneNumber ?? "+9639");
+    final yearController = TextEditingController(text: user?.year ?? "4");
+    final avgController = TextEditingController(text: user?.annualAverage ?? "85.0");
+
+    // حقول خاصة بالمشرفة (Required for Supervisor Profile)
+    final certPlaceController = TextEditingController(text: user?.certificatePlace ?? "");
+    final certDateController = TextEditingController(text: user?.certificateDate ?? "2020-05-15");
+
     Get.bottomSheet(
-
       isScrollControlled: true,
-
       Container(
-
-        padding:
-        const EdgeInsets.all(20),
-
-        decoration:
-        const BoxDecoration(
-
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
           color: Colors.white,
-
-          borderRadius:
-          BorderRadius.vertical(
-            top: Radius.circular(28),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
-
         child: SingleChildScrollView(
-
           child: Padding(
-
             padding: EdgeInsets.only(
-              bottom:
-              MediaQuery.of(context)
-                  .viewInsets
-                  .bottom,
+              bottom: MediaQuery.of(context).viewInsets.bottom, // لرفع الواجهة عند ظهور الكيبورد
             ),
-
             child: Column(
-              mainAxisSize:
-              MainAxisSize.min,
-
+              mainAxisSize: MainAxisSize.min,
               children: [
-
-                TweenAnimationBuilder(
-
-                  tween: Tween(
-                    begin: 0.7,
-                    end: 1.0,
-                  ),
-
-                  duration: const Duration(
-                    milliseconds: 700,
-                  ),
-
-                  curve: Curves.elasticOut,
-
-                  builder:
-                      (context, value, child) {
-
-                    return Transform.scale(
-                      scale: value as double,
-                      child: child,
-                    );
-                  },
-
-                  child: Text(
-
-                    isEdit
-                        ? "Edit User"
-                        : "Add New User",
-
-                    style:
-                    const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF5A0891),
-                    ),
+                // العنوان
+                Text(
+                  isEdit ? "Edit data${user.role}" : "Add ${isStudentFilter ? 'student' : 'Supervisor'} New",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5A0891),
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
-                _field(
-                  "Full Name",
-                  nameController,
-                ),
-
-                _field(
-                  "Email",
-                  emailController,
-                ),
+                // الحقول المشتركة
+                _field("full name", nameController),
+                _field("e-mail", emailController),
 
                 if (!isEdit)
+                  _field("Password (at least 8 characters)", passwordController, obscure: true),
 
-                  _field(
-                    "Password",
-                    passwordController,
-                    obscure: true,
-                  ),
+                _field("Specialization", specController),
 
+                // حقل المعرف الديناميكي
                 _field(
-                  "Specialization",
-                  specController,
-                ),
-
-                _field(
-
-                  c.filter.value == "Students"
-                      ? "Student Identifier"
-                      : "Supervisor Identifier",
-
+                  isStudentFilter ? "University number (Identifier)" : "Job identification number",
                   identifierController,
                 ),
 
+                // عرض حقول الطالبة فقط إذا كان الفلتر "Students"
+                if (isStudentFilter) ...[
+                  _field("phone number", phoneController),
+                  _field("Academic year", yearController),
+                  _field("Annual rate", avgController),
+                ],
+
+                // عرض حقول المشرفة فقط إذا كان الفلتر "Supervisors"
+                if (!isStudentFilter) ...[
+                  _field("Place to obtain the certificate", certPlaceController),
+                  _field("Date of certification (YYYY-MM-DD)", certDateController),
+                ],
+
                 const SizedBox(height: 25),
 
+                // زر الحفظ
                 SizedBox(
-
                   width: double.infinity,
                   height: 50,
-
                   child: ElevatedButton(
-
-                    style:
-                    ElevatedButton.styleFrom(
-
-                      backgroundColor:
-                      const Color(0xFF5A0891),
-
-                      shape:
-                      RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(15),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5A0891),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-
                     onPressed: () {
-
-                      if (nameController.text.isEmpty ||
-                          emailController.text.isEmpty) {
-
-                        Get.snackbar(
-                          "Warning",
-                          "Please fill required fields",
-                        );
-
+                      // التحقق من الحقول الأساسية
+                      if (nameController.text.isEmpty || emailController.text.isEmpty) {
+                        Get.snackbar("alert", "Please fill in the required fields.");
                         return;
                       }
 
+                      // بناء كائن المستخدم الجديد مع التأكد من إرسال كافة الحقول لتجنب 422
                       UserModel updatedUser = UserModel(
-
                         id: user?.id,
+                        fullName: nameController.text,
+                        email: emailController.text,
+                        password: passwordController.text.isNotEmpty ? passwordController.text : null,
+                        specialization: specController.text,
+                        phoneNumber: phoneController.text, // مهم للطالبات
 
-                        fullName:
-                        nameController.text,
+                        // حقول الطالبة
+                        studentIdentifier: isStudentFilter ? identifierController.text : null,
+                        year: isStudentFilter ? yearController.text : null,
+                        annualAverage: isStudentFilter ? avgController.text : null,
+                        isResident: true, // قيمة افتراضية
 
-                        email:
-                        emailController.text,
+                        // حقول المشرفة
+                        supervisorIdentifier: !isStudentFilter ? identifierController.text : null,
+                        certificatePlace: !isStudentFilter ? certPlaceController.text : null,
+                        certificateDate: !isStudentFilter ? certDateController.text : null,
 
-                        password:
-                        passwordController.text.isNotEmpty
-                            ? passwordController.text
-                            : null,
-
-                        specialization:
-                        specController.text,
-
-                        studentIdentifier:
-                        c.filter.value == "Students"
-                            ? identifierController.text
-                            : null,
-
-                        supervisorIdentifier:
-                        c.filter.value == "Supervisors"
-                            ? identifierController.text
-                            : null,
-
-                        role:
-                        isEdit
+                        role: isEdit
                             ? user.role
-                            : (c.filter.value == "Students"
-                            ? "Student"
-                            : "Supervisor"),
+                            : (isStudentFilter ? "Student" : "Supervisor"),
                       );
 
-                      if (isEdit) {
-
-                        c.updateUser(updatedUser);
-
-                      } else {
-
-                        c.addUser(updatedUser);
-                      }
+                      // استدعاء دالة الحفظ الموحدة في الكنترولر
+                      c.saveUser(updatedUser, isEdit: isEdit);
                     },
-
                     child: Text(
-
-                      isEdit
-                          ? "Save Changes"
-                          : "Add User",
-
+                      isEdit ? "Save modifications" : "Add user",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -939,7 +840,6 @@ class UserManagementScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 10),
               ],
             ),

@@ -1,6 +1,8 @@
 import 'package:admin2/view/ScheduleEditorScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import '../controller/DashboardController.dart';
+import '../controller/UserManagement_controller.dart';
 import '../view/CreateProgram.dart';
 import '../view/HousingScreen.dart';
 import '../view/SplashPage.dart';
@@ -23,7 +25,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.dashboard,
       page: () => DashboardView(),
-      binding: DashboardBinding(),
+      binding: BindingsBuilder(() {
+        Get.put(DashboardController());
+        Get.put(UserManagementController());
+      }),
     ),
     GetPage(
       name: AppRoutes.schedule,
