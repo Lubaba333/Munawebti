@@ -2,19 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/services/service.dart';
+import 'package:studants/views/home_view.dart';
 
 import '../models/user_model.dart';
 
 class AuthController extends GetxController {
   final ApiService _apiService = ApiService();
-  
+
   var isLoading = false.obs;
   var isAgreed = false.obs;
-  
+
   void toggleAgreement() {
     isAgreed.value = !isAgreed.value;
   }
-  
+
+  /// ================= REGISTER =================
   Future<void> register(UserModel user) async {
     if (!isAgreed.value) {
       Get.snackbar(
@@ -24,37 +26,40 @@ class AuthController extends GetxController {
       );
       return;
     }
-    
+
     try {
       isLoading.value = true;
-      
+
       final response = await _apiService.post(
-        '/register',
+        '/auth/student/register', // ✅ عدلي إذا غير موجود بالباك
         user.toJson(),
         authRequired: false,
       );
-      
+
       print("✅ Register Success: $response");
-      
-      if (response.containsKey('token')) {
-        _apiService.setToken(response['token']);
+
+      /// 🔥 التوكن جوا data
+      final token = response['data']?['token'];
+
+      if (token != null) {
+        _apiService.setToken(token);
       }
-      
+
       Get.snackbar(
         "Success",
         "Account created successfully!",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
-      // Navigate to Login
+
       Get.offAllNamed('/login');
-      
+
     } catch (e) {
       print("❌ Register Error: $e");
+
       Get.snackbar(
         "Error",
-        e.toString(),
+        e.toString().replaceAll('Exception:', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -62,27 +67,35 @@ class AuthController extends GetxController {
       isLoading.value = false;
     }
   }
-  
-  /// 🔥 دالة Login الجديدة
-  Future<void> login({required String email, required String password}) async {
+
+  /// ================= LOGIN =================
+  Future<void> login({
+    required String email,
+    required String studantid,
+    required String password,
+  }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _apiService.post(
-        '/login',
+        '/auth/student/login', // ✅ endpoint الصحيح
         {
           'email': email,
           'password': password,
+          'student_identifier': studantid, // ✅ الاسم الصحيح
         },
         authRequired: false,
       );
-      
+
       print("✅ Login Success: $response");
-      
-      if (response.containsKey('token')) {
-        _apiService.setToken(response['token']);
+
+      /// 🔥 التوكن داخل data
+      final token = response['data']?['token'];
+
+      if (token != null) {
+        _apiService.setToken(token);
       }
-      
+
       Get.snackbar(
         "Success",
         "Welcome back!",
@@ -90,12 +103,13 @@ class AuthController extends GetxController {
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
       );
-      
-      // TODO: Navigate to Home Screen
-      // Get.offAllNamed('/home');
-      
+
+      /// 🔥 انتقال بعد تسجيل الدخول
+      Get.offAll(HomeView());
+
     } catch (e) {
       print("❌ Login Error: $e");
+
       Get.snackbar(
         "Login Failed",
         e.toString().replaceAll('Exception:', ''),

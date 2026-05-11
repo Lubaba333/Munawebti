@@ -15,7 +15,7 @@ class LoginView extends StatelessWidget {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  final studantIdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +98,11 @@ class LoginView extends StatelessWidget {
             hint: "Email",
             icon: Icons.email,
           ),
+                    CustomTextField(
+            controller: studantIdController,
+            hint: "Studant ID",
+            icon: Icons.numbers,
+          ),
           CustomTextField(
             controller: passwordController,
             hint: "Password",
@@ -135,6 +140,7 @@ const SizedBox(height: 20),
                   controller.login(
                     email: emailController.text,
                     password: passwordController.text,
+                     studantid: studantIdController.text,
                   );
                 },
               )),

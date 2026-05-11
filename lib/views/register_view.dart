@@ -108,12 +108,11 @@ final  studentIdController=TextEditingController();
               hint: " User Name",
               icon: Icons.badge,
             ),
-           /* CustomTextField(
-  controller: studentIdController,
-  hint: "University ID",
-  icon: Icons.badge,
-  keyboardType: TextInputType.number,
-),*/
+                       CustomTextField(
+            controller: studentIdController,
+            hint: "Studant ID",
+            icon: Icons.numbers,
+          ),
             CustomTextField(
               controller: emailController,
               hint: "Email",
