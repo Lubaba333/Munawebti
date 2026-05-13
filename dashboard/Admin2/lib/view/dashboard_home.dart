@@ -18,16 +18,17 @@ class DashboardSection extends StatelessWidget {
         children: [
 
           /// 🔥 TOP STATS
+          /// 🔥 TOP STATS
           const SizedBox(height: 10),
-          Row(
+
+          Wrap(
+            spacing: 15, // المسافة الأفقية
+            runSpacing: 15, // المسافة العمودية
             children: const [
-              Expanded(child: AnimatedStatCard(title: "Users", value: 120, icon: Icons.people)),
-              SizedBox(width: 15),
-              Expanded(child: AnimatedStatCard(title: "Requests", value: 45, icon: Icons.request_page)),
-              SizedBox(width: 15),
-              Expanded(child: AnimatedStatCard(title: "Violations", value: 8, icon: Icons.warning)),
-              SizedBox(width: 15),
-              Expanded(child: AnimatedStatCard(title: "Emergencies", value: 2, icon: Icons.emergency)),
+              SizedBox(width: 250, child: AnimatedStatCard(title: "Users", value: 120, icon: Icons.people)),
+              SizedBox(width: 250, child: AnimatedStatCard(title: "Requests", value: 45, icon: Icons.request_page)),
+              SizedBox(width: 250, child: AnimatedStatCard(title: "Violations", value: 8, icon: Icons.warning)),
+              SizedBox(width: 250, child: AnimatedStatCard(title: "Emergencies", value: 2, icon: Icons.emergency)),
             ],
           ),
 

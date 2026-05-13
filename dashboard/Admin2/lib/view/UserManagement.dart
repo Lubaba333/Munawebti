@@ -1,8 +1,11 @@
+import 'package:admin2/view/violation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/UserManagement_controller.dart';
 import '../model/user_model.dart';
+import 'RewardsScreen.dart';
+import 'WarningsScreen.dart';
 
 class UserManagementScreen extends StatelessWidget {
 
@@ -442,44 +445,35 @@ class UserManagementScreen extends StatelessWidget {
   /// =======================================================
   /// DETAILS
   /// =======================================================
-
   void _showDetails(BuildContext context, UserModel user) {
 
+    final RxInt selectedTab = 0.obs;
+
     Get.bottomSheet(
-
       isScrollControlled: true,
-
       Obx(() {
 
         final updatedUser =
-        c.users.firstWhereOrNull(
-                (e) => e.id == user.id);
+        c.users.firstWhereOrNull((e) => e.id == user.id);
 
         if (updatedUser == null) {
           return const SizedBox.shrink();
         }
 
-        final bool isBlocked =
-            updatedUser.isBlocked;
+        final bool isBlocked = updatedUser.isBlocked;
 
         return Container(
-
-          height: Get.height * 0.82,
-
+          height: Get.height * 0.88,
           decoration: const BoxDecoration(
-
             gradient: LinearGradient(
               colors: [
-
                 Color(0xFF8E2DE2),
                 Color(0xFFD59EFA),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-
-            borderRadius:
-            BorderRadius.vertical(
+            borderRadius: BorderRadius.vertical(
               top: Radius.circular(35),
             ),
           ),
@@ -489,113 +483,53 @@ class UserManagementScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              TweenAnimationBuilder(
-
-                tween: Tween(
-                  begin: 0.7,
-                  end: 1.0,
-                ),
-
-                duration: const Duration(
-                  milliseconds: 600,
-                ),
-
-                curve: Curves.easeOutBack,
-
-                builder:
-                    (context, value, child) {
-
-                  return Transform.scale(
-                    scale: value as double,
-                    child: child,
-                  );
-                },
-
-                child: Container(
-
-                  width: 70,
-                  height: 5,
-
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade500,
-
-                    borderRadius:
-                    BorderRadius.circular(20),
-                  ),
+              /// HANDLE
+              Container(
+                width: 70,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade500,
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
 
               const SizedBox(height: 20),
 
+              /// USER INFO
               Padding(
-
-                padding:
-                const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
 
-                    TweenAnimationBuilder(
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Stack(
+                        children: [
 
-                      tween: Tween(
-                        begin: 0.8,
-                        end: 1.0,
-                      ),
+                          Image.asset(
+                            user.role == "Supervisor"
+                                ? "assets/images/nurs.png"
+                                : "assets/images/student.png",
+                            width: 85,
+                            height: 85,
+                            fit: BoxFit.cover,
+                          ),
 
-                      duration:
-                      const Duration(
-                        milliseconds: 700,
-                      ),
-
-                      curve:
-                      Curves.elasticOut,
-
-                      builder:
-                          (context,
-                          value,
-                          child) {
-
-                        return Transform.scale(
-                          scale:
-                          value as double,
-
-                          child: child,
-                        );
-                      },
-
-                      child:ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Stack(
-                          children: [
-
-                            Image.asset(
-                              user.role == "Supervisor"
-                                  ? "assets/images/nurs.png"
-                                  : "assets/images/student.png",
+                          if (user.isBlocked)
+                            Container(
                               width: 85,
                               height: 85,
-                              fit: BoxFit.cover,
-                            ),
-
-                            /// 🔴 GREY OVERLAY WHEN BLOCKED
-                            if (user.isBlocked)
-                              Container(
-                                width: 85,
-                                height: 85,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.6),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.block,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.6),
+                                shape: BoxShape.circle,
                               ),
-                          ],
-                        ),
+                              child: const Icon(
+                                Icons.block,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
 
@@ -603,46 +537,23 @@ class UserManagementScreen extends StatelessWidget {
 
                     Expanded(
                       child: Column(
-
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
                           Text(
-
                             updatedUser.fullName,
-
-                            style:
-                            const TextStyle(
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
                             ),
                           ),
 
                           const SizedBox(height: 4),
 
-                          Text(
+                          Text(updatedUser.role),
+                          const SizedBox(height: 6),
 
-                            updatedUser.role,
-
-                            style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontSize: 15,
-                            ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Text(
-
-                            updatedUser.email ?? "",
-
-                            style: TextStyle(
-                              color: Colors.grey.shade800,
-                            ),
-                          ),
+                          Text(updatedUser.email ?? ""),
                         ],
                       ),
                     ),
@@ -650,46 +561,76 @@ class UserManagementScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 35),
+              const SizedBox(height: 20),
 
-              Padding(
+              /// ================= TABS =================
+              Obx(() => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
 
-                padding:
-                const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                  _tabButton("Info", 0, selectedTab),
+                  _tabButton("Rewards", 1, selectedTab),
+                  _tabButton("Violations", 2, selectedTab),
+                  _tabButton("Warnings", 3, selectedTab), // 🔥 NEW
 
-                child: Column(
-                  children: [
+                ],
+              )),
 
-                    _actionButton(
-                      title: isBlocked ? "Unblock" : "Block",
-                      icon: isBlocked ? Icons.lock_open : Icons.lock,
-                      color: isBlocked ? Colors.green : Colors.orange,
-                      onTap: () async {
-                        await c.toggleBlock(updatedUser);
-                      },
-                    ),
+              const SizedBox(height: 10),
 
-                    const SizedBox(height: 15),
+              /// ================= CONTENT =================
+              Expanded(
+                child: Obx(() {
 
-                    _actionButton(
+                  /// INFO
+                  if (selectedTab.value == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
 
-                      title: "Delete User",
+                          _actionButton(
+                            title: isBlocked ? "Unblock" : "Block",
+                            icon: isBlocked
+                                ? Icons.lock_open
+                                : Icons.lock,
+                            color: isBlocked
+                                ? Colors.green
+                                : Colors.orange,
+                            onTap: () async {
+                              await c.toggleBlock(updatedUser);
+                            },
+                          ),
 
-                      icon: Icons.delete,
+                          const SizedBox(height: 15),
 
-                      color: Colors.red,
+                          _actionButton(
+                            title: "Delete User",
+                            icon: Icons.delete,
+                            color: Colors.red,
+                            onTap: () {
+                              Get.back();
+                              c.deleteUser(updatedUser.id!);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }
 
-                      onTap: () {
+                  /// REWARDS
+                  if (selectedTab.value == 1) {
+                    return RewardsScreen(user: updatedUser);
+                  }
 
-                        Get.back();
+                  /// VIOLATIONS
+                  if (selectedTab.value == 2) {
+                    return ViolationsScreen(user: updatedUser);
+                  }
 
-                        c.deleteUser(updatedUser.id!);
-                      },
-                    ),
-                  ],
-                ),
+                  /// 🔥 WARNINGS (NEW)
+                  return WarningsScreen(user: updatedUser);
+                }),
               ),
             ],
           ),
@@ -697,7 +638,30 @@ class UserManagementScreen extends StatelessWidget {
       }),
     );
   }
-
+  Widget _tabButton(String title, int index, RxInt selectedTab) {
+    return GestureDetector(
+      onTap: () => selectedTab.value = index,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: selectedTab.value == index
+              ? Colors.white
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: selectedTab.value == index
+                ? Colors.black
+                : Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
   /// =======================================================
   /// USER FORM
   /// =======================================================

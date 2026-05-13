@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controller/SubjectController.dart';
 import '../model/SubjectModel.dart';
 import '../widgets/AppColors.dart';
+import 'LectureListScreen.dart';
 
 class SubjectListScreen extends StatelessWidget {
   final controller = Get.put(SubjectController());
@@ -33,10 +34,18 @@ class SubjectListScreen extends StatelessWidget {
           itemCount: controller.subjects.length,
           itemBuilder: (context, index) {
             final subject = controller.subjects[index];
+            // ... داخل ListView.builder
             return Card(
               margin: const EdgeInsets.only(bottom: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
               child: ListTile(
+                onTap: () {
+                  Get.to(
+                        () => SubjectDetailsScreen(),
+                    arguments: subject, // تمرير كائن المادة كاملاً للشاشة التالية
+                    transition: Transition.cupertino, // حركة انتقال ناعمة
+                  );
+                },
                 leading: CircleAvatar(
                   backgroundColor: AppColors.primary.withOpacity(0.1),
                   child: const Icon(Icons.book, color: AppColors.primary),

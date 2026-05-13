@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../routes/app_routes.dart';
 import '../services/api_service.dart';
-import '../view/HousingScreen.dart';
+import '../view/DormitoryUnitsScreen.dart';
 import '../view/ManageSchedulesScreen.dart';
 import '../view/Request.dart';
 import '../view/SectionScreen.dart';
@@ -18,7 +18,7 @@ import 'UserManagement_controller.dart';
 
 class DashboardController extends GetxController {
   var selectedIndex = 0.obs;
-  var isDarkMode = false.obs;
+  var islightMode = false.obs;
   var isSidebarExpanded = true.obs;
 
   @override
@@ -29,9 +29,9 @@ class DashboardController extends GetxController {
   }
 
   void toggleTheme() {
-    isDarkMode.value = !isDarkMode.value;
+    islightMode.value = !islightMode.value;
     Get.changeThemeMode(
-      isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
+      islightMode.value ? ThemeMode.light: ThemeMode.dark,
     );
   }
 
@@ -46,7 +46,7 @@ class DashboardController extends GetxController {
     UserManagementScreen(),
     ManageSchedulesScreen(),
     RequestScreen(),
-    BuildingsScreen(),
+    DormitoryUnitView(),
     SectionScreen(),
     SubjectListScreen(),
   ];

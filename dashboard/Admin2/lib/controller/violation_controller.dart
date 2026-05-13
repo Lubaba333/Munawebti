@@ -1,71 +1,189 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum ViolationSeverity { low, medium, high, critical }
+import '../model/ViolationModel.dart';
+import '../model/user_model.dart';
+import '../services/api_service.dart';
 
-class Violation {
-  final String user;
-  final String title;
-  final String desc;
-  final ViolationSeverity severity;
-  final int points;
+class ViolationsController extends GetxController {
+  final UserModel user;
+  final ApiService apiService = ApiService();
 
-  Violation({
-    required this.user,
-    required this.title,
-    required this.desc,
-    required this.severity,
-    required this.points,
-  });
-}
+  ViolationsController({required this.user});
 
-class ViolationController extends GetxController {
+  RxBool isLoading = false.obs;
+  RxList<ViolationModel> violations = <ViolationModel>[].obs;
 
-  var violations = <Violation>[].obs;
+  RxString targetType = "student".obs;
 
-  var filter = "All".obs;
+  /// Controllers
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController penaltyController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+
+  int get targetId => user.id!;
 
   @override
   void onInit() {
     super.onInit();
-    load();
+    getViolations();
   }
 
-  void load() {
-    violations.value = [
-      Violation(
-        user: "Sara",
-        title: "Late Attendance",
-        desc: "Arrived 20 min late",
-        severity: ViolationSeverity.low,
-        points: 1,
-      ),
-      Violation(
-        user: "Mona",
-        title: "Missed Report",
-        desc: "Did not submit report",
-        severity: ViolationSeverity.medium,
-        points: 3,
-      ),
-      Violation(
-        user: "Lina",
-        title: "Serious Violation",
-        desc: "Repeated issue",
-        severity: ViolationSeverity.critical,
-        points: 10,
-      ),
-    ];
+  /// ================= GET =================
+  Future<void> getViolations() async {
+    try {
+      isLoading.value = true;
+
+      print("📥 GET VIOLATIONS FOR USER: ${user.id}");
+
+      final response = await apiService.get('/admin/violations');
+
+      print("📥 RESPONSE: $response");
+
+      final data = response['data']['data'] as List;
+
+      violations.value =
+          data.map((e) => ViolationModel.fromJson(e)).toList();
+
+      print("✅ VIOLATIONS COUNT: ${violations.length}");
+    } catch (e) {
+      print("❌ GET VIOLATIONS ERROR: $e");
+
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  List<Violation> get filtered {
-    if (filter.value == "All") return violations;
+  /// ================= CREATE =================
+  Future<void> createViolation() async {
+    try {
+      isLoading.value = true;
 
-    return violations.where((v) {
-      return v.severity.name == filter.value;
-    }).toList();
+      final body = {
+        "target_type": targetType.value,
+        "target_id": targetId,
+        "title": titleController.text,
+        "description": descriptionController.text,
+        "violation_date": dateController.text,
+        "category": categoryController.text,
+        "penalty": penaltyController.text,
+      };
+
+      print("📤 CREATE VIOLATION BODY: $body");
+
+      await apiService.post('/admin/violations', body);
+
+      Get.snackbar(
+        "Success",
+        "Violation created",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      clearFields();
+      getViolations();
+    } catch (e) {
+      print("❌ CREATE VIOLATION ERROR: $e");
+
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future<void> updateViolation(int id) async {
+    try {
+      isLoading.value = true;
+
+      final body = {
+        "target_type": targetType.value,
+        "title": titleController.text,
+        "description": descriptionController.text,
+        "violation_date": dateController.text,
+        "category": categoryController.text,
+        "penalty": penaltyController.text,
+      };
+
+      print("📤 UPDATE VIOLATION ID: $id");
+      print("📤 BODY: $body");
+
+      await apiService.post(
+        '/admin/violations/$id',
+        {
+          ...body,
+          "_method": "PUT",
+        },
+      );
+
+      Get.snackbar(
+        "Success",
+        "Violation updated successfully",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      clearFields();
+      getViolations();
+
+    } catch (e) {
+      print("❌ UPDATE VIOLATION ERROR: $e");
+
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  /// ================= DELETE =================
+  Future<void> deleteViolation(int id) async {
+    try {
+      isLoading.value = true;
+
+      await apiService.delete('/admin/violations/$id');
+
+      violations.removeWhere((e) => e.id == id);
+
+      Get.snackbar(
+        "Deleted",
+        "Violation removed",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      print("❌ DELETE ERROR: $e");
+
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  int get total => violations.length;
-
-  int get critical =>
-      violations.where((e) => e.severity == ViolationSeverity.critical).length;
+  void clearFields() {
+    titleController.clear();
+    descriptionController.clear();
+    penaltyController.clear();
+    dateController.clear();
+    categoryController.clear();
+  }
 }
