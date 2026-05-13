@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../controller/DashboardController.dart';
 import '../controller/UserManagement_controller.dart';
 import '../view/CreateProgram.dart';
-import '../view/HousingScreen.dart';
+import '../view/RoomStudentsView.dart';
 import '../view/SplashPage.dart';
 import '../view/LoginPage.dart';
 
@@ -39,25 +39,11 @@ class AppPages {
       page: () => CreateScheduleView(),
     ),
 
-  GetPage(
-  name: '/buildings',
-  page: () => BuildingsScreen(),
-  ),
 
     GetPage(
-      name: '/rooms',
-      page: () => RoomsScreen(building: Get.arguments),
-      customTransition: DepthEnterTransition(),
-      transitionDuration: const Duration(milliseconds: 450),
+      name: '/room-details',
+      page: () => RoomDetailsView(),
     ),
-
-  GetPage(
-  name: '/roomDetails',
-  page: () => RoomDetailsScreen(room: Get.arguments),
-  transition: Transition.noTransition,
-    customTransition: DepthEnterTransition(),
-  transitionDuration: const Duration(milliseconds: 600),
-  ),
 
   ];
 

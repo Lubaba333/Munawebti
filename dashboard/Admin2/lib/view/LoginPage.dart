@@ -249,18 +249,6 @@ class _AdminLoginViewState extends State<AdminLoginView>
                         );
                       }),
 
-                      const SizedBox(height: 16),
-
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

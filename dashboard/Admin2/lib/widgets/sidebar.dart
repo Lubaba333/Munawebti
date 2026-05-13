@@ -53,17 +53,20 @@ class SlideSidebar extends StatelessWidget {
               children: [
 
                 CircleAvatar(
-                  radius: 20,
+                  radius: 18,
                   backgroundImage: AssetImage('assets/images/logoo.jpg'),
                   backgroundColor: Colors.transparent,
                 ),
-                const SizedBox(width: 10),
-                const Text(
-                  "Nursing Admin",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(width: 8),
+                const Flexible( // 🔥 أضفنا Flexible هنا لمنع الـ Overflow
+                  child: Text(
+                    "Nursing Admin",
+                    overflow: TextOverflow.ellipsis, // يضيف نقاط (...) إذا طال النص
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18, // تصغير الخط قليلاً
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

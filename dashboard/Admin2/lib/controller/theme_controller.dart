@@ -14,19 +14,19 @@ class ThemeController extends GetxController {
     // اقرأ الحالة المحفوظة
     isDarkMode.value = storage.read('isDarkMode') ?? false;
 
-    // طبّق الثيم مباشرة عند فتح التطبيق
-    Get.changeThemeMode(
-      isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
-    );
+    // ⬇️ أهم تعديل: تأخير التطبيق بعد بناء الواجهة
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.changeThemeMode(
+        isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
+      );
+    });
   }
 
   void toggleTheme() {
     isDarkMode.value = !isDarkMode.value;
 
-    // احفظ الحالة
     storage.write('isDarkMode', isDarkMode.value);
 
-    // طبّق الثيم فوراً
     Get.changeThemeMode(
       isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
     );

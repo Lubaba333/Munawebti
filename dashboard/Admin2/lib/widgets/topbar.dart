@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/AppColors.dart';
-import '../../routes/app_routes.dart';
 import '../controller/DashboardController.dart';
 import '../controller/theme_controller.dart';
 
@@ -26,8 +25,11 @@ class Topbar extends StatelessWidget {
           )
         ],
       ),
+
+      /// ✅ مهم: منع overflow
       child: Row(
         children: [
+
           /// ☰ Menu
           IconButton(
             icon: Icon(
@@ -38,42 +40,51 @@ class Topbar extends StatelessWidget {
             onPressed: controller.toggleSidebar,
           ),
 
-          /// 🟣 Title
+          const SizedBox(width: 10),
+
+          /// 🟣 Title (FIXED Obx)
           Obx(() {
-            return Text(
-              controller.titles[controller.selectedIndex.value],
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.bodyMedium!.color,
+            final index = controller.selectedIndex.value;
+
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 200),
+              child: Text(
+                controller.titles[index],
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
+                ),
               ),
             );
           }),
 
-          const SizedBox(width: 30),
+          const SizedBox(width: 20),
 
-          /// 🔍 Search
+          /// 🔍 Search (FIXED overflow handling)
           Expanded(
+            flex: 3,
             child: _FancySearchField(),
           ),
 
           const SizedBox(width: 20),
 
-          /// 🌙 Theme toggle
+          /// 🌙 Theme toggle (FIXED callback)
           Obx(() {
-            return _hoverIcon(
+            return _iconButton(
               context: context,
-              icon: controller.isDarkMode.value
+              icon: controller.islightMode.value
                   ? Icons.dark_mode
                   : Icons.light_mode,
-              onTap:Get.find<ThemeController>().toggleTheme,
+              onTap: () => Get.find<ThemeController>().toggleTheme(),
             );
           }),
 
           const SizedBox(width: 10),
 
           /// 🔔 Notifications
-          _hoverIcon(
+          _iconButton(
             context: context,
             icon: Icons.notifications_none,
             badge: "3",
@@ -82,7 +93,7 @@ class Topbar extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          /// 👤 Profile
+          /// 👤 Profile (unchanged but safe)
           PopupMenuButton<String>(
             offset: const Offset(0, 50),
             shape: RoundedRectangleBorder(
@@ -100,16 +111,17 @@ class Topbar extends StatelessWidget {
                   backgroundColor: AppColors.primary,
                   child: Icon(Icons.person, color: Colors.white),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
+
+                /// 🔥 Prevent overflow here too
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Admin",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                     ),
                     Text(
@@ -121,6 +133,7 @@ class Topbar extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 Icon(
                   Icons.arrow_drop_down,
                   color: Theme.of(context).iconTheme.color,
@@ -137,70 +150,58 @@ class Topbar extends StatelessWidget {
     );
   }
 
-  /// 🔥 Hover Icon (Theme-aware)
-  Widget _hoverIcon({
+  /// =========================
+  /// ICON BUTTON FIXED
+  /// =========================
+  Widget _iconButton({
     required BuildContext context,
     required IconData icon,
     String? badge,
     required VoidCallback onTap,
   }) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bool isHover = false;
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              icon,
+              size: 26,
+              color: Theme.of(context).iconTheme.color,
+            ),
+          ),
 
-        return MouseRegion(
-          onEnter: (_) => setState(() => isHover = true),
-          onExit: (_) => setState(() => isHover = false),
-          child: Stack(
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: isHover
-                      ? AppColors.primary.withOpacity(0.1)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10),
+          if (badge != null)
+            Positioned(
+              right: 2,
+              top: 2,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
                 ),
-                child: IconButton(
-                  onPressed: onTap,
-                  icon: Icon(
-                    icon,
-                    size: 26,
-                    color: isHover
-                        ? AppColors.primary
-                        : Theme.of(context).iconTheme.color,
+                child: Text(
+                  badge,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
                   ),
                 ),
               ),
-              if (badge != null)
-                Positioned(
-                  right: 6,
-                  top: 6,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      badge,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                )
-            ],
-          ),
-        );
-      },
+            )
+        ],
+      ),
     );
   }
-
 }
-
 class _FancySearchField extends StatefulWidget {
+  const _FancySearchField({super.key});
+
   @override
   State<_FancySearchField> createState() => _FancySearchFieldState();
 }
@@ -221,11 +222,7 @@ class _FancySearchFieldState extends State<_FancySearchField> {
           duration: const Duration(milliseconds: 200),
           height: 45,
           decoration: BoxDecoration(
-            color: isFocused
-                ? Theme.of(context).cardColor
-                : (isHover
-                ? Theme.of(context).cardColor.withOpacity(0.8)
-                : Theme.of(context).cardColor.withOpacity(0.6)),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isFocused
@@ -233,18 +230,6 @@ class _FancySearchFieldState extends State<_FancySearchField> {
                   : Colors.grey.shade300,
               width: 2,
             ),
-            boxShadow: isFocused
-                ? [
-              BoxShadow(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withOpacity(0.15),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ]
-                : [],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(

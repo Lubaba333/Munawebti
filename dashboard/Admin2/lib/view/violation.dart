@@ -1,129 +1,219 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controller/violation_controller.dart';
+import '../model/user_model.dart';
 
-class ViolationScreen extends StatelessWidget {
-  ViolationScreen({super.key});
+class ViolationsScreen extends StatelessWidget {
+  final UserModel user;
 
-  final c = Get.put(ViolationController());
+  ViolationsScreen({super.key, required this.user});
+
+  late final ViolationsController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F5FB),
+    controller = Get.put(ViolationsController(user: user));
 
-      appBar: AppBar(
-        title: const Text("Violation Dashboard"),
-        backgroundColor: const Color(0xFF5A0891),
-        actions: const [
-          Icon(Icons.notifications),
-          SizedBox(width: 10),
-        ],
-      ),
-
-      body: Column(
+    return SafeArea(
+      child: Column(
         children: [
 
-          const SizedBox(height: 10),
-
-          // 📊 STATS
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              children: [
-                Obx(() => _stat("Total", c.total.toString(), Colors.purple)),
-                Obx(() => _stat("Critical", c.critical.toString(), Colors.red)),
-                _stat("Avg", "78%", Colors.green),
-                _stat("Top", "Sara", Colors.blue),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-
-
-          // 📄 LIST
+          /// ================= LIST =================
           Expanded(
             child: Obx(() {
-              final list = c.filtered;
+              if (controller.isLoading.value &&
+                  controller.violations.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.violations.isEmpty) {
+                return const Center(child: Text("No Violations Found"));
+              }
 
               return ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) {
-                  final v = list[i];
-                  return _violationCard(v);
+                padding: const EdgeInsets.only(bottom: 80),
+                itemCount: controller.violations.length,
+                itemBuilder: (context, index) {
+                  final v = controller.violations[index];
+
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.06),
+                          blurRadius: 6,
+                        )
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+
+                        /// ================= INFO =================
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              Text(
+                                v.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              Text(v.description),
+                              const SizedBox(height: 6),
+
+                              Text("Penalty: ${v.penalty}"),
+                              Text("Date: ${v.violationDate}"),
+                              Text("Category: ${v.category}"),
+                              Text("Target: ${v.targetType}"),
+                            ],
+                          ),
+                        ),
+
+                        /// ================= ACTIONS =================
+                        Row(
+                          children: [
+
+                            /// ✏️ EDIT BUTTON
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () {
+                                _showUpdateDialog(v);
+                              },
+                            ),
+
+                            /// 🗑 DELETE
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                controller.deleteViolation(v.id);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
                 },
               );
             }),
           ),
-        ],
-      ),
 
-      // ➕ ADD BUTTON
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF5A0891),
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  // 📊 STAT CARD
-  Widget _stat(String t, String v, Color color) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.all(4),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          children: [
-            Text(
-              v,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
+          /// ================= ADD BUTTON =================
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton.icon(
+                onPressed: () => _showCreateDialog(),
+                icon: const Icon(Icons.add),
+                label: const Text("Add Violation"),
               ),
             ),
-            Text(t),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // 📄 VIOLATION CARD
-  Widget _violationCard(v) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      padding: const EdgeInsets.all(12),
+  // ================= CREATE =================
+  void _showCreateDialog() {
+    _showFormDialog(isUpdate: false);
+  }
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
+  // ================= UPDATE =================
+  void _showUpdateDialog(v) {
+    controller.titleController.text = v.title;
+    controller.descriptionController.text = v.description;
+    controller.penaltyController.text = v.penalty.toString();
+    controller.dateController.text = v.violationDate;
+    controller.categoryController.text = v.category;
+    controller.targetType.value = v.targetType;
 
-      child: ListTile(
-        leading: CircleAvatar(
-          child: Text(v.user[0]),
-        ),
+    _showFormDialog(isUpdate: true, id: v.id);
+  }
 
-        title: Text(v.user),
-        subtitle: Text(v.title),
+  // ================= FORM DIALOG =================
+  void _showFormDialog({required bool isUpdate, int? id}) {
+    Get.defaultDialog(
+      title: isUpdate ? "Update Violation" : "Create Violation",
+      content: SizedBox(
+        width: Get.width * 0.85,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
 
-        trailing: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.purple,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            v.points.toString(),
-            style: const TextStyle(color: Colors.white),
+              TextField(
+                controller: controller.titleController,
+                decoration: const InputDecoration(hintText: "Title"),
+              ),
+
+              TextField(
+                controller: controller.descriptionController,
+                decoration: const InputDecoration(hintText: "Description"),
+              ),
+
+              TextField(
+                controller: controller.penaltyController,
+                decoration: const InputDecoration(hintText: "Penalty"),
+              ),
+
+              TextField(
+                controller: controller.dateController,
+                decoration: const InputDecoration(hintText: "YYYY-MM-DD"),
+              ),
+
+              TextField(
+                controller: controller.categoryController,
+                decoration: const InputDecoration(hintText: "Category"),
+              ),
+
+              const SizedBox(height: 10),
+
+              Obx(() => DropdownButton<String>(
+                value: controller.targetType.value,
+                isExpanded: true,
+                items: const [
+                  DropdownMenuItem(value: "student", child: Text("Student")),
+                  DropdownMenuItem(value: "supervisor", child: Text("Supervisor")),
+                ],
+                onChanged: (value) {
+                  controller.targetType.value = value!;
+                },
+              )),
+
+              const SizedBox(height: 15),
+
+              ElevatedButton(
+                onPressed: () {
+                  if (isUpdate) {
+                    controller.updateViolation(id!);
+                  } else {
+                    controller.createViolation();
+                  }
+                  Get.back();
+                },
+                child: Text(isUpdate ? "Update" : "Create"),
+              ),
+            ],
           ),
         ),
       ),
