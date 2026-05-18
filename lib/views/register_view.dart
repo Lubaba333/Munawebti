@@ -1,9 +1,11 @@
+// lib/views/register_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/views/login.dart';
+import 'package:studants/views/otp.dart';
+import 'package:studants/views/otp_verification_view.dart';
 
 import '../controllers/auth_controller.dart';
-import '../models/user_model.dart';
 import '../utlis/app_colors.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/gradient_button.dart';
@@ -13,11 +15,14 @@ class RegisterView extends StatelessWidget {
 
   final AuthController controller = Get.put(AuthController());
 
-
   final nameController = TextEditingController();
-final  studentIdController=TextEditingController();
+  final studentIdController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final phoneController = TextEditingController();
+  final yearController = TextEditingController();
+  final specializationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +33,7 @@ final  studentIdController=TextEditingController();
         ),
         child: Stack(
           children: [
-            /// 🌸 الخلفية
             _background(),
-
-            /// 📄 المحتوى
             SafeArea(
               child: Column(
                 children: [
@@ -46,7 +48,6 @@ final  studentIdController=TextEditingController();
     );
   }
 
-  /// 🎨 الخلفية
   Widget _background() {
     return Stack(
       children: [
@@ -73,7 +74,6 @@ final  studentIdController=TextEditingController();
     );
   }
 
-  /// 🏷️ Header
   Widget _header() {
     return Padding(
       padding: const EdgeInsets.all(30),
@@ -91,7 +91,6 @@ final  studentIdController=TextEditingController();
     );
   }
 
-  /// 🪟 الفورم
   Widget _form() {
     return Container(
       padding: const EdgeInsets.all(25),
@@ -102,62 +101,106 @@ final  studentIdController=TextEditingController();
       child: SingleChildScrollView(
         child: Column(
           children: [
-  
             CustomTextField(
               controller: nameController,
-              hint: " User Name",
+              hint: "User Name",
               icon: Icons.badge,
             ),
-                       CustomTextField(
-            controller: studentIdController,
-            hint: "Studant ID",
-            icon: Icons.numbers,
-          ),
+            CustomTextField(
+              controller: studentIdController,
+              hint: "Student ID",
+              icon: Icons.numbers,
+            ),
             CustomTextField(
               controller: emailController,
               hint: "Email",
               icon: Icons.email,
             ),
-
-            /// 🔒 Password
-             CustomTextField(
-                  controller: passwordController,
-                  hint: "Password",
-                  icon: Icons.lock,
-                  isPassword: true,
-                ),
-
-
+            CustomTextField(
+              controller: passwordController,
+              hint: "Password",
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            CustomTextField(
+              controller: confirmPasswordController,
+              hint: "Confirm Password",
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            CustomTextField(
+              controller: phoneController,
+              hint: "Phone Number",
+              icon: Icons.phone,
+            ),
+            CustomTextField(
+              controller: yearController,
+              hint: "Year",
+              icon: Icons.school,
+            ),
+            CustomTextField(
+              controller: specializationController,
+              hint: "Specialization",
+              icon: Icons.computer,
+            ),
             const SizedBox(height: 20),
 
-            /// 🚀 Register Button
             Obx(() => GradientButton(
-                  text: controller.isLoading.value
-                      ? "Loading..."
-                      : "Register",
-                  onTap: () {
-                    final user = UserModel(
-            
-                      name: nameController.text,
-                     // studentId: studentIdController.text,
-                      email: emailController.text,
-                      password: passwordController.text,
-                    );
-
-                    controller.register(user);
-                  },
-                )),
+              text: controller.isLoading.value ? "Loading..." : "Register",
+              onTap: () async {
+                if (nameController.text.isEmpty ||
+                    studentIdController.text.isEmpty ||
+                    emailController.text.isEmpty ||
+                    passwordController.text.isEmpty ||
+                    phoneController.text.isEmpty ||
+                    specializationController.text.isEmpty) {
+                  Get.snackbar(
+                    "Error",
+                    "Please fill all fields",
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                  return;
+                }
+                
+                if (passwordController.text != confirmPasswordController.text) {
+                  Get.snackbar(
+                    "Error",
+                    "Passwords do not match",
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                  return;
+                }
+                
+                final success = await controller.sendRegistrationOTP(
+                  email: emailController.text,
+                );
+                
+                if (success) {
+                  Get.to(() => OtpVerificationView(), arguments: {
+                    'email': emailController.text,
+                    'name': nameController.text,
+                    'studentId': studentIdController.text,
+                    'password': passwordController.text,
+                    'confirmPassword': confirmPasswordController.text,
+                    'phone': phoneController.text,
+                    'year': yearController.text,
+                    'specialization': specializationController.text,
+                  });
+                }
+              },
+            )),
 
             const SizedBox(height: 20),
 
-            /// 🔁 Go to Login
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Already have account? "),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => LoginView()); // 🔥 بدون Routes
+                    Get.to(() => LoginView());
                   },
                   child: const Text(
                     "Login",

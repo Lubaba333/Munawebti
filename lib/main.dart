@@ -4,11 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/controllers/profile_controller.dart';
 
 import 'package:studants/firebase_options.dart';
 import 'package:studants/services/local_notification_service.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/views/home_view.dart';
+import 'package:studants/views/login.dart';
 import 'package:studants/views/register_view.dart';
 import 'package:studants/views/welcome_view.dart';
 
@@ -23,7 +25,7 @@ void main()async {
 
     // 🔥 init local notifications
   await LocalNotificationService.init();
-
+Get.put(ProfileController());
   // 🔥 init FCM
   await initFCM();
   runApp(const MyApp());
@@ -84,6 +86,6 @@ class MyApp extends StatelessWidget {
 
   themeMode: ThemeMode.system, // أو Get.isDarkMode.obs
   // ...
-   home:WelcomeView(),);
+   home:LoginView(),);
   }
 }

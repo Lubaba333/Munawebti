@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/controllers/reset_password_controller.dart'; // ✅ استورد الـ Controller
 import 'package:studants/views/new_password_view.dart';
-
-import '../controllers/reset_password_controller.dart';
 import '../utlis/app_colors.dart';
 import '../widgets/gradient_button.dart';
 
@@ -14,10 +13,11 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-  final ResetPasswordController controller = Get.put(ResetPasswordController());
+  // ✅ استخدام Get.find لأن الـ Controller تم تسجيله مسبقاً في ResetPasswordView
+  final ResetPasswordController controller = Get.find<ResetPasswordController>();
 
-  final List<TextEditingController> _otpControllers = List.generate(5, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(5, (_) => FocusNode());
+  final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void dispose() {
@@ -31,7 +31,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   }
 
   void _onOtpChanged(int index, String value) {
-    if (value.length == 1 && index < 4) {
+    if (value.length == 1 && index < 5) {
       FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
     } else if (value.isEmpty && index > 0) {
       FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
@@ -56,7 +56,6 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  /// 🏷️ Title
                   const Text(
                     "Verification Code",
                     style: TextStyle(
@@ -66,10 +65,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  /// 📧 Subtitle
                   Text(
-                    "We sent a 5-digit code to your email",
+                    "We sent a 6-digit code to your email",
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withOpacity(0.8),
@@ -85,12 +82,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                   ),
                   const SizedBox(height: 35),
-
-                  /// 💎 Glass Card (شفاف)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1), // 🔥 شفافية عالية
+                      color: Colors.white.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: Colors.white.withOpacity(0.2),
@@ -98,48 +93,34 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                     child: Column(
                       children: [
-                        /// 🔢 5 OTP Boxes (مصغرة)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: List.generate(5, (index) {
+                          children: List.generate(6, (index) {
                             return _buildOtpBox(index);
                           }),
                         ),
-
                         const SizedBox(height: 35),
-
-                        /// 🚀 Verify Button
                         Obx(() => GradientButton(
-                              text: controller.isLoading.value
-                                  ? "VERIFYING..."
-                                  : "Verify Code",
-onTap: () {
-  String fullOtp = _getFullOtp();
-
-  if (fullOtp.length == 5) {
-    // 🔥 بدل ما تعملي reset هون → روحي لصفحة تغيير كلمة المرور
-    Get.to(() => NewPasswordView(
-          otp: fullOtp,
-          email: controller.email.value,
-        ));
-  } else {
-    Get.snackbar(
-      "Error",
-      "Please enter the 5-digit code",
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-  }
-},
-                              isLoading: controller.isLoading.value,
-                            )),
-
+                          text: controller.isLoading.value ? "VERIFYING..." : "Verify Code",
+                          onTap: () {
+                            String fullOtp = _getFullOtp();
+                            
+                            if (fullOtp.length == 6) {
+                              controller.verifyOtp(fullOtp);
+                            } else {
+                              Get.snackbar(
+                                "Error",
+                                "Please enter the 6-digit code",
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                            }
+                          },
+                        )),
                         const SizedBox(height: 20),
-
-                        /// 🔁 Resend Code
                         TextButton(
                           onPressed: () {
-                            controller.sendResetLink(controller.email.value);
+                            controller.sendResetOTP(controller.email.value);
                           },
                           child: const Text(
                             "Didn't receive code? Resend",
@@ -164,10 +145,10 @@ onTap: () {
 
   Widget _buildOtpBox(int index) {
     return Container(
-      width: 48,  // 🔥 أصغر من قبل
-      height: 55, // 🔥 أصغر من قبل
+      width: 48,
+      height: 55,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.85), // 🔥 شفافية خفيفة
+        color: Colors.white.withOpacity(0.85),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(

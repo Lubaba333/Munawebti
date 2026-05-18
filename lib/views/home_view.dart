@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/views/SettingsDrawerview.dart';
 import 'package:studants/views/SwapOrMoveView.dart';
-import 'package:studants/views/swap_view.dart';
+import 'package:studants/views/lectures_view.dart';
+import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/widgets/widgets_home/main_card.dart';
 import 'package:studants/widgets/widgets_home/service_item.dart';
 import 'package:studants/widgets/widgets_home/top_bar.dart';
 import '../controllers/home_controller.dart';
 import '../../../utlis/app_colors.dart';
 import '../widgets/widgets_home/bottom_nav.dart';
-
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -21,10 +21,13 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
-
   final HomeController controller = Get.put(HomeController());
   final profileController = Get.put(ProfileController());
+
   late AnimationController animController;
+  
+  /// 🎯 الفهرس الحالي للـ BottomNav (1 = الرئيسية في الوسط)
+  int _currentIndex = 1;
 
   @override
   void initState() {
@@ -42,13 +45,32 @@ class _HomeViewState extends State<HomeView>
     super.dispose();
   }
 
+ void _onNavItemTapped(int index) {
+  if (index == _currentIndex) return;
+
+  setState(() => _currentIndex = index);
+
+  switch (index) {
+    case 0:
+      // TODO: صفحة المحاضراتServiceItem(
+ Get.to(() =>  LecturesView());
+      break;
+
+    case 1:
+      // نفس الصفحة (Home)
+      break;
+
+    case 2:
+     Get.to(() =>  MyRequestsView());
+      break;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: SettingsDrawer(),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(18),
@@ -61,13 +83,24 @@ class _HomeViewState extends State<HomeView>
 
               const SizedBox(height: 20),
 
-              /// 👋 WELCOME
-              const Text(
+              /// 👋 HEADER
+              Text(
                 "مرحباً 👋",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
               ),
 
-Obx(() => Text(controller.studentName.value)),
+              const SizedBox(height: 5),
+
+              Obx(() => Text(
+                    controller.studentName.value,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
 
               const SizedBox(height: 25),
 
@@ -87,40 +120,60 @@ Obx(() => Text(controller.studentName.value)),
 
               const SizedBox(height: 15),
 
-GridView.count(
-  crossAxisCount: 2,
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  crossAxisSpacing: 15,
-  mainAxisSpacing: 15,
-  childAspectRatio: 1.1,
-  children: [
-    const ServiceItem(icon: Icons.calendar_today, title: "إجازة"),
-
-   ServiceItem(
-  icon: Icons.meeting_room,
-  title: "نقل غرفة",
-  onTap: () {
-    Get.to(() => const SwapOrMoveView());
-  },
-),
-
-    const ServiceItem(icon: Icons.school, title: "العلامات"),
-    const ServiceItem(icon: Icons.warning, title: "ملاحظات"),
-  ],
-),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1.1,
+                children: [
+                  
+                 
+                  
+                  ServiceItem(
+                    icon: Icons.home, 
+                    title: "سكني", 
+                    onTap: () => Get.to(() => const SwapOrMoveView()),
+                  ),
+                  
+               
+                  
+                  ServiceItem(
+                    icon: Icons.warning_amber_rounded, 
+                    title: "تنبيهاتي", 
+                    onTap: () => Get.to(() => const SwapOrMoveView()),
+                  ),
+                  
+                  ServiceItem(
+                    icon: Icons.emoji_events, 
+                    title: "إنجازاتي", 
+                    onTap: () => Get.to(() => const SwapOrMoveView()),
+                  ),
+                  
+                  ServiceItem(
+                    icon: Icons.report_problem, 
+                    title: "شكوى سكن", 
+                    onTap: () => Get.to(() => const SwapOrMoveView()),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 25),
 
               /// 🔔 NOTIFICATIONS
+              // (يمكن إضافة محتوى هنا مستقبلاً)
              
             ],
           ),
         ),
       ),
 
-      /// 🔻 BOTTOM NAV
-      bottomNavigationBar: const BottomNav(),
+      /// 🔻 BOTTOM NAV - الجديد مع النصوص والزر البارز
+      bottomNavigationBar: BottomNav(
+        currentIndex: _currentIndex,
+        onTap: _onNavItemTapped,
+      ),
     );
   }
 }

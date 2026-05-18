@@ -19,13 +19,25 @@ class ServiceItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.7),
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              AppColors.softLavender,
+            ],
+          ),
           borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            )
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: AppColors.darkPurple),
+            Icon(icon, color: AppColors.darkPurple, size: 28),
             const SizedBox(height: 10),
             Text(title),
           ],

@@ -1,13 +1,15 @@
+// lib/widgets/choice_card.dart
 import 'package:flutter/material.dart';
 
-class _ChoiceCard extends StatelessWidget {
+class ChoiceCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
-  const _ChoiceCard({
+  const ChoiceCard({
+    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
@@ -47,8 +49,6 @@ class _ChoiceCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-
-                  /// 🔥 Icon bubble
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
@@ -57,10 +57,7 @@ class _ChoiceCard extends StatelessWidget {
                     ),
                     child: Icon(icon, color: Colors.white, size: 30),
                   ),
-
                   const SizedBox(width: 15),
-
-                  /// Text
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +80,6 @@ class _ChoiceCard extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,

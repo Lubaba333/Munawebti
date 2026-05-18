@@ -2,8 +2,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class ApiService {
   final String baseUrl = 'https://backend.munawebti.dom-dev.cloud/api';
 
@@ -31,9 +29,7 @@ class ApiService {
     if (authRequired) {
       await _loadTokenFromPrefs();
       if (_token == null) {
-
         print('Error: Authentication token is missing for a required authenticated request.');
-
       }
     }
 
@@ -51,8 +47,6 @@ class ApiService {
     }
     return headers;
   }
-
-
 
   Future<Map<String, dynamic>> get(
       String endpoint, {
@@ -85,11 +79,18 @@ class ApiService {
       }) async {
     final finalHeaders = await _buildHeaders(authRequired: authRequired, customHeaders: headers);
 
+    print('📤 POST Request: $baseUrl$endpoint');
+    print('📤 Headers: ${finalHeaders}');
+    print('📤 Body: ${jsonEncode(data)}');
+
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: finalHeaders,
       body: jsonEncode(data),
     );
+
+    print('📥 Response Status: ${response.statusCode}');
+    print('📥 Response Body: ${response.body}');
 
     return _handleResponse(response);
   }
@@ -125,30 +126,69 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Map<String, dynamic> _handleResponse(http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return response.body.isNotEmpty ? json.decode(response.body) : {};
-    } else if (response.statusCode == 401) {
-      print('Unauthorized (401): ${response.body}');
-      setToken(null);
+// في ملف service.dart - تحديث دالة _handleResponse
 
-
-
-      throw Exception('Unauthorized: Session expired or invalid token.');
-    } else {
-      String errorMessage = 'فشل في الاتصال: ${response.statusCode}';
-      try {
-        final errorBody = json.decode(response.body);
-        if (errorBody is Map && errorBody.containsKey('message')) {
-          errorMessage = errorBody['message'];
-        } else {
-          errorMessage = 'فشل في الاتصال: ${response.statusCode}, Body: ${response.body}';
-        }
-      } catch (e) {
-        errorMessage = 'فشل في الاتصال: ${response.statusCode}, لا يمكن تحليل الاستجابة كـ JSON.';
-      }
-      print('❌ API Error: ${response.statusCode} - $errorMessage');
-      throw Exception(errorMessage);
+Map<String, dynamic> _handleResponse(http.Response response) {
+  Map<String, dynamic> responseBody = {};
+  if (response.body.isNotEmpty) {
+    try {
+      responseBody = json.decode(response.body);
+    } catch (e) {
+      print('❌ Failed to parse response as JSON: ${response.body}');
     }
   }
+
+  // النجاح
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return responseBody;
+  }
+  
+  // حالة 401
+  else if (response.statusCode == 401) {
+    print('Unauthorized (401): ${response.body}');
+    setToken(null);
+    throw Exception('Session expired. Please login again.');
+  }
+  
+  // حالة 422 - Validation Error (🔥 الأهم)
+  else if (response.statusCode == 422) {
+    print('❌ Validation Error (422): ${response.body}');
+    
+    // محاولة استخراج رسالة الخطأ من الـ API
+    String errorMessage = 'Validation failed';
+    
+    if (responseBody.containsKey('message')) {
+      errorMessage = responseBody['message'];
+    }
+    
+    // إذا كان هناك تفاصيل أخطاء (errors object)
+    if (responseBody.containsKey('errors') && responseBody['errors'] != null) {
+      final errors = responseBody['errors'];
+      
+      if (errors is Map) {
+        // استخراج أول خطأ موجود
+        errors.forEach((field, messages) {
+          if (messages is List && messages.isNotEmpty) {
+            errorMessage = messages.first;
+          } else if (messages is String) {
+            errorMessage = messages;
+          }
+        });
+      }
+    }
+    
+    throw Exception(errorMessage);
+  }
+  
+  // حالات خطأ أخرى
+  else {
+    String errorMessage = 'Request failed: ${response.statusCode}';
+    if (responseBody.containsKey('message')) {
+      errorMessage = responseBody['message'];
+    }
+    
+    print('❌ API Error: ${response.statusCode} - $errorMessage');
+    throw Exception(errorMessage);
+  }
+}
 }

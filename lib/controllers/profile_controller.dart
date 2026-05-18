@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:studants/services/service.dart';
 class ProfileController extends GetxController {
+
+  final ApiService _apiService = ApiService();
   /// 🔹 بيانات قابلة للتعديل
   var name = "Ghaeda Alhalaki".obs;
   var email = "ghaeda@gmail.com".obs;
@@ -56,7 +58,37 @@ Future<void> loadImage() async {
     } finally {
       isLoading.value = false;
     }
+  }  
+Future<void> getProfile() async {
+  try {
+    isLoading.value = true;
+
+    final response =
+        await _apiService.get('/auth/student/me');
+
+    print("✅ ME Response: $response");
+
+    final student = response['data']['student'];
+
+    if (student != null) {
+      name.value = student['full_name'] ?? name.value;
+      email.value = student['email'] ?? email.value;
+
+      _studentId.value =
+          student['student_identifier'] ?? _studentId.value;
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('name', name.value);
+      await prefs.setString('email', email.value);
+      await prefs.setString('studentId', _studentId.value);
+    }
+
+  } catch (e) {
+    print("❌ ME Error: $e");
+  } finally {
+    isLoading.value = false;
   }
+}
 
   /// 📸 اختيار صورة
 Future<void> pickImage(ImageSource source) async {

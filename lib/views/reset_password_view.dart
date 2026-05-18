@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/views/otp.dart';
+import 'package:studants/views/otp_verification_view.dart';
+import 'package:studants/controllers/reset_password_controller.dart';
 
 import '../utlis/app_colors.dart';
 import '../widgets/custom_textfield.dart';
@@ -10,6 +12,7 @@ class ResetPasswordView extends StatelessWidget {
   ResetPasswordView({super.key});
 
   final emailController = TextEditingController();
+  final ResetPasswordController controller = Get.put(ResetPasswordController()); // ✅ التسجيل هنا
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,6 @@ class ResetPasswordView extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              /// 🔙 Back
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
@@ -30,7 +32,6 @@ class ResetPasswordView extends StatelessWidget {
                 ),
               ),
 
-              /// 🏷️ Title
               const Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
@@ -43,7 +44,6 @@ class ResetPasswordView extends StatelessWidget {
                 ),
               ),
 
-              /// 🪟 Card
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(25),
@@ -56,34 +56,51 @@ class ResetPasswordView extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-
                       const Text(
                         "Enter your email to reset password",
                         style: TextStyle(color: Colors.grey),
                       ),
-
                       const SizedBox(height: 30),
-
                       CustomTextField(
                         controller: emailController,
                         hint: "Email",
                         icon: Icons.email,
                       ),
-
                       const SizedBox(height: 30),
-
-                      GradientButton(
-                        text: "Send Reset Link",
-                        onTap: () {
-                         /* Get.snackbar(
-                            "Success",
-                            "Reset link sent to your email",
-                            backgroundColor: Colors.green,
-                            colorText: Colors.white,
-                          );*/
-                          Get.to(OtpVerificationView());
+                      Obx(() => GradientButton(
+                        text: controller.isLoading.value ? "Sending..." : "Send Reset Code",
+                        onTap: () async {
+                          final email = emailController.text.trim();
+                          
+                          if (email.isEmpty) {
+                            Get.snackbar(
+                              "Error",
+                              "Please enter your email",
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            return;
+                          }
+                          
+                          if (!GetUtils.isEmail(email)) {
+                            Get.snackbar(
+                              "Error",
+                              "Please enter a valid email address",
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            return;
+                          }
+                          
+                          await controller.sendResetOTP(email);
+                          
+                          if (controller.isOtpSent.value) {
+                            Get.to(() => const OtpVerificationView());
+                          }
                         },
-                      ),
+                      )),
                     ],
                   ),
                 ),

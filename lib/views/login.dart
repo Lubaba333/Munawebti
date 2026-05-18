@@ -119,7 +119,7 @@ Align(
   alignment: Alignment.centerRight,
   child: GestureDetector(
     onTap: () {
-      Get.to(() => ResetPasswordView()); // 🔥 الانتقال
+   Get.to(() => ResetPasswordView()); // 🔥 الانتقال
     },
     child: const Text(
       "Forgot Password?",
