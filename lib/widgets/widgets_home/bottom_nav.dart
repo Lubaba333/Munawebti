@@ -4,11 +4,13 @@ import '../../../utlis/app_colors.dart';
 class BottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final VoidCallback onEmergencyTap; // 🔥 زر الطوارئ
 
   const BottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    required this.onEmergencyTap,
   });
 
   @override
@@ -16,7 +18,7 @@ class BottomNav extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -27,7 +29,7 @@ class BottomNav extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -35,7 +37,45 @@ class BottomNav extends StatelessWidget {
             /// 📅 محاضراتي
             _buildNavItem(0, Icons.calendar_month, "محاضراتي"),
 
-            /// 🏠 الرئيسية (زر رئيسي)
+            /// 🚨 زر الطوارئ (🔥 جديد)
+            GestureDetector(
+              onTap: onEmergencyTap,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.5),
+                          blurRadius: 12,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.warning_rounded,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    "طوارئ",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            /// 🏠 الرئيسية
             GestureDetector(
               onTap: () => onTap(1),
               child: Column(
@@ -55,7 +95,7 @@ class BottomNav extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.home_rounded,
                       color: Colors.white,
                       size: 30,

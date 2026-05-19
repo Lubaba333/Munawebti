@@ -5,6 +5,9 @@ import 'package:studants/views/SettingsDrawerview.dart';
 import 'package:studants/views/SwapOrMoveView.dart';
 import 'package:studants/views/lectures_view.dart';
 import 'package:studants/views/my_requests_view.dart';
+import 'package:studants/views/rewards_view.dart';
+import 'package:studants/views/violations_view.dart';
+import 'package:studants/views/warnings_view.dart';
 import 'package:studants/widgets/widgets_home/main_card.dart';
 import 'package:studants/widgets/widgets_home/service_item.dart';
 import 'package:studants/widgets/widgets_home/top_bar.dart';
@@ -142,19 +145,25 @@ class _HomeViewState extends State<HomeView>
                   ServiceItem(
                     icon: Icons.warning_amber_rounded, 
                     title: "تنبيهاتي", 
-                    onTap: () => Get.to(() => const SwapOrMoveView()),
-                  ),
+                    onTap: () => Get.to(() => WarningsView())),
+                  
                   
                   ServiceItem(
                     icon: Icons.emoji_events, 
-                    title: "إنجازاتي", 
-                    onTap: () => Get.to(() => const SwapOrMoveView()),
+                    title: "مكافآتي", 
+                     onTap: () => Get.to(() => RewardsView()),
+                   
                   ),
                   
                   ServiceItem(
                     icon: Icons.report_problem, 
                     title: "شكوى سكن", 
                     onTap: () => Get.to(() => const SwapOrMoveView()),
+                  ),
+                   ServiceItem(
+                    icon: Icons.report_problem, 
+                    title: "مخالفات", 
+                    onTap: () => Get.to(() => ViolationsView()),
                   ),
                 ],
               ),
@@ -173,6 +182,13 @@ class _HomeViewState extends State<HomeView>
       bottomNavigationBar: BottomNav(
         currentIndex: _currentIndex,
         onTap: _onNavItemTapped,
+          onEmergencyTap: () {
+    // 🔥 انتِ تقرري وين يروح
+    // مثال:
+    // Get.to(() => EmergencyView());
+
+   
+  },
       ),
     );
   }
