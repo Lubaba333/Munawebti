@@ -5,11 +5,12 @@ import 'package:get/get.dart';
 import '../const/app_colors.dart';
 import '../controller/AuthController.dart';
 import 'ForgetPasswordView.dart';
-import 'SignUpView.dart';
+
 
 
 class LoginView extends StatelessWidget {
-  final controller = Get.put(AuthController());
+  final controller =
+    Get.find<AuthController>();
 
   LoginView({super.key});
 
@@ -204,27 +205,27 @@ class LoginView extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
-                              /// Sign up
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text("New user? ",
-                                      style: TextStyle(color: Colors.white)),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        Get.to(() => SignUpView()),
-                                    child: const Text(
-                                      "Sign Up",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      //  decoration:
-                                        //    TextDecoration.underline,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                              // /// Sign up
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     const Text("New user? ",
+                              //         style: TextStyle(color: Colors.white)),
+                              //     GestureDetector(
+                              //       onTap: () =>
+                              //           Get.to(() => SignUpView()),
+                              //       child: const Text(
+                              //         "Sign Up",
+                              //         style: TextStyle(
+                              //           color: Colors.white,
+                              //           fontWeight: FontWeight.bold,
+                              //         //  decoration:
+                              //           //    TextDecoration.underline,
+                              //         ),
+                              //       ),
+                              //     )
+                              //   ],
+                              // ),
                             ],
                           ),
                         ),

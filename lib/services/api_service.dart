@@ -17,17 +17,33 @@ class ApiService {
     print('ApiService: Loaded token from prefs: $_token');
   }
 
-  void setToken(String? token) async {
-    _token = token;
-    final prefs = await SharedPreferences.getInstance();
-    if (token != null) {
-      await prefs.setString('auth_token', token);
-      print('ApiService: Token updated and saved to prefs: $_token');
-    } else {
-      await prefs.remove('auth_token');
-      print('ApiService: Token removed from prefs.');
-    }
+Future<void> setToken(String? token) async {
+
+  _token = token;
+
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  if (token != null) {
+
+    await prefs.setString(
+      'auth_token',
+      token,
+    );
+
+    print(
+      'ApiService: Token updated and saved to prefs: $_token',
+    );
+
+  } else {
+
+    await prefs.remove('auth_token');
+
+    print(
+      'ApiService: Token removed from prefs.',
+    );
   }
+}
 
   Future<Map<String, String>> _buildHeaders({bool authRequired = true, Map<String, String>? customHeaders}) async {
     if (authRequired) {

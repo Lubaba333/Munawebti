@@ -67,13 +67,13 @@ class ResetPasswordView extends StatelessWidget {
 
                         const SizedBox(height: 15),
 
-                        Obx(() => _field(
-                              "Confirm Password",
-                              Icons.lock_outline,
-                              controller.isConfirmHidden.value,
-                              (v) => controller.confirmPassword.value = v,
-                              controller.toggleConfirm,
-                            )),
+                        // Obx(() => _field(
+                        //       "Confirm Password",
+                        //       Icons.lock_outline,
+                        //       controller.isConfirmHidden.value,
+                        //       (v) => controller.confirmPassword.value = v,
+                        //       controller.toggleConfirm,
+                        //     )),
 
                         const SizedBox(height: 25),
 
@@ -133,7 +133,7 @@ class ResetPasswordView extends StatelessWidget {
 
   Widget _button() {
     return GestureDetector(
-      onTap: controller.resetPassword,
+      // onTap: controller.resetPassword,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),

@@ -1,12 +1,21 @@
 import 'package:get/get.dart';
 
+import 'AuthController.dart';
+
 class HomeController extends GetxController {
+
+  final authController =
+      Get.find<AuthController>();
+
   var isLoading = false.obs;
 
-  /// 👤 User
-  var userName = "Sara".obs;
+  String get userName =>
+      authController
+          .supervisor
+          .value
+          ?.fullName ??
+      "";
 
-  /// 🟣 Current Shift
   var currentShift = {
     "title": "Hospital",
     "type": "Morning",
@@ -14,10 +23,9 @@ class HomeController extends GetxController {
     "status": "active"
   }.obs;
 
-  /// 📅 Today Schedule
-  var todaySchedule = <Map<String, String>>[].obs;
+  var todaySchedule =
+      <Map<String, String>>[].obs;
 
-  /// 🔔 Notifications
   var notifications = <String>[].obs;
 
   @override
@@ -27,20 +35,31 @@ class HomeController extends GetxController {
   }
 
   void loadData() {
+
     isLoading.value = true;
 
-    Future.delayed(Duration(seconds: 1), () {
-      todaySchedule.value = [
-        {"time": "08:00 - 02:00", "place": "Hospital"},
-        {"time": "03:00 - 08:00", "place": "Dorm"},
-      ];
+    Future.delayed(
+      Duration(seconds: 1),
+      () {
 
-      notifications.value = [
-        "Swap request approved",
-        "New message from admin",
-      ];
+        todaySchedule.value = [
+          {
+            "time": "08:00 - 02:00",
+            "place": "Hospital"
+          },
+          {
+            "time": "03:00 - 08:00",
+            "place": "Dorm"
+          },
+        ];
 
-      isLoading.value = false;
-    });
+        notifications.value = [
+          "Swap request approved",
+          "New message from admin",
+        ];
+
+        isLoading.value = false;
+      },
+    );
   }
 }

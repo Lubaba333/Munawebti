@@ -1,67 +1,168 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:supervisor/controller/ThemeController.dart';
+
+import 'AuthController.dart';
 
 class ProfileController extends GetxController {
-  var isEdit = false.obs;
-  var isDark = false.obs;
 
-  var name = "Sara Ahmed".obs;
-  var role = "Supervisor".obs;
-  var email = "sara@mail.com".obs;
-  var phone = "+963 987 654".obs;
+  final authController =
+      Get.find<AuthController>();
+      final themeController =
+    Get.find<ThemeController>();
 
-  var imageFile = Rx<File?>(null);
+  /// UI
+  final isEdit = false.obs;
+  final isDark = false.obs;
 
+  /// IMAGE
+  final imageFile = Rx<File?>(null);
+
+  /// CONTROLLERS
   late TextEditingController nameCtrl;
   late TextEditingController roleCtrl;
   late TextEditingController emailCtrl;
-  late TextEditingController phoneCtrl;
 
   final picker = ImagePicker();
 
-  @override
-  void onInit() {
-    nameCtrl = TextEditingController(text: name.value);
-    roleCtrl = TextEditingController(text: role.value);
-    emailCtrl = TextEditingController(text: email.value);
-    phoneCtrl = TextEditingController(text: phone.value);
-    super.onInit();
+  /// ================= GETTERS =================
+
+  String get name =>
+      authController
+          .supervisor
+          .value
+          ?.fullName ??
+      "";
+
+  String get email =>
+      authController
+          .supervisor
+          .value
+          ?.email ??
+      "";
+
+  String get role =>
+      authController
+          .supervisor
+          .value
+          ?.specialization ??
+      "";
+
+  String get supervisorId =>
+      authController
+          .supervisor
+          .value
+          ?.supervisorIdentifier ??
+      "";
+
+  String get certificatePlace =>
+      authController
+          .supervisor
+          .value
+          ?.certificatePlace ??
+      "";
+
+  String get certificateDate {
+
+    final rawDate =
+        authController
+            .supervisor
+            .value
+            ?.certificateDate ??
+        "";
+
+    if (rawDate.isEmpty) {
+      return "";
+    }
+
+    return rawDate.split("T").first;
   }
 
+  /// ================= INIT =================
+
+  @override
+  void onInit() {
+
+    super.onInit();
+
+      print(
+    authController.supervisor.value?.fullName,
+  );
+
+
+    _initializeControllers();
+  }
+
+  void _initializeControllers() {
+
+    nameCtrl = TextEditingController(
+      text: name,
+    );
+
+    roleCtrl = TextEditingController(
+      text: role,
+    );
+
+    emailCtrl = TextEditingController(
+      text: email,
+    );
+  }
+
+  /// ================= EDIT =================
+
   void toggleEdit() {
-    if (isEdit.value) {
-      name.value = nameCtrl.text;
-      role.value = roleCtrl.text;
-      email.value = emailCtrl.text;
-      phone.value = phoneCtrl.text;
-    }
+
     isEdit.toggle();
   }
 
+  /// ================= IMAGE PICKER =================
+
   Future<void> pickImage() async {
-    final picked = await picker.pickImage(source: ImageSource.gallery);
+
+    final picked =
+        await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
     if (picked != null) {
-      imageFile.value = File(picked.path);
+
+      imageFile.value =
+          File(picked.path);
     }
   }
 
+  /// ================= THEME =================
+
   void toggleTheme(bool value) {
+
     isDark.value = value;
-    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+
+    Get.changeThemeMode(
+      value
+          ? ThemeMode.dark
+          : ThemeMode.light,
+    );
   }
 
-  void logout() {
-    Get.offAllNamed("/login");
+  /// ================= LOGOUT =================
+
+  Future<void> logout() async {
+
+    await authController.logout();
   }
+
+  /// ================= DISPOSE =================
 
   @override
   void onClose() {
+
     nameCtrl.dispose();
     roleCtrl.dispose();
     emailCtrl.dispose();
-    phoneCtrl.dispose();
+
     super.onClose();
   }
 }
