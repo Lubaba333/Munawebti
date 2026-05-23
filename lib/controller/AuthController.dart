@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisor/view/LoginView.dart';
+import 'package:supervisor/view/OTPView.dart';
+import 'package:supervisor/view/ResetPasswordView.dart';
 
 import '../models/supervisor_model.dart';
 import '../services/api_service.dart';
@@ -20,6 +22,15 @@ class AuthController extends GetxController {
   final isLoading = false.obs;
   final isPasswordHidden = true.obs;
   final rememberMe = false.obs;
+
+    /// FORGET PASSWORD
+
+  var otp = ''.obs;
+
+  var newPassword = ''.obs;
+
+  var confirmNewPassword = ''.obs; 
+  var isConfirmHidden = true.obs;
 
   /// USER
   final supervisor = Rxn<SupervisorModel>();
@@ -169,5 +180,153 @@ Future<void> logout() async {
       backgroundColor:
           Colors.red.shade100,
     );
+  }   
+
+  /// SEND OTP
+
+Future<void> sendOtp() async {
+
+  try {
+
+    isLoading.value = true;
+
+    final response = await _api.post(
+
+      '/auth/password-reset/supervisor/send-otp',
+
+      {
+        "email": email.value,
+      },
+
+      authRequired: false,
+    );
+
+    print("✅ SEND OTP RESPONSE: $response");
+
+    Get.snackbar(
+      "Success",
+      response['message'],
+    );
+
+    /// الانتقال لصفحة OTP
+    Get.to(() => OTPView());
+
+  } catch (e) {
+
+    print("❌ SEND OTP ERROR: $e");
+
+    Get.snackbar(
+      "Error",
+      e.toString(),
+    );
+
+  } finally {
+
+    isLoading.value = false;
   }
+} 
+   /// VERIFY OTP
+
+Future<void> verifyOtp() async {
+
+  try {
+
+    isLoading.value = true;
+
+    final response = await _api.post(
+
+      '/auth/password-reset/supervisor/verify-otp',
+
+      {
+        "email": email.value,
+        "otp": otp.value,
+      },
+
+      authRequired: false,
+    );
+
+    print("✅ VERIFY OTP RESPONSE: $response");
+
+    Get.snackbar(
+      "Success",
+      response['message'],
+    );
+
+    /// روح لصفحة تغيير كلمة المرور
+    Get.to(() => ResetPasswordView());
+
+  } catch (e) {
+
+    print("❌ VERIFY OTP ERROR: $e");
+
+    Get.snackbar(
+      "Error",
+      e.toString(),
+    );
+
+  } finally {
+
+    isLoading.value = false;
+  }
+}  
+ 
+ /// RESET PASSWORD
+
+Future<void> resetPassword() async {
+
+  try {
+
+    isLoading.value = true;
+
+    final response = await _api.post(
+
+      '/auth/password-reset/supervisor/reset',
+
+      {
+        "email": email.value,
+
+        "password":
+            newPassword.value,
+
+        "password_confirmation":
+            confirmNewPassword.value,
+      },
+
+      authRequired: false,
+    );
+
+    print(
+      "✅ RESET PASSWORD RESPONSE: $response",
+    );
+
+    Get.snackbar(
+      "Success",
+      response['message'],
+    );
+
+    /// رجوع لصفحة اللوغين
+    Get.offAll(() => LoginView());
+
+  } catch (e) {
+
+    print(
+      "❌ RESET PASSWORD ERROR: $e",
+    );
+
+    Get.snackbar(
+      "Error",
+      e.toString(),
+    );
+
+  } finally {
+
+    isLoading.value = false;
+  }
+}  
+
+ void toggleConfirm() {
+
+  isConfirmHidden.value =
+      !isConfirmHidden.value;
+}
 }

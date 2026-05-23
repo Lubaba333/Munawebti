@@ -1,103 +1,149 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:supervisor/controller/AuthController.dart';
+// import 'package:supervisor/controller/ProfileController.dart';
+// import 'package:supervisor/view/LoginView.dart';
+
+// void main() async {
+
+//  WidgetsFlutterBinding.ensureInitialized();
+
+//   /// AUTH
+//   Get.put(AuthController());
+// final ProfileController profileController = Get.put(ProfileController());
+//   /// THEME
+//   // Get.put(ThemeController());
+
+//   runApp(
+//     MyApp(),
+//   );
+// }
+
+// class MyApp extends StatelessWidget {
+
+//   MyApp({super.key});
+
+//   // final ThemeController themeController =
+//   //     Get.find<ThemeController>();
+
+//   @override
+//   Widget build(BuildContext context) {
+
+//     return Obx(
+//       () => GetMaterialApp(
+
+//         debugShowCheckedModeBanner: false,
+
+//         theme: ThemeData.light(),
+//       darkTheme: ThemeData(
+//         brightness: Brightness.dark,
+//         scaffoldBackgroundColor: Colors.grey[900],
+//         primaryColor: Colors.grey[800],
+//         cardColor: Colors.grey[850],
+//         appBarTheme: AppBarTheme(
+//           backgroundColor: Colors.grey[850],
+//           iconTheme: const IconThemeData(color: Colors.white),
+//           titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+//         ),
+//         iconTheme: const IconThemeData(color: Colors.white),
+//         textTheme: const TextTheme(
+//           bodyLarge: TextStyle(color: Colors.white),
+//           bodyMedium: TextStyle(color: Colors.white70),
+//         ),
+//         switchTheme: SwitchThemeData(
+//           thumbColor: MaterialStatePropertyAll(Colors.grey),
+//           trackColor: MaterialStatePropertyAll(Colors.white24),
+//         ),
+//         dropdownMenuTheme: DropdownMenuThemeData(
+
+//           textStyle: const TextStyle(color: Colors.white),
+//         ),
+//         elevatedButtonTheme: ElevatedButtonThemeData(
+//           style: ElevatedButton.styleFrom(
+//             backgroundColor: Colors.grey[700],
+//             foregroundColor: Colors.white,
+//           ),
+//         ),
+//       ),
+// themeMode: profileController.isDarkMode.value
+//     ? ThemeMode.dark
+//     : ThemeMode.light,
+
+//         home: LoginView(),
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:supervisor/controller/AuthController.dart';
-import 'package:supervisor/controller/ThemeController.dart';
-
+import 'package:supervisor/controller/ProfileController.dart';
 import 'package:supervisor/view/LoginView.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
- WidgetsFlutterBinding.ensureInitialized();
-
-  /// AUTH
+  /// Controllers
   Get.put(AuthController());
+  Get.put(ProfileController());
 
-  /// THEME
-  Get.put(ThemeController());
-
-  runApp(
-    MyApp(),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
   MyApp({super.key});
 
-  final ThemeController themeController =
-      Get.find<ThemeController>();
+  final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
 
-    return Obx(
-      () => GetMaterialApp(
+      /// LIGHT THEME
+      theme: ThemeData.light(),
 
-        debugShowCheckedModeBanner: false,
-
-        title: "Munawebti",
-
-        /// ================= LIGHT THEME =================
-        theme: ThemeData(
-
-          brightness: Brightness.light,
-
-          fontFamily: "Poppins",
-
-          scaffoldBackgroundColor:
-              const Color(0xFFF5EFE7),
-
-          primaryColor:
-              const Color(0xff6C63FF),
-
-          appBarTheme: const AppBarTheme(
-            backgroundColor:
-                Color(0xFFF5EFE7),
-            elevation: 0,
-            centerTitle: true,
-            iconTheme: IconThemeData(
-              color: Colors.black,
-            ),
-          ),
-
-          cardColor: Colors.white,
+      /// DARK THEME
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.grey[900],
+        primaryColor: Colors.grey[800],
+        cardColor: Colors.grey[850],
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey[850],
+          iconTheme: const IconThemeData(color: Colors.white),
+          titleTextStyle:
+              const TextStyle(color: Colors.white, fontSize: 20),
         ),
-
-        /// ================= DARK THEME =================
-        darkTheme: ThemeData(
-
-          brightness: Brightness.dark,
-
-          fontFamily: "Poppins",
-
-          scaffoldBackgroundColor:
-              const Color(0xff121212),
-
-          primaryColor:
-              const Color(0xff6C63FF),
-
-          appBarTheme: const AppBarTheme(
-            backgroundColor:
-                Color(0xff121212),
-            elevation: 0,
-            centerTitle: true,
-          ),
-
-          cardColor:
-              const Color(0xff1E1E1E),
+        iconTheme: const IconThemeData(color: Colors.white),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white70),
         ),
-
-        /// ================= THEME MODE =================
-        themeMode:
-            themeController
-                    .isDarkMode
-                    .value
-                ? ThemeMode.dark
-                : ThemeMode.light,
-
-        home: LoginView(),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStatePropertyAll(Colors.grey),
+          trackColor: MaterialStatePropertyAll(Colors.white24),
+        ),
+        dropdownMenuTheme: DropdownMenuThemeData(
+          textStyle: const TextStyle(color: Colors.white),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[700],
+            foregroundColor: Colors.white,
+          ),
+        ),
       ),
+
+      /// THEME MODE (🔥 FIXED)
+      themeMode: profileController.isDarkMode.value
+          ? ThemeMode.dark
+          : ThemeMode.light,
+
+      home: LoginView(),
     );
   }
 }

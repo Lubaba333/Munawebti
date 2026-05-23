@@ -1,22 +1,19 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:supervisor/controller/ThemeController.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthController.dart';
 
 class ProfileController extends GetxController {
 
   final authController =
       Get.find<AuthController>();
-      final themeController =
-    Get.find<ThemeController>();
+   
 
   /// UI
   final isEdit = false.obs;
-  final isDark = false.obs;
+  var isDarkMode = false.obs;
 
   /// IMAGE
   final imageFile = Rx<File?>(null);
@@ -83,18 +80,13 @@ class ProfileController extends GetxController {
 
   /// ================= INIT =================
 
-  @override
-  void onInit() {
+ @override
+void onInit() async {
+  super.onInit();
 
-    super.onInit();
-
-      print(
-    authController.supervisor.value?.fullName,
-  );
-
-
-    _initializeControllers();
-  }
+  await _loadSettings();
+  _initializeControllers();
+}
 
   void _initializeControllers() {
 
@@ -135,18 +127,18 @@ class ProfileController extends GetxController {
   }
 
   /// ================= THEME =================
-
-  void toggleTheme(bool value) {
-
-    isDark.value = value;
-
-    Get.changeThemeMode(
-      value
-          ? ThemeMode.dark
-          : ThemeMode.light,
-    );
+  void toggleTheme() async {
+    isDarkMode.value = !isDarkMode.value;
+    Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', isDarkMode.value);
   }
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    isDarkMode.value = prefs.getBool('isDarkMode') ?? false;
+    Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);}
 
+  
   /// ================= LOGOUT =================
 
   Future<void> logout() async {

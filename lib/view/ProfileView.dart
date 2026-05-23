@@ -716,50 +716,66 @@ Widget _buildSettingsCard() {
         )
       ],
     ),
-    child: Obx(
-      () => SwitchListTile(
+    child: 
+    // Obx(
+    //   () => SwitchListTile(
 
-        /// القيمة الحالية
-        value: controller
-            .themeController
-            .isDarkMode
-            .value,
+    //     /// القيمة الحالية
+    //     value: controller
+    //         .themeController
+    //         .isDarkMode
+    //         .value,
 
-        /// التبديل
-        onChanged: controller
-            .themeController
-            .toggleTheme,
+    //     /// التبديل
+    //     onChanged: controller
+    //         .themeController
+    //         .toggleTheme,
 
-        activeColor:
-            AppColors.primary,
+    //     activeColor:
+    //         AppColors.primary,
 
-        secondary: Icon(
-          controller
-                  .themeController
-                  .isDarkMode
-                  .value
-              ? Icons.dark_mode
-              : Icons.light_mode,
-          color: AppColors.primary,
-        ),
+    //     secondary: Icon(
+    //       controller
+    //               .themeController
+    //               .isDarkMode
+    //               .value
+    //           ? Icons.dark_mode
+    //           : Icons.light_mode,
+    //       color: AppColors.primary,
+    //     ),
 
-        title: Text(
-          controller
-                  .themeController
-                  .isDarkMode
-                  .value
-              ? "Dark Mode"
-              : "Light Mode",
-          style: TextStyle(
-            fontWeight:
-                FontWeight.w600,
-            color: Get.isDarkMode
-                ? Colors.white
-                : AppColors.textDark,
+    //     title: Text(
+    //       controller
+    //               .themeController
+    //               .isDarkMode
+    //               .value
+    //           ? "Dark Mode"
+    //           : "Light Mode",
+    //       style: TextStyle(
+    //         fontWeight:
+    //             FontWeight.w600,
+    //         color: Get.isDarkMode
+    //             ? Colors.white
+    //             : AppColors.textDark,
+    //       ),
+    //     ),
+    //   ),
+    // ),
+
+
+          Obx(() => Card(
+          child: SwitchListTile(
+            title: Text(
+              controller.isDarkMode.value ? 'dark'.tr : 'light'.tr,
+            ),
+            secondary: Icon(
+              controller.isDarkMode.value ? Icons.dark_mode : Icons.light_mode,
+              color: controller.isDarkMode.value ? Colors.blueGrey : Colors.yellow,
+            ),
+            value: controller.isDarkMode.value,
+            onChanged: (val) => controller.toggleTheme(),
           ),
-        ),
-      ),
-    ),
+        )),
   );
 }
   /// =====================================================
