@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../const/app_colors.dart';
 import 'ChatView.dart';
 import 'HomeView.dart';
 import 'NotificationsView.dart';
@@ -9,7 +8,6 @@ import 'ProfileView.dart';
 import 'ScheduleView.dart';
 import 'SettingsView.dart';
 import 'StudentsView.dart';
-
 
 class MainView extends StatelessWidget {
   MainView({super.key});
@@ -20,64 +18,56 @@ class MainView extends StatelessWidget {
     HomeView(),
     ScheduleView(),
     StudentsView(),
-     ChatView(),
+    ChatView(),
     SettingsView(),
-   
-    
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      /// 🔝 AppBar
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        title: Obx(() => Text(
-              _getTitle(currentIndex.value),
-              style: TextStyle(color: AppColors.textDark),
-            )),
+      /// 🔝 APP BAR (FIXED)
+    appBar: AppBar(
+  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  elevation: 0,
 
-        actions: [
-          /// 🔔 Notifications
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(Icons.notifications, color: AppColors.primary),
-                // Positioned(
-                //   right: 0,
-                //   child: CircleAvatar(
-                //     radius: 5,
-                //    backgroundColor: Colors.red,
-                //   ),
-                // )
-              ],
-            ),
-            onPressed: () {
-              Get.to(() => NotificationsView());
-            },
-          ),
+  iconTheme: IconThemeData(
+    color: Theme.of(context).colorScheme.onBackground,
+  ),
 
-          /// 👤 Profile
-          IconButton(
-            icon: Icon(Icons.person, color: AppColors.primary),
-            onPressed: () {
-              Get.to(() => ProfileView());
-            },
-          ),
-        ],
+  actions: [
+    IconButton(
+      icon: Icon(
+        Icons.notifications,
+        color: Theme.of(context).colorScheme.primary,
       ),
+      onPressed: () {
+        Get.to(() => NotificationsView());
+      },
+    ),
 
-      /// 🔄 Body
+    IconButton(
+      icon: Icon(
+        Icons.person,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      onPressed: () {
+        Get.to(() => ProfileView());
+      },
+    ),
+  ],
+),
+      /// 🔄 BODY
       body: Obx(() => pages[currentIndex.value]),
 
-      /// 🔻 Custom Bottom Nav
-      bottomNavigationBar: Obx(() => CustomBottomNav(
-            currentIndex: currentIndex.value,
-            onTap: (index) => currentIndex.value = index,
-          )),
+      /// 🔻 BOTTOM NAV
+      bottomNavigationBar: Obx(
+        () => CustomBottomNav(
+          currentIndex: currentIndex.value,
+          onTap: (index) => currentIndex.value = index,
+        ),
+      ),
     );
   }
 
@@ -99,9 +89,6 @@ class MainView extends StatelessWidget {
   }
 }
 
-
-
-
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -115,12 +102,12 @@ class CustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(10), // 🔥 Floating
+      margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(35), // 🔥 Rounded
-        boxShadow: [
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(35),
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 20,
@@ -131,28 +118,27 @@ class CustomBottomNav extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-
-          _navItem(Icons.home, "Home", 0),
-          _navItem(Icons.calendar_today, "Schedule", 1),
-          _navItem(Icons.school, "Students", 2),
-          _navItem(Icons.chat_bubble_outline, "Chat", 3),
-          _navItem(Icons.settings, "Settings", 4),
+          _navItem(context, Icons.home, "Home", 0),
+          _navItem(context, Icons.calendar_today, "Schedule", 1),
+          _navItem(context, Icons.school, "Students", 2),
+          _navItem(context, Icons.chat_bubble_outline, "Chat", 3),
+          _navItem(context, Icons.settings, "Settings", 4),
         ],
       ),
     );
   }
 
-  Widget _navItem(IconData icon, String label, int index) {
+  Widget _navItem(BuildContext context, IconData icon, String label, int index) {
     bool isActive = currentIndex == index;
 
     return GestureDetector(
       onTap: () => onTap(index),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 250),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: isActive
-              ? AppColors.primary.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
@@ -163,19 +149,19 @@ class CustomBottomNav extends StatelessWidget {
             Icon(
               icon,
               color: isActive
-                  ? AppColors.primary
-                  : Colors.grey,
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
 
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
 
             Text(
               label,
               style: TextStyle(
                 fontSize: 11,
                 color: isActive
-                    ? AppColors.primary
-                    : Colors.grey,
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             )
           ],
@@ -184,3 +170,7 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 }
+
+
+
+

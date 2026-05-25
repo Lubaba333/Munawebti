@@ -5,56 +5,20 @@
 
 //   var shifts = <Map<String, dynamic>>[].obs;
 
-//   /// 🔥 Calendar
-//   var selectedIndex = 0.obs;
-//   List<Map<String, String>> days = [];
+//   /// 🔍 Search
+//   var searchQuery = "".obs;
+
+//   /// Filters
+//   var selectedLocation = "All".obs;
+//   var selectedShift = "All".obs;
+//   var showOnlyMine = true.obs;
+
+//   String myName = "Sara";
 
 //   @override
 //   void onInit() {
 //     super.onInit();
-//     generateDays();
 //     loadMockData();
-//   }
-
-//   void generateDays() {
-//     DateTime now = DateTime.now();
-
-//     days = List.generate(7, (index) {
-//       DateTime date = now.add(Duration(days: index));
-
-//       return {
-//         "day": _getDayName(date.weekday),
-//         "date": date.day.toString(),
-//       };
-//     });
-//   }
-
-//   String _getDayName(int weekday) {
-//     switch (weekday) {
-//       case 1:
-//         return "Mon";
-//       case 2:
-//         return "Tue";
-//       case 3:
-//         return "Wed";
-//       case 4:
-//         return "Thu";
-//       case 5:
-//         return "Fri";
-//       case 6:
-//         return "Sat";
-//       case 7:
-//         return "Sun";
-//       default:
-//         return "";
-//     }
-//   }
-
-//   void selectDay(int index) {
-//     selectedIndex.value = index;
-
-//     /// 🔥 لاحقاً:
-//     /// فلترة الشفتات حسب اليوم
 //   }
 
 //   void loadMockData() {
@@ -64,115 +28,214 @@
 //       shifts.value = [
 //         {
 //           "title": "Hospital Training",
-//           "location": "Al-Assad Hospital",
+//           "supervisor": "Sara",
+//           "location": "Hospital",
+//           "shiftType": "Morning",
 //           "time": "08:00 - 02:00",
-//           "status": "today"
+//           "status": "assigned"
 //         },
 //         {
 //           "title": "Dorm Supervision",
+//           "supervisor": "Lina",
 //           "location": "Dorm A",
+//           "shiftType": "Evening",
 //           "time": "03:00 - 08:00",
-//           "status": "upcoming"
-//         },
-//         {
-//           "title": "Lecture Monitoring",
-//           "location": "Classroom 3",
-//           "time": "09:00 - 11:00",
-//           "status": "done"
+//           "status": "pending"
 //         },
 //       ];
 
 //       isLoading.value = false;
 //     });
 //   }
-// }
+
+//   void toggleView(bool value) {
+//     showOnlyMine.value = value;
+//   }
+
+//   void search(String value) {
+//     searchQuery.value = value;
+//   }
+
+//   /// 🔥 Filter Logic
+//   List<Map<String, dynamic>> get filteredShifts {
+//     return shifts.where((s) {
+
+//       if (showOnlyMine.value && s['supervisor'] != myName) {
+//         return false;
+//       }
+
+//       if (selectedLocation.value != "All" &&
+//           s['location'] != selectedLocation.value) {
+//         return false;
+//       }
+
+//       if (selectedShift.value != "All" &&
+//           s['shiftType'] != selectedShift.value) {
+//         return false;
+//       }
+
+//       if (searchQuery.value.isNotEmpty &&
+//           !s['supervisor']
+//               .toLowerCase()
+//               .contains(searchQuery.value.toLowerCase())) {
+//         return false;
+//       }
+
+//       return true;
+//     }).toList();
+//   }
+// } 
 
 
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class ScheduleController extends GetxController {
-  var isLoading = false.obs;
 
-  var shifts = <Map<String, dynamic>>[].obs;
+  /// الأيام
+  final days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+  ];
 
-  /// 🔍 Search
-  var searchQuery = "".obs;
+  /// الفترات الزمنية
+  final timeSlots = [
+    "8:30 - 10:30",
+    "10:30 - 12:30",
+    "12:30 - 2:30",
+  ];
 
-  /// Filters
-  var selectedLocation = "All".obs;
-  var selectedShift = "All".obs;
-  var showOnlyMine = true.obs;
-
-  String myName = "Sara";
-
-  @override
-  void onInit() {
-    super.onInit();
-    loadMockData();
-  }
-
-  void loadMockData() {
-    isLoading.value = true;
-
-    Future.delayed(Duration(seconds: 1), () {
-      shifts.value = [
+  /// بيانات الجدول
+  /// جاهزة مستقبلاً للـ API
+  final RxList<Map<String, dynamic>> schedules = <Map<String, dynamic>>[
+    {
+      "day": "Sunday",
+      "slots": [
         {
-          "title": "Hospital Training",
-          "supervisor": "Sara",
-          "location": "Hospital",
-          "shiftType": "Morning",
-          "time": "08:00 - 02:00",
-          "status": "assigned"
+          "title": "Hospital A",
+          "type": "Training",
         },
         {
-          "title": "Dorm Supervision",
-          "supervisor": "Lina",
-          "location": "Dorm A",
-          "shiftType": "Evening",
-          "time": "03:00 - 08:00",
-          "status": "pending"
+          "title": "Clinical",
+          "type": "Supervision",
         },
-      ];
+        {
+          "title": "Meeting",
+          "type": "Meeting",
+        },
+      ]
+    },
+    {
+      "day": "Monday",
+      "slots": [
+        {
+          "title": "Hospital B",
+          "type": "Training",
+        },
+        {
+          "title": "Evaluation",
+          "type": "Evaluation",
+        },
+        {
+          "title": "-",
+          "type": "Empty",
+        },
+      ]
+    },
+    {
+      "day": "Tuesday",
+      "slots": [
+        {
+          "title": "Clinical",
+          "type": "Supervision",
+        },
+        {
+          "title": "-",
+          "type": "Empty",
+        },
+        {
+          "title": "Meeting",
+          "type": "Meeting",
+        },
+      ]
+    },
+    {
+      "day": "Wednesday",
+      "slots": [
+        {
+          "title": "Hospital C",
+          "type": "Training",
+        },
+        {
+          "title": "Clinical",
+          "type": "Supervision",
+        },
+        {
+          "title": "Evaluation",
+          "type": "Evaluation",
+        },
+      ]
+    },
+    {
+      "day": "Thursday",
+      "slots": [
+        {
+          "title": "-",
+          "type": "Empty",
+        },
+        {
+          "title": "Training",
+          "type": "Training",
+        },
+        {
+          "title": "Meeting",
+          "type": "Meeting",
+        },
+      ]
+    },
+  ].obs;
 
-      isLoading.value = false;
-    });
+  /// ألوان الحالات
+  Color getCardColor(String type) {
+    switch (type) {
+      case "Training":
+        return const Color(0xFFDFF5E8);
+
+      case "Supervision":
+        return const Color(0xFFE7E4FF);
+
+      case "Meeting":
+        return const Color(0xFFFFE8D9);
+
+      case "Evaluation":
+        return const Color(0xFFFFE0EB);
+
+      default:
+        return Colors.grey.shade100;
+    }
   }
 
-  void toggleView(bool value) {
-    showOnlyMine.value = value;
-  }
+  Color getTextColor(String type) {
+    switch (type) {
+      case "Training":
+        return Colors.green;
 
-  void search(String value) {
-    searchQuery.value = value;
-  }
+      case "Supervision":
+        return Colors.deepPurple;
 
-  /// 🔥 Filter Logic
-  List<Map<String, dynamic>> get filteredShifts {
-    return shifts.where((s) {
+      case "Meeting":
+        return Colors.orange;
 
-      if (showOnlyMine.value && s['supervisor'] != myName) {
-        return false;
-      }
+      case "Evaluation":
+        return Colors.pink;
 
-      if (selectedLocation.value != "All" &&
-          s['location'] != selectedLocation.value) {
-        return false;
-      }
-
-      if (selectedShift.value != "All" &&
-          s['shiftType'] != selectedShift.value) {
-        return false;
-      }
-
-      if (searchQuery.value.isNotEmpty &&
-          !s['supervisor']
-              .toLowerCase()
-              .contains(searchQuery.value.toLowerCase())) {
-        return false;
-      }
-
-      return true;
-    }).toList();
+      default:
+        return Colors.grey;
+    }
   }
 }

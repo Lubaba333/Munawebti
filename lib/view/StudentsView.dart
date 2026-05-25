@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../controller/StudentsController.dart';
-
+import '../const/app_colors.dart';
 
 class StudentsView extends StatelessWidget {
   final controller = Get.put(StudentsController());
@@ -12,93 +11,87 @@ class StudentsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFFF5EFE7),
-              Color(0xFFEDE3F3),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-              /// 🔥 Header
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Dorm A",
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Column(
+          children: [
+
+            /// 🔥 HEADER
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Dorm A",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
-                        Obx(() => Text(
-                              "${controller.filteredStudents.length} Students",
-                              style: TextStyle(color: Colors.grey),
-                            )),
-                      ],
-                    ),
-                    Spacer(),
-                    Icon(Icons.group, color: Color(0xFFA467A7))
-                  ],
-                ),
+                      ),
+                      Obx(() => Text(
+                            "${controller.filteredStudents.length} Students",
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          )),
+                    ],
+                  ),
+                  const Spacer(),
+                  Icon(Icons.group, color: AppColors.primary)
+                ],
               ),
+            ),
 
-              /// 🔍 Search
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  onChanged: controller.searchStudent,
-                  decoration: InputDecoration(
-                    hintText: "Search student...",
-                    prefixIcon: Icon(Icons.search),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
+            /// 🔍 SEARCH
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                onChanged: controller.searchStudent,
+                decoration: InputDecoration(
+                  hintText: "Search student...",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Theme.of(context).cardColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
+            ),
 
-              SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-              /// 🔥 Session Bar
-              _sessionBar(),
+            /// 🔥 SESSION BAR
+            _sessionBar(),
 
-              /// 📋 List
-              Expanded(
-                child: Obx(() {
-                  return ListView.builder(
-                    padding: EdgeInsets.all(20),
-                    itemCount: controller.filteredStudents.length,
-                    itemBuilder: (context, index) {
-                      final student =
-                          controller.filteredStudents[index];
-
-                      return _studentCard(student, index);
-                    },
-                  );
-                }),
-              )
-            ],
-          ),
+            /// 📋 LIST
+            Expanded(
+              child: Obx(() {
+                return ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: controller.filteredStudents.length,
+                  itemBuilder: (context, index) {
+                    final student = controller.filteredStudents[index];
+                    return _studentCard(student, index, context);
+                  },
+                );
+              }),
+            )
+          ],
         ),
       ),
     );
   }
 
-  /// 🔥 Session Controller UI
+  // ================= SESSION BAR =================
   Widget _sessionBar() {
     return Obx(() {
       if (!controller.isSessionActive.value &&
@@ -114,76 +107,84 @@ class StudentsView extends StatelessWidget {
     });
   }
 
-  /// ▶️ Start Button
+  // ▶️ START
   Widget _startButton() {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFA467A7),
-          padding: EdgeInsets.symmetric(vertical: 15),
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 15),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)),
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
         onPressed: controller.startSession,
-        child: Center(
-          child: Text("Start Attendance",
-              style: TextStyle(color: Colors.white)),
+        child: const Center(
+          child: Text(
+            "Start Attendance",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 
-  /// 🔥 Active Session (🔥 تم التعديل هنا)
+  // 🔥 ACTIVE SESSION
   Widget _activeSessionBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
 
-          /// Row controls
           Row(
             children: [
-              Text("Session Active 🔴",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                "Session Active 🔴",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(Get.context!)
+                      .colorScheme
+                      .onBackground,
+                ),
+              ),
 
-              Spacer(),
+              const Spacer(),
 
-              /// 📷 Scan QR
               IconButton(
                 icon: Icon(Icons.qr_code_scanner,
-                    color: Color(0xFFA467A7)),
-                onPressed: () {
-                //  Get.to(() => QRScannerView());
-                },
+                    color: AppColors.primary),
+                onPressed: () {},
               ),
 
               TextButton(
                 onPressed: () => controller.markAll(true),
-                child: Text("All Present"),
+                child: const Text("All Present"),
               ),
 
               TextButton(
                 onPressed: () => controller.markAll(false),
-                child: Text("All Absent"),
+                child: const Text("All Absent"),
               ),
             ],
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
-          /// Submit
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
-              padding: EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+                borderRadius: BorderRadius.circular(15),
+              ),
             ),
             onPressed: controller.submitAttendance,
-            child: Center(
-              child: Text("Submit Attendance",
-                  style: TextStyle(color: Colors.white)),
+            child: const Center(
+              child: Text(
+                "Submit Attendance",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           )
         ],
@@ -191,17 +192,17 @@ class StudentsView extends StatelessWidget {
     );
   }
 
-  /// ✅ Submitted
+  // ✅ SUBMITTED
   Widget _submittedBar() {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.2),
+          color: Colors.green.withOpacity(0.15),
           borderRadius: BorderRadius.circular(15),
         ),
-        child: Row(
+        child: const Row(
           children: [
             Icon(Icons.check_circle, color: Colors.green),
             SizedBox(width: 10),
@@ -212,14 +213,14 @@ class StudentsView extends StatelessWidget {
     );
   }
 
-  /// 👩‍🎓 Student Card
-  Widget _studentCard(Map student, int index) {
+  // 👩‍🎓 STUDENT CARD
+  Widget _studentCard(Map student, int index, BuildContext context) {
     bool isPresent = student['present'];
 
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(15),
+      duration: const Duration(milliseconds: 300),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: isPresent
             ? Colors.green.withOpacity(0.1)
@@ -229,36 +230,35 @@ class StudentsView extends StatelessWidget {
       child: Row(
         children: [
 
-          /// Avatar
           CircleAvatar(
-            backgroundColor: Color(0xFFA467A7),
+            backgroundColor: AppColors.primary,
             child: Text(
               student['name'][0],
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
 
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
 
-          /// Name
           Expanded(
             child: Text(
               student['name'],
               style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 16),
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
             ),
           ),
 
-          /// Toggle
           Switch(
             value: isPresent,
             activeColor: Colors.green,
             onChanged: (_) => controller.toggleAttendance(index),
           ),
 
-          /// ⚠️ Violation
           IconButton(
-            icon: Icon(Icons.warning, color: Colors.orange),
+            icon: const Icon(Icons.warning, color: Colors.orange),
             onPressed: () {
               Get.snackbar("Violation", "Add violation");
             },

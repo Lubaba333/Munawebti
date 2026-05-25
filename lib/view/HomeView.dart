@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-
-import '../const/app_colors.dart';
 import '../controller/HomeController.dart';
+import '../const/app_colors.dart';
 
 class HomeView extends StatelessWidget {
   final controller = Get.put(HomeController());
@@ -13,16 +11,16 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           return SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -32,7 +30,7 @@ class HomeView extends StatelessWidget {
                   "Hello 👋",
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.textDark,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
 
@@ -41,48 +39,48 @@ class HomeView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
 
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
 
-                /// 🔥 Current Shift Card (Highlight)
-                _currentShiftCard(),
+                /// 🔥 Current Shift Card
+                _currentShiftCard(context),
 
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
 
                 /// ⚡ Quick Actions
-                _sectionTitle("Quick Actions"),
-                SizedBox(height: 15),
+                _sectionTitle("Quick Actions", context),
+                const SizedBox(height: 15),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _actionItem(Icons.check_circle, "Attendance"),
-                    _actionItem(Icons.warning, "Violation"),
-                    _actionItem(Icons.emergency, "Emergency"),
+                    _actionItem(Icons.check_circle, "Attendance", context),
+                    _actionItem(Icons.warning, "Violation", context),
+                    _actionItem(Icons.emergency, "Emergency", context),
                   ],
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 /// 📅 Today Schedule
-                _sectionTitle("Today"),
-                SizedBox(height: 15),
+                _sectionTitle("Today", context),
+                const SizedBox(height: 15),
 
                 ...controller.todaySchedule
-                    .map((e) => _scheduleItem(e))
+                    .map((e) => _scheduleItem(e, context))
                     .toList(),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 /// 🔔 Notifications
-                _sectionTitle("Notifications"),
-                SizedBox(height: 15),
+                _sectionTitle("Notifications", context),
+                const SizedBox(height: 15),
 
                 ...controller.notifications
-                    .map((n) => _notificationItem(n))
+                    .map((n) => _notificationItem(n, context))
                     .toList(),
               ],
             ),
@@ -93,21 +91,21 @@ class HomeView extends StatelessWidget {
   }
 
   /// 🔥 Section Title
-  Widget _sectionTitle(String title) {
+  Widget _sectionTitle(String title, BuildContext context) {
     return Text(
       title,
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: AppColors.textDark,
+        color: Theme.of(context).colorScheme.onBackground,
       ),
     );
   }
 
-  /// 💎 Current Shift Card (Modern)
-  Widget _currentShiftCard() {
+  /// 💎 Current Shift Card
+  Widget _currentShiftCard(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(20),
@@ -116,46 +114,36 @@ class HomeView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          Text(
+          const Text(
             "Current Shift",
-            style: TextStyle(color: AppColors.textLight),
+            style: TextStyle(color: Colors.white70),
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           Obx(() => Text(
                 "${controller.currentShift['title']} - ${controller.currentShift['type']}",
-                style: TextStyle(
-                  color: AppColors.white,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               )),
 
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
 
           Obx(() => Text(
                 controller.currentShift['time'] ?? "",
-                style: TextStyle(color: AppColors.textLight),
+                style: const TextStyle(color: Colors.white70),
               )),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           Row(
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-              ),
+            children: const [
+              Icon(Icons.circle, color: Colors.red, size: 10),
               SizedBox(width: 6),
-              Text(
-                "Active",
-                style: TextStyle(color: AppColors.textLight),
-              )
+              Text("Active", style: TextStyle(color: Colors.white70)),
             ],
           )
         ],
@@ -164,63 +152,85 @@ class HomeView extends StatelessWidget {
   }
 
   /// ⚡ Action Item
-  Widget _actionItem(IconData icon, String title) {
+  Widget _actionItem(IconData icon, String title, BuildContext context) {
     return Column(
       children: [
         Container(
           width: 70,
           height: 70,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 8)
+            boxShadow: const [
+              BoxShadow(color: Colors.black12, blurRadius: 8),
             ],
           ),
           child: Icon(icon, color: AppColors.primary),
         ),
-        SizedBox(height: 8),
-        Text(title, style: TextStyle(fontSize: 12)),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+        ),
       ],
     );
   }
 
   /// 📅 Schedule Item
-  Widget _scheduleItem(Map<String, String> item) {
+  Widget _scheduleItem(Map<String, String> item, BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         children: [
           Icon(Icons.access_time, color: AppColors.primary),
-          SizedBox(width: 10),
-          Text(item['time'] ?? ""),
-          Spacer(),
-          Text(item['place'] ?? "",
-              style: TextStyle(color: AppColors.textLight)),
+          const SizedBox(width: 10),
+          Text(
+            item['time'] ?? "",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            item['place'] ?? "",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
   }
 
   /// 🔔 Notification
-  Widget _notificationItem(String text) {
+  Widget _notificationItem(String text, BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         children: [
           Icon(Icons.notifications, color: AppColors.primary),
-          SizedBox(width: 10),
-          Expanded(child: Text(text)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ),
+          ),
         ],
       ),
     );
