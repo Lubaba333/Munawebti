@@ -48,7 +48,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     entryController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1900),
     );
 
     _generateRandomOffsets(20);

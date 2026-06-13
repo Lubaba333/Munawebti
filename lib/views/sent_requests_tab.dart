@@ -13,45 +13,47 @@ class SentRequestsTab extends StatelessWidget {
 
   String _text(dynamic value) => value?.toString() ?? '';
 
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.isLoading.value && controller.requests.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
-      }
+@override
+Widget build(BuildContext context) {
+  return Obx(() {
+    if (controller.initialLoading.value) {
+  return const Center(
+    child: CircularProgressIndicator(),
+  );
+}
 
-      final myId = controller.currentStudentId.value;
+    final myId = controller.currentStudentId.value;
 
-      final sent = controller.requests.where((request) {
-        final requesterId = int.tryParse(_text(request['requester_id']));
-        final targetId = int.tryParse(_text(request['target_student_id']));
+    final sent = controller.requests.where((request) {
+      final requesterId = int.tryParse(_text(request['requester_id']));
+      final targetId = int.tryParse(_text(request['target_student_id']));
 
-        if (myId == null) return true;
+      if (myId == null) return true;
 
-        return requesterId == myId || targetId == null;
-      }).toList();
+      return requesterId == myId || targetId == null;
+    }).toList();
 
-      if (sent.isEmpty) {
-        return const Center(
-          child: Text(
-            "لا توجد طلبات حالياً",
-            style: TextStyle(color: Colors.grey),
-          ),
-        );
-      }
-
-      return RefreshIndicator(
-        onRefresh: controller.getMyRequests,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(18),
-          itemCount: sent.length,
-          itemBuilder: (_, index) {
-            return _requestCard(sent[index]);
-          },
+    if (sent.isEmpty) {
+      return const Center(
+        child: Text(
+          "لا توجد طلبات حالياً",
+          style: TextStyle(color: Colors.grey),
         ),
       );
-    });
-  }
+    }
+
+    return RefreshIndicator(
+      onRefresh: controller.getMyRequests,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(18),
+        itemCount: sent.length,
+        itemBuilder: (_, index) {
+          return _requestCard(sent[index]);
+        },
+      ),
+    );
+  });
+}
 
   Widget _requestCard(dynamic request) {
     final status =
@@ -103,13 +105,13 @@ class SentRequestsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-       if (_requestReason(request).isNotEmpty)
-  Text(
-    "السبب: ${_requestReason(request)}",
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-  ),
+          if (_requestReason(request).isNotEmpty)
+            Text(
+              "السبب: ${_requestReason(request)}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            ),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -150,15 +152,15 @@ class SentRequestsTab extends StatelessWidget {
     );
   }
 
-String _requestReason(dynamic request) {
-  final metadata = request['metadata'];
+  String _requestReason(dynamic request) {
+    final metadata = request['metadata'];
 
-  if (metadata is Map && metadata['reason'] != null) {
-    return metadata['reason'].toString();
+    if (metadata is Map && metadata['reason'] != null) {
+      return metadata['reason'].toString();
+    }
+
+    return "غير محدد";
   }
-
-  return "غير محدد";
-}
 
   String _requestTypeName(dynamic request) {
     final type = _text(request['request_type']);

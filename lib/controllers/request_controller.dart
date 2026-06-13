@@ -16,7 +16,7 @@ var isLoadingRooms = false.obs;
   var requests = <dynamic>[].obs;
   var rooms = <dynamic>[].obs;
   var roomStudents = <dynamic>[].obs;
-
+var initialLoading = true.obs;
   var currentRoom = Rxn<Map<String, dynamic>>();
   var currentStudentId = RxnInt();
 
@@ -164,8 +164,9 @@ var isLoadingRooms = false.obs;
       print("❌ Get Requests Error: $e");
       requests.value = [];
     } finally {
-      isLoading.value = false;
-    }
+  isLoading.value = false;
+  initialLoading.value = false;
+}
   }
 
   Future<void> createExitRequest(ExitPermissionRequest request) async {

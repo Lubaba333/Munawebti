@@ -1,11 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/views/login.dart';
 import 'package:studants/views/register_view.dart';
-import 'package:studants/widgets/gradient_button.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
@@ -43,7 +41,6 @@ class _WelcomeViewState extends State<WelcomeView>
       duration: const Duration(milliseconds: 1800),
     );
 
-    // 🎬 Animations
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
 
     _textSlide = Tween<Offset>(
@@ -75,55 +72,54 @@ class _WelcomeViewState extends State<WelcomeView>
     super.dispose();
   }
 
-@override
-Widget build(BuildContext context) {
-  final w = MediaQuery.of(context).size.width;
-  final h = MediaQuery.of(context).size.height;
+  @override
+  Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
 
-  return Scaffold(
-    body: AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Stack(
-          children: [
-            // 🌈 الخلفية
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color.fromARGB(255, 236, 223, 234).withOpacity(0.95),
-                    const Color.fromARGB(255, 210, 170, 206),
-                    AppColors.deepPurple,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          return Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color.fromARGB(255, 236, 223, 234)
+                          .withOpacity(0.95),
+                      const Color.fromARGB(255, 210, 170, 206),
+                      AppColors.deepPurple,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
               ),
-            ),
 
-            ..._buildWaves(),
-            ..._buildSpheres(w, h),
+              ..._buildWaves(),
+              ..._buildSpheres(w, h),
 
-            SafeArea(
-              child: Column(
-                children: [
-                  const Spacer(),
+              SafeArea(
+                child: Column(
+                  children: [
+                    const Spacer(),
 
-                  // ✨ Glass Card + animation يرجع يشتغل صح
-                  Opacity(
-                    opacity: _controller.value,
-                    child: Transform.translate(
-                      offset: Offset(0, 40 * (1 - _controller.value)+45),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 50,
-                              sigmaY: 100,
-                            ),
-                           
+                    Opacity(
+                      opacity: _controller.value,
+                      child: Transform.translate(
+                        offset:
+                            Offset(0, 40 * (1 - _controller.value) + 45),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 50,
+                                sigmaY: 100,
+                              ),
                               child: Container(
                                 padding: const EdgeInsets.all(24),
                                 decoration: BoxDecoration(
@@ -136,10 +132,10 @@ Widget build(BuildContext context) {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Welcome to Studants App",
                                       style: TextStyle(
-                                        color: const Color.fromARGB(255, 255, 255, 255),
+                                        color: Colors.white,
                                         fontSize: 21,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -147,7 +143,6 @@ Widget build(BuildContext context) {
                                     const SizedBox(height: 10),
                                     Text(
                                       "A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.",
-
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.8),
                                         fontSize: 15,
@@ -157,68 +152,75 @@ Widget build(BuildContext context) {
                                   ],
                                 ),
                               ),
-                            
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  const Spacer(),
+                    const Spacer(),
 
-                  // 🔘 Buttons animation رجعت واضحة
-                  Opacity(
-                    opacity: _controller.value,
-                    child: Transform.translate(
-                      offset: Offset(0, 60 * (1 - _controller.value)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child:Row(
-  children: [
-    Expanded(
-      child: GradientButton(
-        text: 'Sign up',
-        onTap: () {
-          Get.to(() =>RegisterView());
-        },
-      ),
-    ),
-    const SizedBox(width: 12),
-    Expanded(
-      child: GradientButton(
-        text: 'Sign in',
-        onTap: () {
-          Get.to(() => LoginView());
-        },
-      ),
-    ),
-  ],
-)
+                    Opacity(
+                      opacity: _controller.value,
+                      child: Transform.translate(
+                        offset: Offset(0, 60 * (1 - _controller.value)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _GlassActionButton(
+                                  text: 'Sign up',
+                                  icon: Icons.person_add_alt_1,
+                                  onTap: () {
+                                    Get.to(() => RegisterView());
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: _GlassActionButton(
+                                  text: 'Sign in',
+                                  icon: Icons.login_rounded,
+                                  onTap: () {
+                                    Get.to(() => LoginView());
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-  // 🌫️ waves
   List<Widget> _buildWaves() {
     return [
       Positioned(
         top: -120,
         right: -120,
-        child: _blurCircle(const Color.fromARGB(255, 255, 229, 250), 0.50, 400),
+        child: _blurCircle(
+          const Color.fromARGB(255, 255, 229, 250),
+          0.50,
+          400,
+        ),
       ),
       Positioned(
         bottom: -160,
         left: -160,
-        child: _blurCircle(const Color.fromARGB(255, 255, 251, 255), 0.2, 500),
+        child: _blurCircle(
+          const Color.fromARGB(255, 255, 251, 255),
+          0.2,
+          500,
+        ),
       ),
     ];
   }
@@ -239,7 +241,6 @@ Widget build(BuildContext context) {
     );
   }
 
-  // 🔵 spheres
   List<Widget> _buildSpheres(double w, double h) {
     return List.generate(5, (i) {
       return AnimatedBuilder(
@@ -271,7 +272,70 @@ Widget build(BuildContext context) {
       );
     });
   }
-
-
 }
 
+class _GlassActionButton extends StatelessWidget {
+  final String text;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _GlassActionButton({
+    required this.text,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(28),
+          child: Container(
+            height: 66,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.48),
+                  AppColors.deepPurple.withOpacity(0.58),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.35),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.deepPurple.withOpacity(0.28),
+                  blurRadius: 22,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white, size: 21),
+                const SizedBox(width: 8),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
