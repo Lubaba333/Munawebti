@@ -92,53 +92,19 @@ class ProfileView extends StatelessWidget {
 
                     const SizedBox(height: 10),
 
-                    _label("Name"),
-                    Obx(() => CustomTextField(
-                          controller: nameController,
-                          hint: "Enter your name",
-                          icon: Icons.person,
-                          enabled: controller.isEditing.value,
-                        )),
+_readonlyInfo(
+  icon: Icons.person,
+  label: "Name",
+  value: controller.name.value,
+),
 
-                    const SizedBox(height: 8),
+_readonlyInfo(
+  icon: Icons.email,
+  label: "Email",
+  value: controller.email.value,
+),
 
-                    _label("Email"),
-                    Obx(() => CustomTextField(
-                          controller: emailController,
-                          hint: "Enter your email",
-                          icon: Icons.email,
-                          keyboardType: TextInputType.emailAddress,
-                          enabled: controller.isEditing.value,
-                        )),
-
-                    const SizedBox(height: 15),
-
-                    Obx(() => controller.isEditing.value
-                        ? GradientButton(
-                            text: "Save",
-                            onTap: () async {
-                              bool success = await controller.updateProfile(
-                                newName: nameController.text,
-                                newEmail: emailController.text,
-                              );
-
-                              if (success) {
-                                controller.isEditing.value = false;
-                                Get.snackbar(
-                                  "Success",
-                                  "تم الحفظ",
-                                  backgroundColor: Colors.green,
-                                  colorText: Colors.white,
-                                );
-                              } else {
-                                Get.snackbar(
-                                  "Error",
-                                  controller.errorMessage.value,
-                                );
-                              }
-                            },
-                          )
-                        : const SizedBox()),
+                   
                   ],
                 ),
               );
@@ -162,21 +128,7 @@ class ProfileView extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const Spacer(),
-        Obx(() => GestureDetector(
-              onTap: () {
-                controller.isEditing.value = !controller.isEditing.value;
-              },
-              child: Row(
-                children: [
-                  const Icon(Icons.edit, size: 18, color: AppColors.darkPurple),
-                  const SizedBox(width: 5),
-                  Text(
-                    controller.isEditing.value ? "إلغاء" : "تعديل",
-                    style: const TextStyle(color: AppColors.darkPurple),
-                  ),
-                ],
-              ),
-            )),
+       
       ],
     );
   }
@@ -379,16 +331,5 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _label(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 0, top: 0),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: AppColors.darkPurple,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
+ 
 }

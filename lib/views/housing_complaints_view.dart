@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/views/housing_complaints_creat%20view.dart';
+import 'package:studants/widgets/gradient_button.dart';
 import '../controllers/housing_complaint_controller.dart';
 import '../utlis/app_colors.dart';
 import 'housing_complaint_detail_view.dart';
+
 
 class HousingComplaintsView extends StatelessWidget {
   HousingComplaintsView({super.key});
@@ -12,242 +15,314 @@ class HousingComplaintsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F6FB),
-
-      appBar: AppBar(
-        title: const Text("شكاوى السكن"),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: AppColors.darkPurple,
-      ),
-
-      /// 🔥 زر إضافة مع نص
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddDialog(),
-        backgroundColor: AppColors.mauve,
-        icon: const Icon(Icons.add),
-        label: const Text("إضافة شكوى"),
-      ),
-
-      body: Stack(
-        children: [
-          _background(),
-
-          Obx(() {
-            if (controller.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (controller.complaints.isEmpty) {
-              return const Center(
-                child: Text("لا يوجد شكاوى بعد"),
-              );
-            }
-
-            return RefreshIndicator(
-  onRefresh: () async {
-    await controller.fetchComplaints(); // 🔥 تحديث البيانات
-  },
-
-  child: ListView.builder(
-    physics: const AlwaysScrollableScrollPhysics(), // مهم!
-    padding: const EdgeInsets.all(16),
-    itemCount: controller.complaints.length,
-    itemBuilder: (_, i) {
-      final item = controller.complaints[i];
-      return _buildComplaintCard(item);
-    },
-  ),
-);
-          }),
-        ],
-      ),
-    );
-  }
-
-  /// 🎯 الكارد الاحترافي
-  Widget _buildComplaintCard(complaint) {
-    final isResolved = complaint.status == 'resolved';
-
-    return GestureDetector(
-      onTap: () async {
-        await controller.fetchComplaintDetails(complaint.id);
-        Get.to(() => const HousingComplaintDetailView());
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
-
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isResolved
-                ? Colors.green.withOpacity(0.3)
-                : Colors.orange.withOpacity(0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            )
-          ],
-        ),
-
-        child: Row(
-          children: [
-
-            /// 🔥 أيقونة الحالة
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isResolved
-                    ? Colors.green.withOpacity(0.1)
-                    : Colors.orange.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isResolved ? Icons.check_circle : Icons.pending,
-                color: isResolved ? Colors.green : Colors.orange,
-                size: 26,
-              ),
-            ),
-
-            const SizedBox(width: 14),
-
-            /// 📄 النصوص
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Text(
-                    complaint.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  Text(
-                    complaint.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  /// 🟡 حالة
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: isResolved
-                          ? Colors.green.withOpacity(0.1)
-                          : Colors.orange.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      isResolved ? "تم الحل" : "قيد المعالجة",
-                      style: TextStyle(
-                        color:
-                            isResolved ? Colors.green : Colors.orange,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const Icon(Icons.arrow_forward_ios,
-                size: 16, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// ➕ Dialog إضافة
-  void _showAddDialog() {
-    final title = TextEditingController();
-    final desc = TextEditingController();
-
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)),
-        title: const Text("إضافة شكوى"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: title,
-              decoration: const InputDecoration(labelText: "العنوان"),
-            ),
-            TextField(
-              controller: desc,
-              decoration: const InputDecoration(labelText: "الوصف"),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text("إلغاء"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              controller.createComplaint(
-                title: title.text,
-                description: desc.text,
-              );
-            },
-            child: const Text("إرسال"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 🌸 الخلفية
-  Widget _background() {
-    return Stack(
+      backgroundColor: AppColors.softLavender,
+bottomNavigationBar: SafeArea(
+  child: Container(
+    color: Colors.white,
+    padding: const EdgeInsets.only(
+      right: 16,
+      left: 16,
+      top: 10,
+      bottom: 14,
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Positioned(
-          top: -80,
-          left: -40,
-          child: _circle(200, AppColors.lightPink.withOpacity(0.5)),
-        ),
-        Positioned(
-          top: 120,
-          right: -60,
-          child: _circle(180, AppColors.mauve.withOpacity(0.4)),
-        ),
-        Positioned(
-          bottom: -80,
-          left: 60,
-          child: _circle(220, AppColors.deepPurple.withOpacity(0.3)),
+        SizedBox(
+          width: 170,
+          child: GradientButton(
+            text: "+ إضافة شكوى",
+            onTap: () {
+              Get.to(() => HousingComplaintCreateView());
+            },
+          ),
         ),
       ],
+    ),
+  ),
+),
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _header(),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(36),
+                    ),
+                  ),
+                  child: Obx(() {
+                    if (controller.isLoading.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.mauve,
+                        ),
+                      );
+                    }
+
+                    if (controller.complaints.isEmpty) {
+                      return _emptyState();
+                    }
+
+                    return RefreshIndicator(
+                      color: AppColors.mauve,
+                      onRefresh: controller.fetchComplaints,
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(18, 22, 18, 100),
+                        itemCount: controller.complaints.length,
+                        itemBuilder: (_, i) {
+                          final item = controller.complaints[i];
+                          return _buildComplaintCard(item);
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _circle(double size, Color color) {
+  Widget _header() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+      child: Row(
+        children: [
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.white.withOpacity(.25)),
+            ),
+            child: const Icon(
+              Icons.campaign_outlined,
+              color: Colors.white,
+              size: 29,
+            ),
+          ),
+          const SizedBox(width: 14),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "شكاوى السكن",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "تابعي الشكاوى وحالة معالجتها",
+                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _emptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 92,
+            height: 92,
+            decoration: BoxDecoration(
+              color: AppColors.softLavender,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(
+              Icons.campaign_outlined,
+              size: 52,
+              color: AppColors.darkPurple,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            "لا يوجد شكاوى بعد",
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            "عند إضافة شكوى جديدة ستظهر هنا",
+            style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComplaintCard(complaint) {
+    final isResolved = complaint.status == 'resolved';
+    final statusColor = isResolved ? Colors.green : Colors.orange;
+    final statusText = isResolved ? "تم الحل" : "قيد المعالجة";
+
+    return  Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: statusColor.withOpacity(.20)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.deepPurple.withOpacity(.08),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(.10),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Icon(
+                    isResolved
+                        ? Icons.check_circle_outline
+                        : Icons.report_problem_outlined,
+                    color: statusColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        complaint.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.darkPurple,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        complaint.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                _smallInfoChip(
+                  text: "شكوى سكن",
+                  icon: Icons.home_work_outlined,
+                  color: AppColors.darkPurple,
+                ),
+                const SizedBox(width: 8),
+                _smallInfoChip(
+                  text: statusText,
+                  icon: Icons.circle,
+                  color: statusColor,
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () async {
+                    await controller.fetchComplaintDetails(complaint.id);
+                    Get.to(() => const HousingComplaintDetailView());
+                  },
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  label: const Text("تفاصيل"),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.darkPurple,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      
+    );
+  }
+
+  Widget _smallInfoChip({
+    required String text,
+    required IconData icon,
+    required Color color,
+  }) {
     return Container(
-      width: size,
-      height: size,
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
+        color: color.withOpacity(.10),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(
+              color: color,
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

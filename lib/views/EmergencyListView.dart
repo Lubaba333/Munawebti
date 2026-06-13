@@ -9,62 +9,196 @@ import '../../utlis/app_colors.dart';
 class EmergencyListView extends StatelessWidget {
   const EmergencyListView({super.key});
 
+  static const emergencyRed = Color(0xFFD84A4A);
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(EmergencyController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('حالات الطوارئ'),
-        backgroundColor: AppColors.darkPurple,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value && controller.emergencyCases.isEmpty) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.mauve));
-        }
-
-        if (controller.emergencyCases.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.shield_outlined, size: 72, color: Colors.grey.shade400),
-                const SizedBox(height: 16),
-                Text('لا توجد بلاغات طوارئ سابقة', 
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
-              ],
-            ),
-          );
-        }
-
-        return RefreshIndicator(
-          onRefresh: () => controller.fetchEmergencyCases(),
-          child: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: controller.emergencyCases.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final item = controller.emergencyCases[index];
-              return _buildCaseCard(item, controller);
-            },
-          ),
-        );
-      }),
+      backgroundColor: AppColors.softLavender,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.to(() => const EmergencyCreateView()),
-        backgroundColor: AppColors.darkPurple,
+        backgroundColor: emergencyRed,
         icon: const Icon(Icons.add_alert, color: Colors.white),
-        label: const Text('بلاغ جديد', style: TextStyle(color: Colors.white)),
+        label: const Text(
+          'بلاغ جديد',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.mainGradient,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _header(),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(36),
+                    ),
+                  ),
+                  child: Obx(() {
+                    if (controller.isLoading.value &&
+                        controller.emergencyCases.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.mauve,
+                        ),
+                      );
+                    }
+
+                    if (controller.emergencyCases.isEmpty) {
+                      return _emptyState();
+                    }
+
+                    return RefreshIndicator(
+                      color: AppColors.mauve,
+                      onRefresh: () => controller.fetchEmergencyCases(),
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(18, 22, 18, 100),
+                        itemCount: controller.emergencyCases.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 14),
+                        itemBuilder: (context, index) {
+                          final item = controller.emergencyCases[index];
+                          return _buildCaseCard(item, controller);
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _header() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+    child: Row(
+      children: [
+        Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(.20),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 12),
+
+        Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(.20),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: Colors.white.withOpacity(.25),
+            ),
+          ),
+          child: const Icon(
+            Icons.emergency_share_rounded,
+            color: Colors.white,
+            size: 29,
+          ),
+        ),
+
+        const SizedBox(width: 14),
+
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'حالات الطوارئ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'تابعي البلاغات وحالة المعالجة',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+  Widget _emptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 92,
+            height: 92,
+            decoration: BoxDecoration(
+              color: AppColors.softLavender,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(
+              Icons.shield_outlined,
+              size: 52,
+              color: AppColors.darkPurple,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'لا توجد بلاغات طوارئ سابقة',
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'عند إرسال بلاغ جديد سيظهر هنا',
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 13,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildCaseCard(EmergencyCase item, EmergencyController controller) {
     final isHigh = item.severity == 'high';
-    final statusColor = item.status == 'resolved' ? Colors.green : Colors.orange;
-    final statusText = item.status == 'resolved' ? 'تم الحل' : 'قيد المعالجة';
+    final isResolved = item.status == 'resolved';
+
+    final statusColor = isResolved ? Colors.green : Colors.orange;
+    final statusText = isResolved ? 'تم الحل' : 'قيد المعالجة';
+
+    final severityColor = isHigh ? emergencyRed : AppColors.mauve;
 
     return GestureDetector(
       onTap: () {
@@ -75,77 +209,126 @@ class EmergencyListView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isHigh ? Colors.redAccent.withOpacity(0.3) : Colors.grey.shade200,
+            color: severityColor.withOpacity(.20),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              color: AppColors.deepPurple.withOpacity(.08),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isHigh ? Colors.red.shade50 : AppColors.softLavender,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isHigh ? Icons.warning_amber_rounded : Icons.info_outline,
-                color: isHigh ? Colors.redAccent : AppColors.mauve,
-                size: 24,
-              ),
+            Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: isHigh
+                        ? emergencyRed.withOpacity(.10)
+                        : AppColors.softLavender,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Icon(
+                    isHigh
+                        ? Icons.warning_amber_rounded
+                        : Icons.info_outline_rounded,
+                    color: severityColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.darkPurple,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        item.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: AppColors.darkPurple,
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                _smallInfoChip(
+                  icon: Icons.circle,
+                  text: statusText,
+                  color: statusColor,
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () {
+                    controller.selectedCase.value = item;
+                    Get.to(() => const EmergencyDetailView());
+                  },
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  label: const Text('تفاصيل'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.darkPurple,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '🕐 ${item.createdAt.toString().substring(0, 16)}',
-                    style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                statusText,
-                style: TextStyle(
-                  color: statusColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
                 ),
-              ),
+              ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _smallInfoChip({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(.10),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(
+              color: color,
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

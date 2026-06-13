@@ -12,92 +12,73 @@ class EmergencyDetailView extends StatelessWidget {
     final controller = Get.find<EmergencyController>();
 
     return Scaffold(
+      backgroundColor: AppColors.softLavender,
       appBar: AppBar(
         title: const Text('تفاصيل البلاغ'),
+        centerTitle: true,
         backgroundColor: AppColors.darkPurple,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: Obx(() {
-        if (controller.isLoading.value || controller.selectedCase.value == null) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.mauve));
+        if (controller.isLoading.value ||
+            controller.selectedCase.value == null) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.mauve),
+          );
         }
 
         final item = controller.selectedCase.value!;
-        
-        // ✅ الحل: تحويل الـ String إلى DateTime قبل التنسيق
+
         DateTime createdAtDateTime;
         try {
           createdAtDateTime = DateTime.parse(item.createdAt);
         } catch (_) {
-          createdAtDateTime = DateTime.now(); // fallback إذا فشل التحليل
+          createdAtDateTime = DateTime.now();
         }
-        final dateStr = DateFormat('yyyy-MM-dd HH:mm').format(createdAtDateTime);
-        
-        final isHigh = item.severity == 'high';
+
+        final dateStr =
+            DateFormat('yyyy-MM-dd HH:mm').format(createdAtDateTime);
+
+        final isResolved = item.status == 'resolved';
 
         return Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(18),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInfoCard('العنوان', item.title),
-              const SizedBox(height: 12),
-              _buildInfoCard('الوصف', item.description, isMultiline: true),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildInfoCard(
-                      'الحالة', 
-                      item.status == 'resolved' ? '✅ تم الحل' : '⏳ قيد المعالجة',
-                      valueColor: item.status == 'resolved' ? Colors.green : Colors.orange,
-                    ),
-                  ),
-                ],
+              _buildInfoCard(
+                'العنوان',
+                item.title,
+                icon: Icons.title_rounded,
               ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.access_time, color: Colors.grey.shade600, size: 20),
-                    const SizedBox(width: 10),
-                    Text(
-                      'تاريخ الإنشاء: $dateStr', 
-                      style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
-                    ),
-                  ],
-                ),
+
+              const SizedBox(height: 12),
+
+              _buildInfoCard(
+                'الوصف',
+                item.description,
+                icon: Icons.description_rounded,
+                isMultiline: true,
               ),
+
+              const SizedBox(height: 12),
+
+              _buildInfoCard(
+                'الحالة',
+                isResolved ? 'تم الحل' : 'قيد المعالجة',
+                icon: isResolved
+                    ? Icons.check_circle_rounded
+                    : Icons.hourglass_empty_rounded,
+                valueColor: isResolved ? Colors.green : Colors.orange,
+              ),
+
+              const SizedBox(height: 14),
+
+              _dateCard(dateStr),
+
               const Spacer(),
-              if (item.status != 'resolved')
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.orange.shade200),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.hourglass_empty, color: Colors.orange, size: 22),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'بلاغك قيد المراجعة من قبل الإدارة. سيتم التواصل معك فور توفر تحديث.',
-                          style: TextStyle(color: Colors.orange.shade800, fontSize: 13),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
+              if (!isResolved) _pendingNotice(),
             ],
           ),
         );
@@ -105,43 +86,111 @@ class EmergencyDetailView extends StatelessWidget {
     );
   }
 
-  // ✅ دالة مساعدة لتحويل قيمة severity إلى نص عربي
- 
-
-  Widget _buildInfoCard(String label, String value, {
-    bool isMultiline = false,
-    Color? valueColor,
-  }) {
+  Widget _dateCard(String dateStr) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+        color: Colors.white.withOpacity(.95),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.mauve.withOpacity(.15)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.access_time,
+            color: AppColors.darkPurple,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            'تاريخ الإنشاء: $dateStr',
+            style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+
+  Widget _pendingNotice() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Row(
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: valueColor ?? AppColors.darkPurple,
+          Icon(Icons.hourglass_empty, color: Colors.orange.shade700, size: 22),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'بلاغك قيد المراجعة من قبل الإدارة. سيتم التواصل معك فور توفر تحديث.',
+              style: TextStyle(color: Colors.orange.shade800, fontSize: 13),
             ),
-            maxLines: isMultiline ? 5 : 1,
-            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(
+    String label,
+    String value, {
+    bool isMultiline = false,
+    Color? valueColor,
+    required IconData icon,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.mauve.withOpacity(.12)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.deepPurple.withOpacity(.06),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment:
+            isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: AppColors.softLavender,
+            child: Icon(
+              icon,
+              color: valueColor ?? AppColors.darkPurple,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: valueColor ?? AppColors.darkPurple,
+                  ),
+                  maxLines: isMultiline ? 6 : 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),

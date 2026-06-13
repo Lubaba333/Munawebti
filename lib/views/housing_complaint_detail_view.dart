@@ -14,12 +14,20 @@ class HousingComplaintDetailView extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FB),
 
-      appBar: AppBar(
-        title: const Text("تفاصيل الشكوى"),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: AppColors.darkPurple,
-      ),
+     appBar: AppBar(
+  backgroundColor: AppColors.darkPurple,
+  elevation: 0,
+  centerTitle: true,
+  iconTheme: const IconThemeData(color: Colors.white),
+  title: const Text(
+    "تفاصيل الشكوى",
+    style: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      fontSize: 20,
+    ),
+  ),
+),
 
      body: RefreshIndicator(
   onRefresh: () async {
@@ -223,27 +231,21 @@ class HousingComplaintDetailView extends StatelessWidget {
   }
 
   /// 🌸 الخلفية
-  Widget _background() {
-    return Stack(
-      children: [
-        Positioned(
-          top: -80,
-          left: -40,
-          child: _circle(200, AppColors.lightPink.withOpacity(0.5)),
-        ),
-        Positioned(
-          top: 120,
-          right: -60,
-          child: _circle(180, AppColors.mauve.withOpacity(0.4)),
-        ),
-        Positioned(
-          bottom: -80,
-          left: 60,
-          child: _circle(220, AppColors.deepPurple.withOpacity(0.3)),
-        ),
-      ],
-    );
-  }
+Widget _background() {
+  return Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color(0xFFF8F6FB),
+          Color(0xFFF2ECFA),
+          Color(0xFFEDE4F8),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+    ),
+  );
+}
 
   Widget _circle(double size, Color color) {
     return Container(
