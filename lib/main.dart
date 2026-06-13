@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/controllers/auth_controller.dart';
 import 'package:studants/controllers/profile_controller.dart';
+import 'package:studants/controllers/reset_password_controller.dart';
 
 import 'package:studants/firebase_options.dart';
 import 'package:studants/services/local_notification_service.dart';
@@ -16,18 +18,22 @@ import 'package:studants/views/welcome_view.dart';
 
 
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
- await Firebase.initializeApp(
+
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
-    // 🔥 init local notifications
   await LocalNotificationService.init();
+
+  /// 🔥 بدل put → lazyPut
+  Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
 Get.put(ProfileController());
-  // 🔥 init FCM
+  Get.lazyPut<ResetPasswordController>( () => ResetPasswordController(),fenix: true,);
+
   await initFCM();
+
   runApp(const MyApp());
 }
 
@@ -86,6 +92,6 @@ class MyApp extends StatelessWidget {
 
   themeMode: ThemeMode.system, // أو Get.isDarkMode.obs
   // ...
-   home:LoginView(),);
+   home:WelcomeView(),);
   }
 }

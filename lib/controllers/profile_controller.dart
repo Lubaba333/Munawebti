@@ -3,25 +3,29 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studants/services/service.dart';
+
 class ProfileController extends GetxController {
-
   final ApiService _apiService = ApiService();
-  /// 🔹 بيانات قابلة للتعديل
-  var name = "Ghaeda Alhalaki".obs;
-  var email = "ghaeda@gmail.com".obs;
 
-  /// 🔒 بيانات غير قابلة للتعديل
-  final _studentId = "202100123".obs;
-  final _room = "Room 204".obs;
+  var name = ''.obs;
+  var email = ''.obs;
+  var phone = ''.obs;
+  var year = ''.obs;
+  var specialization = ''.obs;
+  var isResident = false.obs;
+  var annualAverage = ''.obs;
+
+  final _studentId = ''.obs;
+  final _room = ''.obs;
+  final _roomUnit = ''.obs;
 
   String get studentId => _studentId.value;
   String get room => _room.value;
+  String get roomUnit => _roomUnit.value;
 
-  /// 🖼️ صورة البروفايل
   var profileImage = Rxn<File>();
   final ImagePicker _picker = ImagePicker();
 
-  /// 🔹 حالات
   var isLoading = false.obs;
   var isEditing = false.obs;
   var errorMessage = ''.obs;
@@ -29,83 +33,97 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadProfile();
     loadImage();
-    
+    getProfile();
   }
-Future<void> loadImage() async {
-  final prefs = await SharedPreferences.getInstance();
-  final path = prefs.getString('profile_image');
 
-  if (path != null) {
-    profileImage.value = File(path);
+  Future<void> loadImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('profile_image');
+
+    if (path != null && path.isNotEmpty) {
+      profileImage.value = File(path);
+    }
   }
-}
-  Future<void> loadProfile() async {
+
+  Future<void> getProfile() async {
     try {
       isLoading.value = true;
 
-      final prefs = await SharedPreferences.getInstance();
+      final response = await _apiService.get(
+        '/auth/student/me',
+        authRequired: true,
+      );
 
-      name.value = prefs.getString('name') ?? name.value;
-      email.value = prefs.getString('email') ?? email.value;
+      print("✅ ME Response: $response");
 
-      _studentId.value =
-          prefs.getString('studentId') ?? _studentId.value;
+      final student = response['data']?['student'];
 
-      _room.value =
-          prefs.getString('room') ?? _room.value;
-    } finally {
-      isLoading.value = false;
-    }
-  }  
-Future<void> getProfile() async {
-  try {
-    isLoading.value = true;
+      if (student == null) return;
 
-    final response =
-        await _apiService.get('/auth/student/me');
+      name.value = student['full_name']?.toString() ?? '';
+      email.value = student['email']?.toString() ?? '';
+      phone.value = student['phone_number']?.toString() ?? '';
+      year.value = student['year']?.toString() ?? '';
+      specialization.value = student['specialization']?.toString() ?? '';
+      isResident.value = student['is_resident'] == true;
+      annualAverage.value = student['annual_average']?.toString() ?? '';
 
-    print("✅ ME Response: $response");
+      _studentId.value = student['student_identifier']?.toString() ?? '';
 
-    final student = response['data']['student'];
+      final currentRoom = student['current_room'];
 
-    if (student != null) {
-      name.value = student['full_name'] ?? name.value;
-      email.value = student['email'] ?? email.value;
+      if (currentRoom != null && currentRoom is Map) {
+        final roomNumber = currentRoom['room_number']?.toString() ?? '';
+        final unitName =
+            currentRoom['dormitory_unit']?['name']?.toString() ?? '';
 
-      _studentId.value =
-          student['student_identifier'] ?? _studentId.value;
+        _room.value = roomNumber.isEmpty ? 'غير محدد' : roomNumber;
+        _roomUnit.value = unitName.isEmpty ? 'غير محدد' : _unitArabicName(unitName);
+      } else {
+        _room.value = isResident.value ? 'غير مخصصة بعد' : 'غير مقيمة بالسكن';
+        _roomUnit.value = '';
+      }
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('name', name.value);
       await prefs.setString('email', email.value);
       await prefs.setString('studentId', _studentId.value);
+    } catch (e) {
+      print("❌ ME Error: $e");
+    } finally {
+      isLoading.value = false;
     }
-
-  } catch (e) {
-    print("❌ ME Error: $e");
-  } finally {
-    isLoading.value = false;
   }
-}
 
-  /// 📸 اختيار صورة
-Future<void> pickImage(ImageSource source) async {
-  final pickedFile = await _picker.pickImage(source: source);
+  String _unitArabicName(String? name) {
+    switch (name) {
+      case "Building A":
+        return "مبنى الطالبات الأول";
+      case "Building B":
+        return "مبنى الطالبات الثاني";
+      case "Building C":
+        return "مبنى الطالبات الثالث";
+      default:
+        return name ?? "غير محدد";
+    }
+  }
 
-  if (pickedFile != null) {
-    profileImage.value = File(pickedFile.path);
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
 
-    /// 💾 حفظ المسار
+    if (pickedFile != null) {
+      profileImage.value = File(pickedFile.path);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profile_image', pickedFile.path);
+    }
+  }
+
+  Future<void> saveImagePath(String path) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('profile_image', pickedFile.path);
+    await prefs.setString('profile_image', path);
   }
-}
-Future<void> saveImagePath(String path) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('profile_image', path);
-}
 
   Future<bool> updateProfile({
     required String newName,
@@ -138,8 +156,16 @@ Future<void> saveImagePath(String path) async {
   }
 
   void clearProfile() {
-  name.value = '';
-  email.value = '';
-  profileImage.value = null;
-}
+    name.value = '';
+    email.value = '';
+    phone.value = '';
+    year.value = '';
+    specialization.value = '';
+    annualAverage.value = '';
+    isResident.value = false;
+    _studentId.value = '';
+    _room.value = '';
+    _roomUnit.value = '';
+    profileImage.value = null;
+  }
 }

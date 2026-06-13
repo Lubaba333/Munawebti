@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/views/otp.dart';
-import 'package:studants/views/otp_verification_view.dart';
+
 import 'package:studants/controllers/reset_password_controller.dart';
 
 import '../utlis/app_colors.dart';
@@ -12,7 +12,7 @@ class ResetPasswordView extends StatelessWidget {
   ResetPasswordView({super.key});
 
   final emailController = TextEditingController();
-  final ResetPasswordController controller = Get.put(ResetPasswordController()); // ✅ التسجيل هنا
+final ResetPasswordController controller = Get.put(ResetPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -94,11 +94,16 @@ class ResetPasswordView extends StatelessWidget {
                             return;
                           }
                           
-                          await controller.sendResetOTP(email);
-                          
-                          if (controller.isOtpSent.value) {
-                            Get.to(() => const OtpVerificationView());
-                          }
+                        // في ResetPasswordView، عدّل هذا الجزء فقط:
+
+await controller.sendResetOTP(email);
+
+if (controller.isOtpSent.value) {
+  Get.to(() => const OtpVerificationView(), arguments: {
+    'email': email,
+    'from': 'reset',
+  });
+}
                         },
                       )),
                     ],

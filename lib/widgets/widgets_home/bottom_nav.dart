@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import '../../../utlis/app_colors.dart';
 
 class BottomNav extends StatelessWidget {
+  /// الفهرس الحالي للصفحة المفتوحة
   final int currentIndex;
+  
+  /// دالة التبديل بين الصفحات
   final Function(int) onTap;
-  final VoidCallback onEmergencyTap; // 🔥 زر الطوارئ
 
   const BottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
-    required this.onEmergencyTap,
   });
 
   @override
@@ -18,7 +19,7 @@ class BottomNav extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withOpacity(0.7),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -29,125 +30,84 @@ class BottomNav extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-
             /// 📅 محاضراتي
-            _buildNavItem(0, Icons.calendar_month, "محاضراتي"),
+            _buildNavItem(0, Icons.calendar_month, "محاضراتي", Colors.grey),
 
-            /// 🚨 زر الطوارئ (🔥 جديد)
-            GestureDetector(
-              onTap: onEmergencyTap,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withOpacity(0.5),
-                          blurRadius: 12,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.warning_rounded,
-                      color: Colors.white,
-                      size: 26,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    "طوارئ",
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            /// 🏠 الرئيسية
+            /// 🏠 الرئيسية - بارزة بالوسط (نفس التصميم لكن أصغر قليلاً)
             GestureDetector(
               onTap: () => onTap(1),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 4),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.mainGradient,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.darkPurple.withOpacity(0.4),
-                          blurRadius: 15,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+              child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: AppColors.mainGradient,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.darkPurple.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-                    child: const Icon(
-                      Icons.home_rounded,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-                  Text(
-                    "الرئيسية",
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: currentIndex == 1
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: currentIndex == 1
-                          ? AppColors.darkPurple
-                          : Colors.grey.shade500,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
+                child: const Icon(
+                  Icons.home_rounded,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             ),
 
             /// 📝 طلباتي
-            _buildNavItem(2, Icons.request_page, "طلباتي"),
+            _buildNavItem(2, Icons.request_page, "طلباتي", Colors.grey),
+
+            /// 🚨 طوارئ - نفس التصميم لكن الأيقونة حمراء
+            _buildNavItem(3, Icons.sos, "طوارئ", Colors.red),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  /// 🧩 عنصر التنقل (أيقونة + نص) - مع لون أيقونة مخصص
+  Widget _buildNavItem(int index, IconData icon, String label, Color iconColor) {
     final isSelected = currentIndex == index;
-
     return GestureDetector(
       onTap: () => onTap(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isSelected ? AppColors.darkPurple : Colors.grey.shade500,
-            size: 26,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? AppColors.darkPurple : Colors.grey.shade500,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected 
+              ? AppColors.softLavender.withOpacity(0.6) 
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              // ✅ الأيقونة تأخذ اللون المخصص (أحمر للطوارئ)
+              color: isSelected ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple) : iconColor,
+              size: 24,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                // ✅ النص أيضاً يتلون حسب الحالة
+                color: isSelected ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple) : iconColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

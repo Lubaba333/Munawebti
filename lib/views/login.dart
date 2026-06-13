@@ -91,7 +91,8 @@ class LoginView extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
       ),
-      child: Column(
+     child: SingleChildScrollView(
+  child: Column(
         children: [
           CustomTextField(
             controller: emailController,
@@ -166,7 +167,7 @@ const SizedBox(height: 20),
             ],
           ),
         ],
-      ),
+      ),),
     );
   }
 }

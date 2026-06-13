@@ -36,6 +36,11 @@ class ResetPasswordController extends GetxController {
         authRequired: false,
       );
 
+      // 🔥 حماية إضافية
+      if (response == null || response is! Map) {
+        throw Exception("Invalid response from server");
+      }
+
       print("✅ Reset OTP sent: $response");
 
       email.value = emailAddress;
@@ -67,6 +72,18 @@ class ResetPasswordController extends GetxController {
 
   /// 🔐 الخطوة 2: التحقق من OTP (حسب Postman)
   Future<bool> verifyOtp(String otp) async {
+    // 🔥 التحقق من وجود البريد الإلكتروني
+    if (email.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email not found. Please request OTP again.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    }
+    
     if (otp.length != 6) {
       Get.snackbar(
         "Error",
@@ -89,6 +106,10 @@ class ResetPasswordController extends GetxController {
         },
         authRequired: false,
       );
+
+      if (response == null || response is! Map) {
+        throw Exception("Invalid response from server");
+      }
 
       print("✅ OTP Verified: $response");
 
@@ -172,6 +193,10 @@ class ResetPasswordController extends GetxController {
         authRequired: false,
       );
 
+      if (response == null || response is! Map) {
+        throw Exception("Invalid response from server");
+      }
+
       print("✅ Password reset success: $response");
 
       // إعادة تعيين الحالة
@@ -188,7 +213,7 @@ class ResetPasswordController extends GetxController {
 
       // العودة إلى Login بعد 2 ثانية
       Future.delayed(const Duration(seconds: 2), () {
-        Get.offAll(() =>  LoginView());
+        Get.offAll(() => LoginView());
       });
       
       return true;

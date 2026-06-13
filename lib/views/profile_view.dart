@@ -9,242 +9,231 @@ import '../../../utlis/app_colors.dart';
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
 
-  final controller = Get.put(ProfileController());
+  final controller = Get.isRegistered<ProfileController>()
+      ? Get.find<ProfileController>()
+      : Get.put(ProfileController());
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    nameController.text = controller.name.value;
-    emailController.text = controller.email.value;
+    controller.getProfile();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           _background(),
-
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child: Obx(() {
+              nameController.text = controller.name.value;
+              emailController.text = controller.email.value;
 
-                  /// 🔝 HEADER
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Get.back(),
-                        icon: const Icon(Icons.arrow_back,
-                            color: AppColors.darkPurple),
+              if (controller.isLoading.value && controller.name.value.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _header(),
+                    const SizedBox(height: 18),
+                    _profileImage(),
+                    const SizedBox(height: 20),
+
+                    _readonlyInfo(
+                      icon: Icons.badge,
+                      label: "Student ID",
+                      value: controller.studentId,
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.phone,
+                      label: "Phone",
+                      value: controller.phone.value,
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.school,
+                      label: "Year",
+                      value: controller.year.value,
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.menu_book,
+                      label: "Specialization",
+                      value: controller.specialization.value,
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.percent,
+                      label: "Annual Average",
+                      value: controller.annualAverage.value.isEmpty
+                          ? "غير محدد"
+                          : controller.annualAverage.value,
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.home_work,
+                      label: "Dormitory Status",
+                      value: controller.isResident.value
+                          ? "مقيمة بالسكن"
+                          : "غير مقيمة بالسكن",
+                    ),
+                    _readonlyInfo(
+                      icon: Icons.meeting_room,
+                      label: "Room",
+                      value: controller.room,
+                    ),
+                    if (controller.roomUnit.isNotEmpty)
+                      _readonlyInfo(
+                        icon: Icons.apartment,
+                        label: "Dormitory Unit",
+                        value: controller.roomUnit,
                       ),
-                      const Spacer(),
-                      const Text("Profile",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      const Spacer(),
 
-                      Obx(() => GestureDetector(
-                            onTap: () {
-                              controller.isEditing.value =
-                                  !controller.isEditing.value;
+                    const SizedBox(height: 10),
+
+                    _label("Name"),
+                    Obx(() => CustomTextField(
+                          controller: nameController,
+                          hint: "Enter your name",
+                          icon: Icons.person,
+                          enabled: controller.isEditing.value,
+                        )),
+
+                    const SizedBox(height: 8),
+
+                    _label("Email"),
+                    Obx(() => CustomTextField(
+                          controller: emailController,
+                          hint: "Enter your email",
+                          icon: Icons.email,
+                          keyboardType: TextInputType.emailAddress,
+                          enabled: controller.isEditing.value,
+                        )),
+
+                    const SizedBox(height: 15),
+
+                    Obx(() => controller.isEditing.value
+                        ? GradientButton(
+                            text: "Save",
+                            onTap: () async {
+                              bool success = await controller.updateProfile(
+                                newName: nameController.text,
+                                newEmail: emailController.text,
+                              );
+
+                              if (success) {
+                                controller.isEditing.value = false;
+                                Get.snackbar(
+                                  "Success",
+                                  "تم الحفظ",
+                                  backgroundColor: Colors.green,
+                                  colorText: Colors.white,
+                                );
+                              } else {
+                                Get.snackbar(
+                                  "Error",
+                                  controller.errorMessage.value,
+                                );
+                              }
                             },
-                            child: Row(
-                              children: [
-                                const Icon(Icons.edit,
-                                    size: 18,
-                                    color: AppColors.darkPurple),
-                                const SizedBox(width: 5),
-                                Text(
-                                  controller.isEditing.value
-                                      ? "إلغاء"
-                                      : "تعديل",
-                                  style: const TextStyle(
-                                      color: AppColors.darkPurple),
-                                ),
-                              ],
-                            ),
-                          )),
+                          )
+                        : const SizedBox()),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _header() {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back, color: AppColors.darkPurple),
+        ),
+        const Spacer(),
+        const Text(
+          "Profile",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const Spacer(),
+        Obx(() => GestureDetector(
+              onTap: () {
+                controller.isEditing.value = !controller.isEditing.value;
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.edit, size: 18, color: AppColors.darkPurple),
+                  const SizedBox(width: 5),
+                  Text(
+                    controller.isEditing.value ? "إلغاء" : "تعديل",
+                    style: const TextStyle(color: AppColors.darkPurple),
+                  ),
+                ],
+              ),
+            )),
+      ],
+    );
+  }
+
+  Widget _profileImage() {
+    return Center(
+      child: Stack(
+        children: [
+          Obx(() {
+            return GestureDetector(
+              onTap: () => _showImagePreview(),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [
+                      AppColors.lightPink,
+                      AppColors.mauve,
                     ],
                   ),
-
-                  const SizedBox(height: 18), // 🔽 تقليل مسافة
-
-                  /// 👤 PROFILE IMAGE
-                  Center(
-                    child: Stack(
-                      children: [
-                        Obx(() {
-                          return GestureDetector(
-                            onTap: () => _showImagePreview(),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.lightPink,
-                                    AppColors.mauve,
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.mauve.withOpacity(0.4),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 10),
-                                  ),
-                                ],
-                              ),
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.white,
-                                backgroundImage:
-                                    controller.profileImage.value != null
-                                        ? FileImage(
-                                            controller.profileImage.value!)
-                                        : null,
-                                child:
-                                    controller.profileImage.value == null
-                                        ? const Icon(Icons.person, size: 45)
-                                        : null,
-                              ),
-                            ),
-                          );
-                        }),
-
-                        /// 📸 زر الكاميرا
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.mauve,
-                              shape: BoxShape.circle,
-                            ),
-                            padding: const EdgeInsets.all(6),
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.bottomSheet(
-                                  Container(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Wrap(
-                                      children: [
-                                        ListTile(
-                                          leading:
-                                              const Icon(Icons.camera_alt),
-                                          title: const Text("Camera"),
-                                          onTap: () {
-                                            controller.pickImage(
-                                                ImageSource.camera);
-                                            Get.back();
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.photo),
-                                          title: const Text("Gallery"),
-                                          onTap: () {
-                                            controller.pickImage(
-                                                ImageSource.gallery);
-                                            Get.back();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.camera_alt,
-                                size: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.mauve.withOpacity(0.4),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-
-                  const SizedBox(height: 18), // 🔽 تقليل
-
-                  /// 🔒 STUDENT ID
-                  _label("Student ID"),
-                  Obx(() => CustomTextField(
-                        controller:
-                            TextEditingController(text: controller.studentId),
-                        hint: "Student ID",
-                        icon: Icons.badge,
-                        enabled: false,
-                      )),
-
-                  const SizedBox(height: 8), // 🔽 تقليل
-
-                  /// 🔒 ROOM
-                  _label("Room"),
-                  Obx(() => CustomTextField(
-                        controller:
-                            TextEditingController(text: controller.room),
-                        hint: "Room",
-                        icon: Icons.meeting_room,
-                        enabled: false,
-                      )),
-
-                  const SizedBox(height: 8),
-
-                  /// ✏️ NAME
-                  _label("Name"),
-                  Obx(() => CustomTextField(
-                        controller: nameController,
-                        hint: "Enter your name",
-                        icon: Icons.person,
-                        enabled: controller.isEditing.value,
-                      )),
-
-                  const SizedBox(height: 8),
-
-                  /// ✏️ EMAIL
-                  _label("Email"),
-                  Obx(() => CustomTextField(
-                        controller: emailController,
-                        hint: "Enter your email",
-                        icon: Icons.email,
-                        keyboardType: TextInputType.emailAddress,
-                        enabled: controller.isEditing.value,
-                      )),
-
-                  const SizedBox(height: 15),
-
-                  /// 💾 SAVE
-                  Obx(() => controller.isEditing.value
-                      ? GradientButton(
-                          text: "Save",
-                          onTap: () async {
-                            bool success =
-                                await controller.updateProfile(
-                              newName: nameController.text,
-                              newEmail: emailController.text,
-                            );
-
-                            if (success) {
-                              controller.isEditing.value = false;
-
-                              Get.snackbar(
-                                "Success",
-                                "تم الحفظ",
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                              );
-                            } else {
-                              Get.snackbar(
-                                "Error",
-                                controller.errorMessage.value,
-                              );
-                            }
-                          },
-                        )
-                      : const SizedBox()),
-                ],
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.white,
+                  backgroundImage: controller.profileImage.value != null
+                      ? FileImage(controller.profileImage.value!)
+                      : null,
+                  child: controller.profileImage.value == null
+                      ? const Icon(Icons.person, size: 45)
+                      : null,
+                ),
+              ),
+            );
+          }),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _showPickImageSheet,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.mauve,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6),
+                child: const Icon(
+                  Icons.camera_alt,
+                  size: 16,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -253,7 +242,72 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  /// 🖼️ عرض الصورة + تعديل + حذف
+  Widget _readonlyInfo({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    if (value.trim().isEmpty) return const SizedBox();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(.75),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.mauve.withOpacity(.18)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: AppColors.darkPurple),
+          const SizedBox(width: 12),
+          Text(
+            "$label: ",
+            style: const TextStyle(
+              color: AppColors.darkPurple,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(color: AppColors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPickImageSheet() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Camera"),
+              onTap: () {
+                controller.pickImage(ImageSource.camera);
+                Get.back();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo),
+              title: const Text("Gallery"),
+              onTap: () {
+                controller.pickImage(ImageSource.gallery);
+                Get.back();
+              },
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
+
   void _showImagePreview() {
     Get.bottomSheet(
       Container(
@@ -264,53 +318,21 @@ class ProfileView extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              /// الصورة
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: img != null
                     ? Image.file(img, height: 250, fit: BoxFit.cover)
                     : const Icon(Icons.person, size: 120),
               ),
-
               const SizedBox(height: 20),
-
-              /// تعديل
               ListTile(
                 leading: const Icon(Icons.edit),
                 title: const Text("تعديل الصورة"),
                 onTap: () {
                   Get.back();
-                  Get.bottomSheet(
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Wrap(
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.camera_alt),
-                            title: const Text("Camera"),
-                            onTap: () {
-                              controller.pickImage(ImageSource.camera);
-                              Get.back();
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.photo),
-                            title: const Text("Gallery"),
-                            onTap: () {
-                              controller.pickImage(ImageSource.gallery);
-                              Get.back();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    backgroundColor: Colors.white,
-                  );
+                  _showPickImageSheet();
                 },
               ),
-
-              /// حذف
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
                 title: const Text("حذف الصورة"),
@@ -327,7 +349,6 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  /// 🌸 الخلفية
   Widget _background() {
     return Stack(
       children: [
@@ -354,10 +375,7 @@ class ProfileView extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 

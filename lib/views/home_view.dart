@@ -1,8 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
+import 'package:studants/views/EmergencyListView.dart';
 import 'package:studants/views/SettingsDrawerview.dart';
-import 'package:studants/views/SwapOrMoveView.dart';
+import 'package:studants/views/dormitory_attendance_view.dart';
+import 'package:studants/views/housing_complaints_view.dart';
 import 'package:studants/views/lectures_view.dart';
 import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/views/rewards_view.dart';
@@ -22,14 +25,16 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView>
-    with SingleTickerProviderStateMixin {
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   final HomeController controller = Get.put(HomeController());
   final profileController = Get.put(ProfileController());
 
   late AnimationController animController;
-  
-  /// 🎯 الفهرس الحالي للـ BottomNav (1 = الرئيسية في الوسط)
+  late AnimationController entryController;
+
+  final Random _random = Random();
+  final List<Offset> _randomOffsets = [];
+
   int _currentIndex = 1;
 
   @override
@@ -40,34 +45,159 @@ class _HomeViewState extends State<HomeView>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
+
+    entryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _generateRandomOffsets(20);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        entryController.forward();
+      }
+    });
+  }
+
+  void _generateRandomOffsets(int count) {
+    _randomOffsets.clear();
+
+    for (int i = 0; i < count; i++) {
+      final dx = (_random.nextBool() ? 1 : -1) *
+          (70 + _random.nextInt(110)).toDouble();
+
+      final dy = (_random.nextBool() ? 1 : -1) *
+          (45 + _random.nextInt(120)).toDouble();
+
+      _randomOffsets.add(Offset(dx, dy));
+    }
   }
 
   @override
   void dispose() {
     animController.dispose();
+    entryController.dispose();
     super.dispose();
   }
 
- void _onNavItemTapped(int index) {
+void _onNavItemTapped(int index) async {
   if (index == _currentIndex) return;
 
   setState(() => _currentIndex = index);
 
   switch (index) {
     case 0:
-      // TODO: صفحة المحاضراتServiceItem(
- Get.to(() =>  LecturesView());
+      await Get.to(() => LecturesView());
       break;
 
     case 1:
-      // نفس الصفحة (Home)
-      break;
+      setState(() => _currentIndex = 1);
+      return;
 
     case 2:
-     Get.to(() =>  MyRequestsView());
+      await Get.to(() => MyRequestsView());
+      break;
+
+    case 3:
+      await Get.to(() => EmergencyListView());
       break;
   }
+
+  if (mounted) {
+    setState(() => _currentIndex = 1);
+  }
 }
+
+  Animation<double> _animationFor(int index) {
+    final double start = (index * 0.06).clamp(0.0, 0.70);
+    final double end = (start + 0.45).clamp(0.0, 1.0);
+
+    return CurvedAnimation(
+      parent: entryController,
+      curve: Interval(
+        start,
+        end,
+        curve: Curves.easeOutBack,
+      ),
+    );
+  }
+
+  Widget _randomEntry({
+    required int index,
+    required Widget child,
+  }) {
+    final Offset offset =
+        index < _randomOffsets.length ? _randomOffsets[index] : Offset.zero;
+
+    return AnimatedBuilder(
+      animation: entryController,
+      child: child,
+      builder: (context, child) {
+        final animation = _animationFor(index);
+        final value = animation.value.clamp(0.0, 1.0);
+
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(
+              offset.dx * (1 - value),
+              offset.dy * (1 - value),
+            ),
+            child: Transform.scale(
+              scale: 0.88 + (0.12 * value),
+              child: child,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Widget> _services() {
+    return [
+      _randomEntry(
+        index: 5,
+        child: ServiceItem(
+          icon: Icons.warning_amber_rounded,
+          title: "تنبيهاتي",
+          onTap: () => Get.to(() => WarningsView()),
+        ),
+      ),
+      _randomEntry(
+        index: 6,
+        child: ServiceItem(
+          icon: Icons.emoji_events,
+          title: "مكافآتي",
+          onTap: () => Get.to(() => RewardsView()),
+        ),
+      ),
+      _randomEntry(
+        index: 7,
+        child: ServiceItem(
+          icon: Icons.report_problem,
+          title: "شكوى سكن",
+          onTap: () => Get.to(() => HousingComplaintsView()),
+        ),
+      ),
+      _randomEntry(
+        index: 8,
+        child: ServiceItem(
+          icon: Icons.gavel,
+          title: "مخالفات",
+          onTap: () => Get.to(() => ViolationsView()),
+        ),
+      ),
+      _randomEntry(
+        index: 9,
+        child: ServiceItem(
+          icon: Icons.menu_book,
+          title: "حضور السكن",
+          onTap: () => Get.to(() => DormitoryAttendanceView()),
+        ),
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,44 +210,56 @@ class _HomeViewState extends State<HomeView>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-              /// 🔝 TOP BAR
-              const TopBar(),
+              _randomEntry(
+                index: 0,
+                child: const TopBar(),
+              ),
 
               const SizedBox(height: 20),
 
-              /// 👋 HEADER
-              Text(
-                "مرحباً 👋",
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
+              _randomEntry(
+                index: 1,
+                child: Text(
+                  "مرحباً 👋",
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
                 ),
               ),
 
               const SizedBox(height: 5),
 
-              Obx(() => Text(
+              _randomEntry(
+                index: 2,
+                child: Obx(
+                  () => Text(
                     controller.studentName.value,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
-                  )),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 25),
 
-              /// 💜 MAIN CARD
-              MainCard(animController: animController),
+              _randomEntry(
+                index: 3,
+                child: MainCard(animController: animController),
+              ),
 
               const SizedBox(height: 30),
 
-              /// 🧩 SERVICES
-              const Text(
-                "الخدمات",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              _randomEntry(
+                index: 4,
+                child: const Text(
+                  "الخدمات",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
 
@@ -130,65 +272,17 @@ class _HomeViewState extends State<HomeView>
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
                 childAspectRatio: 1.1,
-                children: [
-                  
-                 
-                  
-                  ServiceItem(
-                    icon: Icons.home, 
-                    title: "سكني", 
-                    onTap: () => Get.to(() => const SwapOrMoveView()),
-                  ),
-                  
-               
-                  
-                  ServiceItem(
-                    icon: Icons.warning_amber_rounded, 
-                    title: "تنبيهاتي", 
-                    onTap: () => Get.to(() => WarningsView())),
-                  
-                  
-                  ServiceItem(
-                    icon: Icons.emoji_events, 
-                    title: "مكافآتي", 
-                     onTap: () => Get.to(() => RewardsView()),
-                   
-                  ),
-                  
-                  ServiceItem(
-                    icon: Icons.report_problem, 
-                    title: "شكوى سكن", 
-                    onTap: () => Get.to(() => const SwapOrMoveView()),
-                  ),
-                   ServiceItem(
-                    icon: Icons.report_problem, 
-                    title: "مخالفات", 
-                    onTap: () => Get.to(() => ViolationsView()),
-                  ),
-                ],
+                children: _services(),
               ),
 
               const SizedBox(height: 25),
-
-              /// 🔔 NOTIFICATIONS
-              // (يمكن إضافة محتوى هنا مستقبلاً)
-             
             ],
           ),
         ),
       ),
-
-      /// 🔻 BOTTOM NAV - الجديد مع النصوص والزر البارز
       bottomNavigationBar: BottomNav(
         currentIndex: _currentIndex,
         onTap: _onNavItemTapped,
-          onEmergencyTap: () {
-    // 🔥 انتِ تقرري وين يروح
-    // مثال:
-    // Get.to(() => EmergencyView());
-
-   
-  },
       ),
     );
   }

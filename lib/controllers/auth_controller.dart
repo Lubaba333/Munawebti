@@ -161,8 +161,9 @@ class AuthController extends GetxController {
       final token = response['data']?['token'];
 
       if (token != null) {
-        _apiService.setToken(token);
-        await Get.find<ProfileController>().getProfile();
+   await _apiService.setToken(token); // ✅ صار async فعلي
+
+await Get.find<ProfileController>().getProfile();
       }
 
       isEmailVerified.value = false;

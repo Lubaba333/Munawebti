@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/views/login.dart';
 import 'package:studants/views/otp.dart';
-import 'package:studants/views/otp_verification_view.dart';
+
 
 import '../controllers/auth_controller.dart';
 import '../utlis/app_colors.dart';
@@ -177,18 +177,21 @@ class RegisterView extends StatelessWidget {
                   email: emailController.text,
                 );
                 
-                if (success) {
-                  Get.to(() => OtpVerificationView(), arguments: {
-                    'email': emailController.text,
-                    'name': nameController.text,
-                    'studentId': studentIdController.text,
-                    'password': passwordController.text,
-                    'confirmPassword': confirmPasswordController.text,
-                    'phone': phoneController.text,
-                    'year': yearController.text,
-                    'specialization': specializationController.text,
-                  });
-                }
+               // في RegisterView، تأكد من أنك تمرر المعاملات بشكل صحيح:
+
+if (success) {
+  Get.to(() => const OtpVerificationView(), arguments: {
+    'email': emailController.text,
+    'from': 'register',
+    'name': nameController.text,
+    'studentId': studentIdController.text,
+    'password': passwordController.text,
+    'confirmPassword': confirmPasswordController.text,
+    'phone': phoneController.text,
+    'year': yearController.text,
+    'specialization': specializationController.text,
+  });
+}
               },
             )),
 

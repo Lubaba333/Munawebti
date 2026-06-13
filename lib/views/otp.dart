@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:studants/controllers/reset_password_controller.dart'; // ✅ استورد الـ Controller
-import 'package:studants/views/new_password_view.dart';
+import 'package:studants/controllers/auth_controller.dart';
+import 'package:studants/controllers/reset_password_controller.dart';
 import '../utlis/app_colors.dart';
 import '../widgets/gradient_button.dart';
 
@@ -13,11 +13,95 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-  // ✅ استخدام Get.find لأن الـ Controller تم تسجيله مسبقاً في ResetPasswordView
-  final ResetPasswordController controller = Get.find<ResetPasswordController>();
 
-  final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  // متغيرات للحالتين
+  AuthController? authController;
+  ResetPasswordController? resetController;
+  
+  // متغير لتحديد أي كونترولر نستخدم
+  RxBool isLoading = false.obs;
+  RxString email = ''.obs;
+  bool isResetMode = false;
+
+  final List<TextEditingController> _otpControllers =
+      List.generate(6, (_) => TextEditingController());
+
+  final List<FocusNode> _focusNodes =
+      List.generate(6, (_) => FocusNode());
+
+  @override
+  void initState() {
+    super.initState();
+    
+    final args = Get.arguments;
+    
+    // تحديد نوع العملية من المعاملات
+    if (args != null && args is Map && args.containsKey('from')) {
+      isResetMode = args['from'] == 'reset';
+    } else {
+      // محاولة اكتشاف تلقائي
+      try {
+        resetController = Get.find<ResetPasswordController>();
+        if (resetController!.email.value.isNotEmpty) {
+          isResetMode = true;
+        } else {
+          throw Exception();
+        }
+      } catch (_) {
+        isResetMode = false;
+      }
+    }
+    
+    if (isResetMode) {
+      // وضع إعادة تعيين كلمة المرور
+      try {
+        resetController = Get.find<ResetPasswordController>();
+        isLoading = resetController!.isLoading;
+        email = resetController!.email;
+        
+        if (email.value.isEmpty && args != null && args['email'] != null) {
+          resetController!.email.value = args['email'];
+          email.value = args['email'];
+        }
+        
+        print("✅ Reset Mode - Email: ${email.value}");
+      } catch (e) {
+        print("❌ Error finding ResetPasswordController: $e");
+        Get.back();
+      }
+    } else {
+      // وضع التسجيل
+      try {
+        authController = Get.find<AuthController>();
+        isLoading = authController!.isLoading;
+        
+        if (args != null && args['email'] != null) {
+          authController!.verifiedEmail.value = args['email'];
+          email.value = args['email'];
+        } else {
+          email.value = authController!.verifiedEmail.value;
+        }
+        
+        print("✅ Register Mode - Email: ${email.value}");
+      } catch (e) {
+        print("❌ Error finding AuthController: $e");
+        Get.back();
+      }
+    }
+    
+    // تحقق من وجود البريد الإلكتروني
+    if (email.value.isEmpty) {
+      Future.delayed(Duration.zero, () {
+        Get.snackbar(
+          "Error",
+          "Email not found. Please try again.",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        Get.back();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -40,6 +124,58 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   String _getFullOtp() {
     return _otpControllers.map((c) => c.text).join();
+  }
+
+  Future<void> _verifyOtp() async {
+    String fullOtp = _getFullOtp();
+
+    if (fullOtp.length != 6) {
+      Get.snackbar(
+        "Error",
+        "Please enter the 6-digit code",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (isResetMode && resetController != null) {
+      // وضع إعادة تعيين كلمة المرور
+      bool success = await resetController!.verifyOtp(fullOtp);
+      if (success) {
+        // verifyOtp يقوم بالانتقال إلى NewPasswordView
+      }
+    } else if (authController != null) {
+      // وضع التسجيل
+      bool success = await authController!.verifyRegistrationOTP(
+        email: email.value,
+        otp: fullOtp,
+      );
+      
+      if (success) {
+        final args = Get.arguments;
+        if (args != null && args is Map) {
+          await authController!.register(
+            name: args['name'],
+            studentId: args['studentId'],
+            email: email.value,
+            password: args['password'],
+            confirmPassword: args['confirmPassword'],
+            phone: args['phone'],
+            year: int.parse(args['year']),
+            specialization: args['specialization'],
+          );
+        }
+      }
+    }
+  }
+
+  void _resendOtp() async {
+    if (isResetMode && resetController != null) {
+      await resetController!.sendResetOTP(email.value);
+    } else if (authController != null) {
+      await authController!.sendRegistrationOTP(email: email.value);
+    }
   }
 
   @override
@@ -73,14 +209,16 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    controller.email.value,
+                  Obx(() => Text(
+                    email.value.isNotEmpty 
+                        ? email.value 
+                        : "your email",
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
-                  ),
+                  )),
                   const SizedBox(height: 35),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -93,35 +231,27 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: List.generate(6, (index) {
-                            return _buildOtpBox(index);
-                          }),
-                        ),
+                       Row(
+  children: List.generate(6, (index) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: _buildOtpBox(index),
+      ),
+    );
+  }),
+),
                         const SizedBox(height: 35),
+
                         Obx(() => GradientButton(
-                          text: controller.isLoading.value ? "VERIFYING..." : "Verify Code",
-                          onTap: () {
-                            String fullOtp = _getFullOtp();
-                            
-                            if (fullOtp.length == 6) {
-                              controller.verifyOtp(fullOtp);
-                            } else {
-                              Get.snackbar(
-                                "Error",
-                                "Please enter the 6-digit code",
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                            }
-                          },
+                          text: isLoading.value ? "VERIFYING..." : "Verify Code",
+                          onTap: _verifyOtp,
                         )),
+
                         const SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () {
-                            controller.sendResetOTP(controller.email.value);
-                          },
+
+                        Obx(() => TextButton(
+                          onPressed: isLoading.value ? null : _resendOtp,
                           child: const Text(
                             "Didn't receive code? Resend",
                             style: TextStyle(
@@ -130,7 +260,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                               decoration: TextDecoration.underline,
                             ),
                           ),
-                        ),
+                        )),
                       ],
                     ),
                   ),
@@ -145,18 +275,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   Widget _buildOtpBox(int index) {
     return Container(
-      width: 48,
-      height: 55,
+      
+      height: 56,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.85),
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
       ),
       child: TextField(
         controller: _otpControllers[index],
@@ -164,15 +287,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: AppColors.darkPurple,
-        ),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         decoration: const InputDecoration(
           counterText: "",
           border: InputBorder.none,
-          contentPadding: EdgeInsets.only(top: 14),
+          contentPadding: EdgeInsets.symmetric(vertical: 16),
         ),
         onChanged: (value) => _onOtpChanged(index, value),
       ),
