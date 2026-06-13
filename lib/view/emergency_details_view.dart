@@ -1,0 +1,1146 @@
+// import 'package:flutter/material.dart';
+// import 'package:supervisors/const/app_colors.dart';
+//
+//
+// class EmergencyDetailsView extends StatelessWidget {
+//
+//
+//   final dynamic emergency;
+//
+//
+//   const EmergencyDetailsView({
+//     super.key,
+//     required this.emergency,
+//   });
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//
+//     return Scaffold(
+//
+//       backgroundColor: const Color(0xffF6F7FB),
+//
+//
+//       appBar: AppBar(
+//
+//         backgroundColor: AppColors.primary,
+//
+//         title: const Text(
+//           "Emergency Details",
+//         ),
+//
+//       ),
+//
+//
+//
+//       body: SingleChildScrollView(
+//
+//         padding: const EdgeInsets.all(20),
+//
+//
+//         child: Column(
+//
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//
+//
+//           children: [
+//
+//
+//             _header(),
+//
+//
+//
+//             const SizedBox(height:25),
+//
+//
+//
+//             _infoSection(),
+//
+//
+//
+//             const SizedBox(height:25),
+//
+//
+//
+//             _statusTimeline(),
+//
+//
+//
+//           ],
+//
+//
+//         ),
+//
+//
+//       ),
+//
+//
+//
+//     );
+//
+//   }
+//
+//
+//
+//
+//
+//
+//   Widget _header(){
+//
+//
+//     return Container(
+//
+//       padding:const EdgeInsets.all(20),
+//
+//
+//       decoration:BoxDecoration(
+//
+//         color:Colors.white,
+//
+//         borderRadius:BorderRadius.circular(20),
+//
+//
+//       ),
+//
+//
+//       child:Column(
+//
+//         crossAxisAlignment:CrossAxisAlignment.start,
+//
+//         children:[
+//
+//
+//
+//           Row(
+//
+//             children:[
+//
+//
+//               Container(
+//
+//                 padding:const EdgeInsets.all(12),
+//
+//                 decoration:BoxDecoration(
+//
+//                   color:Colors.red.withOpacity(.1),
+//
+//                   shape:BoxShape.circle,
+//
+//                 ),
+//
+//
+//                 child:const Icon(
+//
+//                   Icons.warning,
+//
+//                   color:Colors.red,
+//
+//                 ),
+//
+//               ),
+//
+//
+//               const SizedBox(width:15),
+//
+//
+//
+//               Expanded(
+//
+//                 child:Text(
+//
+//                   emergency.title,
+//
+//                   style:const TextStyle(
+//
+//                     fontSize:22,
+//
+//                     fontWeight:FontWeight.bold,
+//
+//                   ),
+//
+//                 ),
+//
+//               )
+//
+//
+//
+//
+//
+//             ],
+//
+//           ),
+//
+//
+//
+//           const SizedBox(height:15),
+//
+//
+//
+//           Text(
+//
+//             emergency.description,
+//
+//             style:TextStyle(
+//
+//               color:Colors.grey.shade700,
+//
+//               fontSize:16,
+//
+//             ),
+//
+//           ),
+//
+//
+//
+//         ],
+//
+//
+//       ),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+//
+//
+//
+//
+//   Widget _infoSection(){
+//
+//
+//
+//     return Container(
+//
+//
+//       padding:const EdgeInsets.all(20),
+//
+//
+//       decoration:BoxDecoration(
+//
+//         color:Colors.white,
+//
+//         borderRadius:BorderRadius.circular(20),
+//
+//       ),
+//
+//
+//       child:Column(
+//
+//         children:[
+//
+//
+//
+//           _infoRow(
+//
+//             Icons.person,
+//
+//             "Student",
+//
+//             emergency.student.fullName,
+//
+//           ),
+//
+//
+//
+//
+//           _infoRow(
+//
+//             Icons.badge,
+//
+//             "Supervisor",
+//
+//             emergency.supervisor.fullName,
+//
+//           ),
+//
+//
+//
+//
+//           _infoRow(
+//
+//             Icons.calendar_month,
+//
+//             "Created",
+//
+//             emergency.createdAt,
+//
+//           ),
+//
+//
+//
+//         ],
+//
+//
+//
+//       ),
+//
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+//
+//
+//
+//   Widget _infoRow(
+//       IconData icon,
+//       String title,
+//       String value,
+//       ){
+//
+//
+//     return Padding(
+//
+//       padding:const EdgeInsets.only(bottom:15),
+//
+//
+//       child:Row(
+//
+//         children:[
+//
+//
+//           Icon(
+//
+//             icon,
+//
+//             color:AppColors.primary,
+//
+//           ),
+//
+//
+//
+//           const SizedBox(width:12),
+//
+//
+//
+//           Column(
+//
+//             crossAxisAlignment:CrossAxisAlignment.start,
+//
+//             children:[
+//
+//
+//               Text(
+//
+//                 title,
+//
+//                 style:TextStyle(
+//
+//                   color:Colors.grey.shade600,
+//
+//                   fontSize:13,
+//
+//                 ),
+//
+//               ),
+//
+//
+//
+//               Text(
+//
+//                 value,
+//
+//                 style:const TextStyle(
+//
+//                   fontWeight:FontWeight.w600,
+//
+//                 ),
+//
+//               ),
+//
+//
+//
+//             ],
+//
+//
+//           )
+//
+//
+//         ],
+//
+//
+//       ),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+//
+//
+//
+//
+//   Widget _statusTimeline(){
+//
+//
+//     bool pending =
+//         emergency.status=="pending";
+//
+//
+//
+//     return Container(
+//
+//
+//       padding:const EdgeInsets.all(20),
+//
+//
+//       decoration:BoxDecoration(
+//
+//         color:Colors.white,
+//
+//         borderRadius:BorderRadius.circular(20),
+//
+//       ),
+//
+//
+//       child:Column(
+//
+//
+//         crossAxisAlignment:CrossAxisAlignment.start,
+//
+//
+//         children:[
+//
+//
+//           const Text(
+//
+//             "Request Status",
+//
+//             style:TextStyle(
+//
+//               fontSize:18,
+//
+//               fontWeight:FontWeight.bold,
+//
+//             ),
+//
+//           ),
+//
+//
+//
+//           const SizedBox(height:20),
+//
+//
+//
+//
+//           _statusItem(
+//
+//             "Sent",
+//
+//             true,
+//
+//           ),
+//
+//
+//
+//
+//           _statusItem(
+//
+//             "Under Review",
+//
+//             pending || emergency.status=="accepted",
+//
+//           ),
+//
+//
+//
+//
+//
+//           _statusItem(
+//
+//             "Completed",
+//
+//             emergency.status=="accepted",
+//
+//           ),
+//
+//
+//
+//
+//
+//           _statusItem(
+//
+//             "Rejected",
+//
+//             emergency.status=="rejected",
+//
+//           ),
+//
+//
+//
+//         ],
+//
+//
+//       ),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+//
+//
+//
+//   Widget _statusItem(
+//
+//       String text,
+//
+//       bool active,
+//
+//       ){
+//
+//
+//
+//     return Padding(
+//
+//       padding:const EdgeInsets.only(bottom:18),
+//
+//
+//       child:Row(
+//
+//         children:[
+//
+//
+//           Icon(
+//
+//             active
+//                 ? Icons.check_circle
+//                 : Icons.radio_button_unchecked,
+//
+//
+//             color:active
+//                 ? Colors.green
+//                 : Colors.grey,
+//
+//           ),
+//
+//
+//
+//           const SizedBox(width:12),
+//
+//
+//
+//           Text(
+//
+//             text,
+//
+//             style:TextStyle(
+//
+//               fontSize:16,
+//
+//               fontWeight:
+//
+//               active
+//                   ? FontWeight.bold
+//                   : FontWeight.normal,
+//
+//             ),
+//
+//           ),
+//
+//
+//         ],
+//
+//
+//       ),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+// }
+
+import 'package:flutter/material.dart';
+import 'package:supervisors/const/app_colors.dart';
+
+
+class EmergencyDetailsView extends StatelessWidget {
+
+
+  final dynamic emergency;
+
+
+  const EmergencyDetailsView({
+    super.key,
+    required this.emergency,
+  });
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    return Scaffold(
+
+      backgroundColor: const Color(0xffF5F6FA),
+
+
+      appBar: AppBar(
+
+        backgroundColor: AppColors.primary,
+
+        elevation:0,
+
+        title: const Text(
+          "Emergency Details",
+        ),
+
+      ),
+
+
+
+      body: SingleChildScrollView(
+
+
+        padding: const EdgeInsets.all(18),
+
+
+        child: Column(
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+
+          children: [
+
+
+
+            _header(),
+
+
+            const SizedBox(height:20),
+
+
+
+            _section(
+
+              title:"Student Information",
+
+              icon:Icons.person,
+
+              children:[
+
+
+                _item(
+                  "Name",
+                  emergency.student.fullName,
+                ),
+
+
+                _item(
+                  "Student ID",
+                  emergency.student.id.toString(),
+                ),
+
+
+
+                _item(
+                  "Email",
+                  emergency.student.email ?? "-",
+                ),
+
+
+
+                _item(
+                  "Phone",
+                  emergency.student.phoneNumber ?? "-",
+                ),
+
+
+
+                _item(
+                  "Specialization",
+                  emergency.student.specialization ?? "-",
+                ),
+
+
+
+                _item(
+                  "Year",
+                  emergency.student.year.toString(),
+                ),
+
+
+
+                _item(
+                  "Average",
+                  emergency.student.annualAverage.toString(),
+                ),
+
+
+
+                _item(
+                  "Resident",
+                  emergency.student.isResident == true
+                      ? "Yes"
+                      : "No",
+                ),
+
+
+              ],
+
+            ),
+
+
+
+            const SizedBox(height:20),
+
+
+
+            _section(
+
+              title:"Supervisor Information",
+
+              icon:Icons.badge,
+
+
+              children:[
+
+
+                _item(
+                  "Name",
+                  emergency.supervisor.fullName,
+                ),
+
+
+
+                _item(
+                  "Email",
+                  emergency.supervisor.email ?? "-",
+                ),
+
+
+
+                _item(
+                  "Specialization",
+                  emergency.supervisor.specialization ?? "-",
+                ),
+
+
+
+                _item(
+                  "Identifier",
+                  emergency.supervisor.supervisorIdentifier ?? "-",
+                ),
+
+
+
+              ],
+
+            ),
+
+
+
+
+            const SizedBox(height:20),
+
+
+
+
+            _section(
+
+              title:"Request Tracking",
+
+              icon:Icons.timeline,
+
+
+              children:[
+
+
+
+                _item(
+                  "Status",
+                  emergency.status,
+                ),
+
+
+
+                _item(
+                  "Created",
+                  emergency.createdAt,
+                ),
+
+
+
+                _item(
+                  "Updated",
+                  emergency.updatedAt ?? "-",
+                ),
+
+
+              ],
+
+
+            )
+
+
+
+          ],
+
+
+        ),
+
+
+      ),
+
+
+    );
+
+  }
+
+
+
+
+
+
+  Widget _header(){
+
+
+    return Container(
+
+      padding:const EdgeInsets.all(20),
+
+
+      decoration:BoxDecoration(
+
+        gradient:LinearGradient(
+
+            colors:[
+
+              AppColors.primary,
+
+              AppColors.primary.withOpacity(.7)
+
+            ]
+
+        ),
+
+
+        borderRadius:BorderRadius.circular(22),
+
+      ),
+
+
+
+      child:Column(
+
+        crossAxisAlignment:CrossAxisAlignment.start,
+
+        children:[
+
+
+
+          Row(
+
+            children:[
+
+
+              const Icon(
+
+                Icons.warning,
+
+                color:Colors.white,
+
+                size:35,
+
+              ),
+
+
+
+              const SizedBox(width:12),
+
+
+
+
+              Expanded(
+
+                child:Text(
+
+                  emergency.title,
+
+                  style:const TextStyle(
+
+                    fontSize:22,
+
+                    fontWeight:FontWeight.bold,
+
+                    color:Colors.white,
+
+                  ),
+
+                ),
+
+              )
+
+
+            ],
+
+          ),
+
+
+
+          const SizedBox(height:15),
+
+
+
+          Text(
+
+            emergency.description,
+
+            style:const TextStyle(
+
+              color:Colors.white70,
+
+              fontSize:16,
+
+            ),
+
+          ),
+
+
+
+          const SizedBox(height:15),
+
+
+
+          Container(
+
+            padding:const EdgeInsets.symmetric(
+
+              horizontal:15,
+
+              vertical:7,
+
+            ),
+
+
+            decoration:BoxDecoration(
+
+              color:Colors.white24,
+
+              borderRadius:BorderRadius.circular(20),
+
+            ),
+
+
+            child:Text(
+
+              emergency.status,
+
+              style:const TextStyle(
+
+                color:Colors.white,
+
+                fontWeight:FontWeight.bold,
+
+              ),
+
+            ),
+
+          )
+
+
+        ],
+
+
+      ),
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+  Widget _section({
+
+    required String title,
+
+    required IconData icon,
+
+    required List<Widget> children,
+
+
+  }){
+
+
+    return Container(
+
+
+      padding:const EdgeInsets.all(18),
+
+
+      decoration:BoxDecoration(
+
+        color:Colors.white,
+
+        borderRadius:BorderRadius.circular(20),
+
+      ),
+
+
+
+      child:Column(
+
+        crossAxisAlignment:CrossAxisAlignment.start,
+
+
+        children:[
+
+
+
+          Row(
+
+            children:[
+
+
+              Icon(
+                icon,
+                color:AppColors.primary,
+              ),
+
+
+              const SizedBox(width:8),
+
+
+
+              Text(
+
+                title,
+
+                style:const TextStyle(
+
+                  fontSize:18,
+
+                  fontWeight:FontWeight.bold,
+
+                ),
+
+              )
+
+
+
+            ],
+
+          ),
+
+
+
+
+          const SizedBox(height:15),
+
+
+
+          ...children
+
+
+
+        ],
+
+
+      ),
+
+
+    );
+
+
+
+  }
+
+
+
+
+
+  Widget _item(String title,String value){
+
+
+    return Padding(
+
+      padding:const EdgeInsets.only(bottom:12),
+
+
+      child:Row(
+
+        crossAxisAlignment:CrossAxisAlignment.start,
+
+        children:[
+
+
+
+          SizedBox(
+
+            width:110,
+
+            child:Text(
+
+              title,
+
+              style:TextStyle(
+
+                color:Colors.grey.shade600,
+
+              ),
+
+            ),
+
+          ),
+
+
+
+          Expanded(
+
+            child:Text(
+
+              value,
+
+              style:const TextStyle(
+
+                fontWeight:FontWeight.w600,
+
+              ),
+
+            ),
+
+          )
+
+
+
+        ],
+
+
+      ),
+
+
+    );
+
+
+  }
+
+
+
+}

@@ -1,238 +1,1123 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:http/http.dart';
+// import 'package:supervisors/view/EmergencyView.dart';
+// import 'package:supervisors/view/RequestsView.dart';
+// import 'package:supervisors/view/complaints_view.dart';
+// import '../controller/HomeController.dart';
+// import '../const/app_colors.dart';
+//
+// class HomeView extends StatelessWidget {
+//   final controller = Get.put(HomeController());
+//
+//   HomeView({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//
+//       body: SafeArea(
+//         child: Obx(() {
+//           if (controller.isLoading.value) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//
+//           return SingleChildScrollView(
+//             padding: const EdgeInsets.all(15),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//
+//                 /// 👋 Greeting
+//                 Text(
+//                   "Hello 👋",
+//                   style: TextStyle(
+//                     fontSize: 16,
+//                     color: Theme.of(context).colorScheme.onBackground,
+//                   ),
+//                 ),
+//
+//                 Text(
+//                   controller.userName,
+//                   style: TextStyle(
+//                     fontSize: 26,
+//                     fontWeight: FontWeight.bold,
+//                     color: Theme.of(context).colorScheme.onBackground,
+//                   ),
+//                 ),
+//
+//                 const SizedBox(height: 20),
+//
+//                 /// 🔥 Current Shift Card
+//                 _currentShiftCard(context),
+//
+//                 const SizedBox(height: 20),
+//
+//                 /// ⚡ Quick Actions
+//                 _sectionTitle("Quick Actions", context),
+//                 const SizedBox(height: 15),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     _actionItem(Icons.check_circle, "Attendance", context),
+//                     _actionItem(
+//                       Icons.emergency,
+//                       "Emergency",
+//                       context,
+//                       onTap: () {
+//                         Get.to(() => EmergencyView());
+//                       },
+//                     ),
+//
+//                     _actionItem(
+//                       Icons.home,
+//                       "HousingComplaints",
+//                       context,
+//                       onTap: () {
+//                         Get.to(() => ComplaintsView());
+//                       },
+//                     ),
+//
+//                     _actionItem(
+//                       Icons.add_box,
+//                       "Requests",
+//                       context,
+//                       onTap: () {
+//                         Get.to(() => RequestsView());
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//
+//                 const SizedBox(height: 30),
+//
+//                 /// 📅 Today Schedule
+//                 _sectionTitle("Today", context),
+//                 const SizedBox(height: 15),
+//
+//                 ...controller.todaySchedule
+//                     .map((e) => _scheduleItem(e, context))
+//                     .toList(),
+//               ],
+//             ),
+//           );
+//         }),
+//       ),
+//     );
+//   }
+//
+//   /// 🔥 Section Title
+//   Widget _sectionTitle(String title, BuildContext context) {
+//     return Text(
+//       title,
+//       style: TextStyle(
+//         fontSize: 18,
+//         fontWeight: FontWeight.bold,
+//         color: Theme.of(context).colorScheme.onBackground,
+//       ),
+//     );
+//   }
+//
+//   /// 💎 Current Shift Card
+//   Widget _currentShiftCard(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         color: AppColors.primary,
+//         borderRadius: BorderRadius.circular(20),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//
+//           const Text(
+//             "Current Shift",
+//             style: TextStyle(color: Colors.white70),
+//           ),
+//
+//           const SizedBox(height: 10),
+//
+//           Obx(() => Text(
+//                 "${controller.currentShift['title']} - ${controller.currentShift['type']}",
+//                 style: const TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 18,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               )),
+//
+//           const SizedBox(height: 5),
+//
+//           Obx(() => Text(
+//                 controller.currentShift['time'] ?? "",
+//                 style: const TextStyle(color: Colors.white70),
+//               )),
+//
+//           const SizedBox(height: 10),
+//
+//           Row(
+//             children: const [
+//               Icon(Icons.circle, color: Colors.red, size: 10),
+//               SizedBox(width: 6),
+//               Text("Active", style: TextStyle(color: Colors.white70)),
+//             ],
+//           )
+//         ],
+//       ),
+//     );
+//   }
+//
+//   /// ⚡ Action Item
+//   Widget _actionItem(
+//       IconData icon,
+//       String title,
+//       BuildContext context, {
+//         VoidCallback? onTap,
+//       }) {
+//     return GestureDetector(
+//       onTap: onTap,
+//       child: Column(
+//         children: [
+//           Container(
+//             width: 70,
+//             height: 70,
+//             decoration: BoxDecoration(
+//               color: Theme.of(context).cardColor,
+//               borderRadius: BorderRadius.circular(20),
+//               boxShadow: const [
+//                 BoxShadow(color: Colors.black12, blurRadius: 8),
+//               ],
+//             ),
+//             child: Icon(icon, color: AppColors.primary),
+//           ),
+//           const SizedBox(height: 8),
+//           Text(
+//             title,
+//             style: TextStyle(
+//               fontSize: 12,
+//               color: Theme.of(context).colorScheme.onBackground,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   /// 📅 Schedule Item
+//   Widget _scheduleItem(Map<String, String> item, BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 10),
+//       padding: const EdgeInsets.all(15),
+//       decoration: BoxDecoration(
+//         color: Theme.of(context).cardColor,
+//         borderRadius: BorderRadius.circular(15),
+//       ),
+//       child: Row(
+//         children: [
+//           Icon(Icons.access_time, color: AppColors.primary),
+//           const SizedBox(width: 10),
+//           Text(
+//             item['time'] ?? "",
+//             style: TextStyle(
+//               color: Theme.of(context).colorScheme.onBackground,
+//             ),
+//           ),
+//           const Spacer(),
+//           Text(
+//             item['place'] ?? "",
+//             style: TextStyle(
+//               color: Theme.of(context).colorScheme.onSurfaceVariant,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   /// 🔔 Notification
+//   Widget _notificationItem(String text, BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 10),
+//       padding: const EdgeInsets.all(15),
+//       decoration: BoxDecoration(
+//         color: Theme.of(context).cardColor,
+//         borderRadius: BorderRadius.circular(15),
+//       ),
+//       child: Row(
+//         children: [
+//           Icon(Icons.notifications, color: AppColors.primary),
+//           const SizedBox(width: 10),
+//           Expanded(
+//             child: Text(
+//               text,
+//               style: TextStyle(
+//                 color: Theme.of(context).colorScheme.onBackground,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/view/EmergencyView.dart';
+import 'package:supervisors/view/RequestsView.dart';
+import 'package:supervisors/view/complaints_view.dart';
+
 import '../controller/HomeController.dart';
 import '../const/app_colors.dart';
 
+
 class HomeView extends StatelessWidget {
+
   final controller = Get.put(HomeController());
 
   HomeView({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+      backgroundColor:
+      Theme.of(context).scaffoldBackgroundColor,
+
 
       body: SafeArea(
+
         child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+
+
+          if(controller.isLoading.value){
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+
           }
 
+
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+
+            physics: const BouncingScrollPhysics(),
+
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 15,
+            ),
+
+
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+
+
               children: [
 
-                /// 👋 Greeting
+
+                /// HEADER
+
                 Text(
-                  "Hello 👋",
+                  "Welcome 👋",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Colors.grey.shade600,
                   ),
                 ),
+
+
+                const SizedBox(height: 5),
+
 
                 Text(
                   controller.userName,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onBackground,
+
+                  style: const TextStyle(
+
+                    fontSize: 28,
+
+                    fontWeight:
+                    FontWeight.bold,
+
                   ),
                 ),
 
-                const SizedBox(height: 25),
 
-                /// 🔥 Current Shift Card
-                _currentShiftCard(context),
 
-                const SizedBox(height: 25),
+                const SizedBox(height:25),
 
-                /// ⚡ Quick Actions
-                _sectionTitle("Quick Actions", context),
-                const SizedBox(height: 15),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _actionItem(Icons.check_circle, "Attendance", context),
-                    _actionItem(Icons.warning, "Violation", context),
-                    _actionItem(Icons.emergency, "Emergency", context),
-                  ],
+
+                /// SHIFT CARD
+
+                _shiftCard(context),
+
+                const SizedBox(height:30),
+
+                _title(
+                    "Quick Actions"
                 ),
 
-                const SizedBox(height: 30),
 
-                /// 📅 Today Schedule
-                _sectionTitle("Today", context),
-                const SizedBox(height: 15),
+                const SizedBox(height:15),
+
+
+
+                /// ACTION GRID
+
+                GridView.count(
+
+                  shrinkWrap:true,
+
+                  physics:
+                  const NeverScrollableScrollPhysics(),
+
+
+                  crossAxisCount:2,
+
+
+                  crossAxisSpacing:15,
+
+                  mainAxisSpacing:15,
+
+
+                  children: [
+
+
+                    _actionCard(
+
+                      icon:Icons.emergency,
+
+                      title:"Emergency",
+
+                      onTap:(){
+
+                        Get.to(
+                                ()=>EmergencyView()
+                        );
+
+                      },
+
+                    ),
+
+
+
+                    _actionCard(
+
+                      icon:Icons.report_problem,
+
+                      title:"Complaints",
+
+                      onTap:(){
+
+                        Get.to(
+                                ()=>ComplaintsView()
+                        );
+
+                      },
+
+                    ),
+
+
+
+
+                    _actionCard(
+
+                      icon:Icons.assignment,
+
+                      title:"Requests",
+
+                      onTap:(){
+
+                        Get.to(
+                                ()=>RequestsView()
+                        );
+
+                      },
+
+                    ),
+
+
+
+
+                    _actionCard(
+
+                      icon:Icons.check_circle,
+
+                      title:"Attendance",
+
+                    ),
+
+
+                  ],
+
+                ),
+
+
+
+
+                const SizedBox(height:35),
+
+
+
+
+                _title(
+                    "Today's Schedule"
+                ),
+
+
+
+                const SizedBox(height:15),
+
+
+
 
                 ...controller.todaySchedule
-                    .map((e) => _scheduleItem(e, context))
-                    .toList(),
+                    .map(
+                        (e)=>
+                        _scheduleCard(
+                            e,
+                            context
+                        )
+                ),
 
-                const SizedBox(height: 30),
 
-                /// 🔔 Notifications
-                _sectionTitle("Notifications", context),
-                const SizedBox(height: 15),
 
-                ...controller.notifications
-                    .map((n) => _notificationItem(n, context))
-                    .toList(),
               ],
+
             ),
+
           );
+
         }),
+
       ),
+
+
     );
+
   }
 
-  /// 🔥 Section Title
-  Widget _sectionTitle(String title, BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-    );
-  }
 
-  /// 💎 Current Shift Card
-  Widget _currentShiftCard(BuildContext context) {
+
+
+
+
+  Widget _shiftCard(BuildContext context) {
+
+    final screenWidth = MediaQuery.of(context).size.width;
+
+
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(20),
+
+      width: double.infinity,
+
+
+      padding: EdgeInsets.symmetric(
+
+        horizontal: screenWidth * 0.06,
+
+        vertical: screenWidth * 0.055,
+
       ),
+
+
+      decoration: BoxDecoration(
+
+
+        gradient: LinearGradient(
+
+          begin: Alignment.topLeft,
+
+          end: Alignment.bottomRight,
+
+
+          colors: [
+
+            AppColors.primary,
+
+            AppColors.primary.withOpacity(0.75),
+
+          ],
+
+        ),
+
+
+
+        borderRadius:
+        BorderRadius.circular(28),
+
+
+
+        boxShadow: [
+
+
+          BoxShadow(
+
+            color:
+            AppColors.primary.withOpacity(0.25),
+
+            blurRadius: 18,
+
+            offset:
+            const Offset(0,10),
+
+          )
+
+
+        ],
+
+
+      ),
+
+
+
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+
+
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+
+
         children: [
 
-          const Text(
-            "Current Shift",
-            style: TextStyle(color: Colors.white70),
-          ),
 
-          const SizedBox(height: 10),
-
-          Obx(() => Text(
-                "${controller.currentShift['title']} - ${controller.currentShift['type']}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              )),
-
-          const SizedBox(height: 5),
-
-          Obx(() => Text(
-                controller.currentShift['time'] ?? "",
-                style: const TextStyle(color: Colors.white70),
-              )),
-
-          const SizedBox(height: 10),
 
           Row(
-            children: const [
-              Icon(Icons.circle, color: Colors.red, size: 10),
-              SizedBox(width: 6),
-              Text("Active", style: TextStyle(color: Colors.white70)),
+
+            mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
+
+
+            children: [
+
+
+
+              Column(
+
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+
+
+                children: [
+
+
+
+                  Text(
+
+                    "Current Shift",
+
+                    style: TextStyle(
+
+                      color:
+                      Colors.white70,
+
+
+                      fontSize:
+                      screenWidth * .035,
+
+
+                    ),
+
+                  ),
+
+
+
+                  const SizedBox(height:8),
+
+
+
+                  Obx(()=>Text(
+
+
+                    controller.currentShift['title']
+                        ?? "No Shift",
+
+
+
+                    style: TextStyle(
+
+
+                      color:Colors.white,
+
+
+                      fontSize:
+                      screenWidth * .055,
+
+
+                      fontWeight:
+                      FontWeight.bold,
+
+
+                    ),
+
+
+                  )),
+
+
+                ],
+
+              ),
+
+
+
+
+              Container(
+
+
+                padding:
+                const EdgeInsets.all(12),
+
+
+                decoration: BoxDecoration(
+
+
+                  color:
+                  Colors.white.withOpacity(.18),
+
+
+                  shape:
+                  BoxShape.circle,
+
+
+                ),
+
+
+                child: const Icon(
+
+                  Icons.access_time_rounded,
+
+                  color:Colors.white,
+
+                  size:30,
+
+                ),
+
+
+              )
+
+
+
             ],
+
+          ),
+
+
+
+
+          const SizedBox(height:22),
+
+
+
+
+          Container(
+
+            padding:
+            const EdgeInsets.symmetric(
+
+              horizontal:15,
+
+              vertical:12,
+
+            ),
+
+
+            decoration: BoxDecoration(
+
+              color:
+              Colors.white.withOpacity(.15),
+
+
+              borderRadius:
+              BorderRadius.circular(18),
+
+            ),
+
+
+
+            child: Row(
+
+
+              children: [
+
+
+
+                const Icon(
+
+                  Icons.schedule,
+
+                  color:Colors.white70,
+
+                  size:20,
+
+                ),
+
+
+                const SizedBox(width:10),
+
+
+
+
+                Expanded(
+
+
+                  child: Obx(()=>Text(
+
+
+                    controller.currentShift['time']
+                        ?? "No time available",
+
+
+
+                    overflow:
+                    TextOverflow.ellipsis,
+
+
+                    style: TextStyle(
+
+                      color:
+                      Colors.white,
+
+
+                      fontSize:
+                      screenWidth * .035,
+
+
+                      fontWeight:
+                      FontWeight.w500,
+
+
+                    ),
+
+
+                  )),
+
+
+                )
+
+
+
+              ],
+
+
+            ),
+
+
+          ),
+
+
+
+
+          const SizedBox(height:18),
+
+
+
+
+          Row(
+
+            children: [
+
+
+              Container(
+
+                width:10,
+
+                height:10,
+
+                decoration: const BoxDecoration(
+
+
+                  color:Colors.greenAccent,
+
+                  shape:BoxShape.circle,
+
+
+                ),
+
+              ),
+
+
+              const SizedBox(width:8),
+
+
+
+              const Text(
+
+                "Active Now",
+
+                style:TextStyle(
+
+                  color:Colors.white70,
+
+                  fontSize:14,
+
+                ),
+
+              )
+
+            ],
+
+
           )
+
+
+
         ],
+
       ),
+
+
     );
+
+
   }
 
-  /// ⚡ Action Item
-  Widget _actionItem(IconData icon, String title, BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(color: Colors.black12, blurRadius: 8),
-            ],
-          ),
-          child: Icon(icon, color: AppColors.primary),
+
+
+
+
+
+  Widget _actionCard({
+
+    required IconData icon,
+
+    required String title,
+
+    VoidCallback? onTap,
+
+  }){
+
+
+    return InkWell(
+
+      borderRadius:
+      BorderRadius.circular(22),
+
+
+      onTap:onTap,
+
+
+      child:Container(
+
+        decoration:BoxDecoration(
+
+          color:Get.isDarkMode
+              ? Colors.grey.shade900
+              : Colors.white,
+
+
+          borderRadius:
+          BorderRadius.circular(22),
+
+
+          boxShadow:[
+
+            const BoxShadow(
+
+              color:Colors.black12,
+
+              blurRadius:10,
+
+              offset:
+              Offset(0,5),
+
+            )
+
+          ],
+
+
         ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
+
+
+        child:Column(
+
+          mainAxisAlignment:
+          MainAxisAlignment.center,
+
+
+          children:[
+
+
+            Container(
+
+
+              padding:
+              const EdgeInsets.all(15),
+
+
+              decoration:BoxDecoration(
+
+                color:
+                AppColors.primary.withOpacity(.15),
+
+
+                shape:
+                BoxShape.circle,
+
+              ),
+
+
+              child:Icon(
+
+                icon,
+
+                size:30,
+
+                color:
+                AppColors.primary,
+
+              ),
+
+
+            ),
+
+
+            const SizedBox(height:12),
+
+
+
+            Text(
+
+              title,
+
+              style:
+              const TextStyle(
+
+                fontWeight:
+                FontWeight.w600,
+
+              ),
+
+            )
+
+
+          ],
+
         ),
-      ],
+
+      ),
+
     );
+
   }
 
-  /// 📅 Schedule Item
-  Widget _scheduleItem(Map<String, String> item, BuildContext context) {
+
+
+
+
+
+
+  Widget _scheduleCard(
+
+      Map<String,String> item,
+
+      BuildContext context
+
+      ){
+
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(15),
+
+      margin:
+      const EdgeInsets.only(bottom:12),
+
+
+      padding:
+      const EdgeInsets.all(18),
+
+
+      decoration:BoxDecoration(
+
+        color:
+        Theme.of(context).cardColor,
+
+
+        borderRadius:
+        BorderRadius.circular(18),
+
+
       ),
-      child: Row(
-        children: [
-          Icon(Icons.access_time, color: AppColors.primary),
-          const SizedBox(width: 10),
+
+
+      child:Row(
+
+        children:[
+
+
+          Icon(
+
+            Icons.access_time,
+
+            color:
+            AppColors.primary,
+
+          ),
+
+
+
+          const SizedBox(width:15),
+
+
+
           Text(
             item['time'] ?? "",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
           ),
+
+
+
           const Spacer(),
+
+
+
           Text(
             item['place'] ?? "",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
           ),
+
+
+
         ],
+
       ),
+
+
     );
+
+
   }
 
-  /// 🔔 Notification
-  Widget _notificationItem(String text, BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(15),
+
+
+
+
+  Widget _title(String text){
+
+
+    return Text(
+
+      text,
+
+
+      style:const TextStyle(
+
+        fontSize:20,
+
+        fontWeight:
+        FontWeight.bold,
+
       ),
-      child: Row(
-        children: [
-          Icon(Icons.notifications, color: AppColors.primary),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-          ),
-        ],
-      ),
+
     );
+
+
   }
+
+
+
 }

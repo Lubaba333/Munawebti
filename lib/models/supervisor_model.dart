@@ -1,5 +1,4 @@
 class SupervisorModel {
-
   final int id;
   final String fullName;
   final String email;
@@ -18,29 +17,17 @@ class SupervisorModel {
     required this.certificateDate,
   });
 
-  factory SupervisorModel.fromJson(
-      Map<String, dynamic> json) {
-
+  factory SupervisorModel.fromJson(Map<String, dynamic> json) {
     return SupervisorModel(
       id: json['id'] ?? 0,
+      fullName: json['full_name'] ?? '',
+      email: json['email'] ?? '',
+      supervisorIdentifier: json['supervisor_identifier'] ?? '',
+      specialization: json['specialization'] ?? '',
 
-      fullName:
-          json['full_name'] ?? '',
-
-      email:
-          json['email'] ?? '',
-
-      supervisorIdentifier:
-          json['supervisor_identifier'] ?? '',
-
-      specialization:
-          json['specialization'] ?? '',
-
-      certificatePlace:
-          json['certificate_place'] ?? '',
-
-      certificateDate:
-          json['certificate_date'] ?? '',
+      // ✅ حماية من null (مهم جدًا حسب API تبعك)
+      certificatePlace: json['certificate_place'] ?? 'Not specified',
+      certificateDate: json['certificate_date'] ?? '',
     );
   }
 }

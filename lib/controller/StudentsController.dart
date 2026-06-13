@@ -1,88 +1,93 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/models/StudentModel.dart';
+
 
 class StudentsController extends GetxController {
-  var students = <Map<String, dynamic>>[].obs;
-  var filteredStudents = <Map<String, dynamic>>[].obs;
+  final searchController = TextEditingController();
 
-  var search = "".obs;
+  RxBool isLoading = true.obs;
 
-  /// 🔥 Attendance Session
-  var isSessionActive = false.obs;
-  var isSubmitted = false.obs;
+  RxString selectedFilter = 'all'.obs;
+
+  RxList<StudentModel> students =
+      <StudentModel>[].obs;
+
+  RxList<StudentModel> filteredStudents =
+      <StudentModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadMockData();
+
+    loadStudents();
   }
 
-  void loadMockData() {
-    students.value = [
-      {"name": "Sara Ali", "present": false},
-      {"name": "Lina Ahmad", "present": false},
-      {"name": "Maya Hassan", "present": false},
-      {"name": "Noor Khaled", "present": false},
-    ];
+  Future<void> loadStudents() async {
+    await Future.delayed(
+      const Duration(milliseconds: 800),
+    );
 
-    filteredStudents.value = students;
+    students.assignAll([
+      StudentModel(
+        id: 1,
+        name: 'أحمد محمد',
+        universityId: '20210015',
+        major: 'هندسة معلوماتية',
+        room: 'A12',
+        status: 'normal',
+      ),
+      StudentModel(
+        id: 2,
+        name: 'محمد علي',
+        universityId: '20210016',
+        major: 'هندسة مدنية',
+        room: 'B05',
+        status: 'warning',
+      ),
+      StudentModel(
+        id: 3,
+        name: 'خالد حسن',
+        universityId: '20210017',
+        major: 'هندسة معمارية',
+        room: 'C02',
+        status: 'violation',
+      ),
+    ]);
+
+    filteredStudents.assignAll(students);
+
+    isLoading.value = false;
   }
 
-  /// ▶️ Start Session
-  void startSession() {
-    isSessionActive.value = true;
-    isSubmitted.value = false;
+  void searchStudents(String value) {
+    final query = value.toLowerCase();
+
+    filteredStudents.assignAll(
+      students.where(
+            (student) =>
+        student.name
+            .toLowerCase()
+            .contains(query) ||
+            student.universityId
+                .contains(query),
+      ),
+    );
   }
 
-  /// 🔁 Toggle Attendance
-  void toggleAttendance(int index) {
-    if (!isSessionActive.value || isSubmitted.value) return;
+  void changeFilter(String filter) {
+    selectedFilter.value = filter;
 
-    filteredStudents[index]['present'] =
-        !filteredStudents[index]['present'];
-    filteredStudents.refresh();
-  }
-
-  /// ⚡ Mark All
-  void markAll(bool value) {
-    if (!isSessionActive.value) return;
-
-    for (var s in filteredStudents) {
-      s['present'] = value;
+    if (filter == 'all') {
+      filteredStudents.assignAll(students);
+      return;
     }
-    filteredStudents.refresh();
+
+    filteredStudents.assignAll(
+      students.where(
+            (student) =>
+        student.status == filter,
+      ),
+    );
   }
-
-  /// ✅ Submit
-  void submitAttendance() {
-    isSessionActive.value = false;
-    isSubmitted.value = true;
-
-    Get.snackbar("Success", "Attendance Submitted ✅");
-  }
-
-  /// 🔍 Search
-  void searchStudent(String value) {
-    search.value = value;
-
-    filteredStudents.value = students
-        .where((s) =>
-            s['name'].toLowerCase().contains(value.toLowerCase()))
-        .toList();
-  } 
-
-  void markByQR(String name) {
-  if (!isSessionActive.value || isSubmitted.value) return;
-
-  final index =
-      students.indexWhere((s) => s['name'] == name);
-
-  if (index != -1) {
-    students[index]['present'] = true;
-    students.refresh();
-
-    Get.snackbar("Success", "$name marked present ✅");
-  } else {
-    Get.snackbar("Error", "Student not found ❌");
-  }
-}
 }

@@ -204,28 +204,6 @@ class LoginView extends StatelessWidget {
                     )),
 
                               const SizedBox(height: 20),
-
-                              // /// Sign up
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     const Text("New user? ",
-                              //         style: TextStyle(color: Colors.white)),
-                              //     GestureDetector(
-                              //       onTap: () =>
-                              //           Get.to(() => SignUpView()),
-                              //       child: const Text(
-                              //         "Sign Up",
-                              //         style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontWeight: FontWeight.bold,
-                              //         //  decoration:
-                              //           //    TextDecoration.underline,
-                              //         ),
-                              //       ),
-                              //     )
-                              //   ],
-                              // ),
                             ],
                           ),
                         ),

@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/controller/StudentsController.dart';
+import 'package:supervisors/controller/emergency_controller.dart';
+import 'package:supervisors/controller/request_controller.dart';
 import '../models/supervisor_model.dart';
 import '../services/api_service.dart';
 import '../view/LoginView.dart';
@@ -70,12 +73,10 @@ class AuthController extends GetxController {
 
         await getSupervisorProfile();
 
+        Get.put(StudentsController());
+        Get.put(EmergencyController());
+        Get.put(RequestController());
         Get.offAll(() => MainView());
-
-        // Get.snackbar(
-        //   "Success",
-        //   response['message'],
-        // );
 
       } else {
         _showError(

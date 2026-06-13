@@ -1,269 +1,339 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/StudentsController.dart';
-import '../const/app_colors.dart';
+import 'package:supervisors/const/app_colors.dart';
+import 'package:supervisors/controller/StudentsController.dart';
+import 'package:supervisors/models/StudentModel.dart';
+import 'package:supervisors/view/StudentDetailsView.dart';
 
-class StudentsView extends StatelessWidget {
-  final controller = Get.put(StudentsController());
 
-  StudentsView({super.key});
+
+class StudentsView
+    extends GetView<StudentsController> {
+  const StudentsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor:
+      AppColors.background,
+
+      floatingActionButton:
+      FloatingActionButton(
+        backgroundColor:
+        AppColors.primary,
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
 
       body: SafeArea(
-        child: Column(
-          children: [
+        child: Padding(
+          padding:
+          const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              StudentsSearchBar(
+                controller:
+                controller.searchController,
+                onChanged:
+                controller.searchStudents,
+              ),
 
-            /// 🔥 HEADER
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 16),
+
+              SizedBox(
+                height: 40,
+                child: Obx(
+                      () => ListView(
+                    scrollDirection:
+                    Axis.horizontal,
                     children: [
-                      Text(
-                        "Dorm A",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
+                      _chip(
+                        title: 'الكل',
+                        value: 'all',
                       ),
-                      Obx(() => Text(
-                            "${controller.filteredStudents.length} Students",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          )),
+                      _chip(
+                        title: 'تحذيرات',
+                        value: 'warning',
+                      ),
+                      _chip(
+                        title: 'مخالفات',
+                        value: 'violation',
+                      ),
+
+                      _chip(
+                        title: 'مكافئات',
+                        value: 'reward',
+                      ),
+                      _chip(
+                        title: 'تقرير',
+                        value: 'report',
+                      ),
                     ],
                   ),
-                  const Spacer(),
-                  Icon(Icons.group, color: AppColors.primary)
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              Expanded(
+                child: Obx(() {
+                  if (controller
+                      .isLoading.value) {
+                    return const Center(
+                      child:
+                      CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (controller
+                      .filteredStudents
+                      .isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'لا يوجد طلاب',
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: controller
+                        .filteredStudents
+                        .length,
+                    itemBuilder:
+                        (context, index) {
+                      final student =
+                      controller
+                          .filteredStudents[
+                      index];
+
+                      return StudentCard(
+                        student: student,
+                        onTap: () {
+                          Get.to(
+                                () =>  StudentDetailsView(),
+                            arguments: student,
+                          );
+                        },
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _chip({
+    required String title,
+    required String value,
+  }) {
+    return Padding(
+      padding:
+      const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(title),
+        selected: controller
+            .selectedFilter.value ==
+            value,
+        selectedColor:
+        AppColors.primary,
+        labelStyle: TextStyle(
+          color: controller
+              .selectedFilter
+              .value ==
+              value
+              ? Colors.white
+              : Colors.black,
+        ),
+        onSelected: (_) {
+          controller.changeFilter(value);
+        },
+      ),
+    );
+  }
+}
+
+class StudentCard extends StatelessWidget {
+  final StudentModel student;
+  final VoidCallback onTap;
+
+  const StudentCard({
+    super.key,
+    required this.student,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius:
+      BorderRadius.circular(22),
+      onTap: onTap,
+      child: Container(
+        margin:
+        const EdgeInsets.only(bottom: 14),
+        padding:
+        const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius:
+          BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black
+                  .withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: AppColors.light,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.person,
+                size: 30,
+              ),
+            ),
+
+            const SizedBox(width: 14),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    student.name,
+                    style:
+                    const TextStyle(
+                      fontSize: 16,
+                      fontWeight:
+                      FontWeight.w700,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    student.universityId,
+                  ),
+
+                  const SizedBox(height: 2),
+
+                  Text(student.major),
                 ],
               ),
             ),
 
-            /// 🔍 SEARCH
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                onChanged: controller.searchStudent,
-                decoration: InputDecoration(
-                  hintText: "Search student...",
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            /// 🔥 SESSION BAR
-            _sessionBar(),
-
-            /// 📋 LIST
-            Expanded(
-              child: Obx(() {
-                return ListView.builder(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: controller.filteredStudents.length,
-                  itemBuilder: (context, index) {
-                    final student = controller.filteredStudents[index];
-                    return _studentCard(student, index, context);
-                  },
-                );
-              }),
-            )
+            _statusWidget(),
           ],
         ),
       ),
     );
   }
 
-  // ================= SESSION BAR =================
-  Widget _sessionBar() {
-    return Obx(() {
-      if (!controller.isSessionActive.value &&
-          !controller.isSubmitted.value) {
-        return _startButton();
-      }
+  Widget _statusWidget() {
+    switch (student.status) {
+      case 'warning':
+        return Container(
+          padding:
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.orange
+                .withOpacity(.15),
+            borderRadius:
+            BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'تحذير',
+          ),
+        );
 
-      if (controller.isSessionActive.value) {
-        return _activeSessionBar();
-      }
+      case 'violation':
+        return Container(
+          padding:
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color:
+            Colors.red.withOpacity(.15),
+            borderRadius:
+            BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'مخالفة',
+          ),
+        );
 
-      return _submittedBar();
-    });
+      default:
+        return Container(
+          padding:
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.green
+                .withOpacity(.15),
+            borderRadius:
+            BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'منتظم',
+          ),
+        );
+    }
   }
+}
 
-  // ▶️ START
-  Widget _startButton() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
+
+class StudentsSearchBar extends StatelessWidget {
+  final TextEditingController controller;
+  final Function(String) onChanged;
+
+  const StudentsSearchBar({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        hintText: 'ابحث عن طالب...',
+        prefixIcon: const Icon(Icons.search),
+        filled: true,
+        fillColor: AppColors.white,
+        contentPadding:
+        const EdgeInsets.symmetric(
+          vertical: 16,
         ),
-        onPressed: controller.startSession,
-        child: const Center(
-          child: Text(
-            "Start Attendance",
-            style: TextStyle(color: Colors.white),
-          ),
+        border: OutlineInputBorder(
+          borderRadius:
+          BorderRadius.circular(18),
+          borderSide: BorderSide.none,
         ),
-      ),
-    );
-  }
-
-  // 🔥 ACTIVE SESSION
-  Widget _activeSessionBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-
-          Row(
-            children: [
-              Text(
-                "Session Active 🔴",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(Get.context!)
-                      .colorScheme
-                      .onBackground,
-                ),
-              ),
-
-              const Spacer(),
-
-              IconButton(
-                icon: Icon(Icons.qr_code_scanner,
-                    color: AppColors.primary),
-                onPressed: () {},
-              ),
-
-              TextButton(
-                onPressed: () => controller.markAll(true),
-                child: const Text("All Present"),
-              ),
-
-              TextButton(
-                onPressed: () => controller.markAll(false),
-                child: const Text("All Absent"),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-            onPressed: controller.submitAttendance,
-            child: const Center(
-              child: Text(
-                "Submit Attendance",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // ✅ SUBMITTED
-  Widget _submittedBar() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: const Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.green),
-            SizedBox(width: 10),
-            Text("Attendance Submitted"),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 👩‍🎓 STUDENT CARD
-  Widget _studentCard(Map student, int index, BuildContext context) {
-    bool isPresent = student['present'];
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: isPresent
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-
-          CircleAvatar(
-            backgroundColor: AppColors.primary,
-            child: Text(
-              student['name'][0],
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-
-          const SizedBox(width: 15),
-
-          Expanded(
-            child: Text(
-              student['name'],
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-          ),
-
-          Switch(
-            value: isPresent,
-            activeColor: Colors.green,
-            onChanged: (_) => controller.toggleAttendance(index),
-          ),
-
-          IconButton(
-            icon: const Icon(Icons.warning, color: Colors.orange),
-            onPressed: () {
-              Get.snackbar("Violation", "Add violation");
-            },
-          )
-        ],
       ),
     );
   }
