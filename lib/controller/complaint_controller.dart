@@ -36,13 +36,14 @@ class ComplaintController extends GetxController {
     required int studentId,
     required String title,
     required String description,
+    required String complaint_type,
   }) async {
     try {
       await apiService.post(
         '/supervisor/housing-complaints',
         {
           "student_id": studentId,
-          "complaint_type": "maintenance",
+          "complaint_type": complaint_type,
           "title": title,
           "description": description,
         },

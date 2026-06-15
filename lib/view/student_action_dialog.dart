@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/controller/StudentActionsController.dart';
-
 enum StudentActionType {
   warning,
   violation,
   reward,
   report,
 }
-
 class StudentActionDialog extends StatefulWidget {
   final int studentId;
   final StudentActionType type;

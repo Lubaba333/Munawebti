@@ -654,18 +654,18 @@ class _EmergencyViewState extends State<EmergencyView>{
                 const SizedBox(height: 10),
 
 
-                // TextField(
-                //   controller: controller.severity.value,
-                //   decoration: const InputDecoration(labelText: "severity"),
-                // ),
-                // const SizedBox(height: 10),
-                //
-                // TextField(
-                //   controller: controller.caseType.value,
-                //   decoration: const InputDecoration(labelText: "case_type"),
-                // ),
-                // const SizedBox(height: 10),
-                //
+                TextField(
+                  controller: controller.severityController,
+                  decoration: const InputDecoration(labelText: "severity"),
+                ),
+                const SizedBox(height: 10),
+
+                TextField(
+                  controller: controller.caseTypeController,
+                  decoration: const InputDecoration(labelText: "case_type"),
+                ),
+                const SizedBox(height: 10),
+
                 TextField(
                   controller: controller.studentIdController,
                   keyboardType: TextInputType.number,

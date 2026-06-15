@@ -18,10 +18,17 @@ class RewardDetailsController
   void onInit() {
     super.onInit();
 
-    final int rewardId =
-        Get.arguments;
 
-    loadReward(rewardId);
+    final int rewardId =
+        Get.arguments ?? 0;
+
+
+    if(rewardId != 0){
+
+      loadReward(rewardId);
+
+    }
+
   }
 
   Future<void> loadReward(

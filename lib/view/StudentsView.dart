@@ -283,6 +283,43 @@ class StudentCard extends StatelessWidget {
           ),
         );
 
+      case 'rewards':
+        return Container(
+          padding:
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color:
+            Colors.red.withOpacity(.15),
+            borderRadius:
+            BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'مكافئات',
+          ),
+        );
+
+
+      case 'reports':
+        return Container(
+          padding:
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color:
+            Colors.red.withOpacity(.15),
+            borderRadius:
+            BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'تقارير',
+          ),
+        );
+
       default:
         return Container(
           padding:

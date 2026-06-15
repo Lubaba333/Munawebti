@@ -70,58 +70,90 @@ class WarningsController extends GetxController {
     }
   }
 
-  Future<void> updateWarning({
+  Future<bool> updateWarning({
+
     required int warningId,
+
+    required String title,
+
     required String description,
+
+    required String warningDate,
+
+    required String possiblePenalty,
+
   }) async {
+
 
     loading(true);
 
+
     try {
 
+
       await api.put(
+
         '/supervisor/warnings/$warningId',
+
         {
+
+
+          "title": title,
+
+
           "description": description,
+
+
+          "warning_date": warningDate,
+
+
+          "possible_penalty": possiblePenalty,
+
+
         },
+
       );
 
-      final index = warnings.indexWhere(
-            (e) => e.id == warningId,
+
+
+      await getStudentWarnings(
+          warnings.first.id
       );
 
-      if (index != -1) {
 
-        warnings[index] = WarningModel(
-          id: warnings[index].id,
-          title: warnings[index].title,
-          description: description,
-          warningDate: warnings[index].warningDate,
-          possiblePenalty:
-          warnings[index].possiblePenalty,
-        );
-
-        warnings.refresh();
-      }
 
       Get.snackbar(
         "نجاح",
         "تم تعديل التحذير",
       );
 
-    } catch (e) {
+
+      return true;
+
+
+
+    }catch(e){
+
 
       Get.snackbar(
         "خطأ",
         e.toString(),
       );
 
-    } finally {
+
+      return false;
+
+
+    }
+
+    finally{
 
       loading(false);
-    }
-  }
 
+    }
+
+
+  }
 
   Future<void> deleteWarning(
       int warningId,

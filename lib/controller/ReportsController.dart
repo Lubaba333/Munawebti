@@ -65,22 +65,130 @@ class ReportsController extends GetxController {
     );
   }
 
-  Future<void> updateReport({
+  Future<bool> updateReport({
+
     required int reportId,
+
     required String notes,
+
   }) async {
 
-    await api.put(
-      '/supervisor/student-reports/$reportId',
-      {
-        "notes": notes,
-      },
-    );
 
-    Get.snackbar(
-      "نجاح",
-      "تم تعديل التقرير",
-    );
+    loading(true);
+
+
+    try{
+
+
+      final response =
+      await api.put(
+
+        '/supervisor/student-reports/$reportId',
+
+        {
+
+          "notes":notes,
+
+        },
+
+
+      );
+
+
+
+      if(response['status_code']==200){
+
+
+        final index =
+        reports.indexWhere(
+                (e)=>e.id==reportId
+        );
+
+
+
+        if(index!=-1){
+
+
+          reports[index] =
+              ReportModel(
+
+                id:
+                reports[index].id,
+
+
+                studentId:
+                reports[index].studentId,
+
+
+                notes:
+                notes,
+
+
+                createdAt:
+                reports[index].createdAt,
+
+
+                updatedAt:
+                response['data']['updated_at'] ?? "",
+
+
+              );
+
+
+
+          reports.refresh();
+
+
+        }
+
+
+
+        Get.snackbar(
+
+          "نجاح",
+
+          "تم تعديل التقرير",
+
+        );
+
+
+
+        return true;
+
+
+
+      }
+
+
+
+      return false;
+
+
+
+    }catch(e){
+
+
+      Get.snackbar(
+
+        "خطأ",
+
+        e.toString(),
+
+      );
+
+
+      return false;
+
+
+    }finally{
+
+
+      loading(false);
+
+
+    }
+
+
   }
 
   Future<void> deleteReport(

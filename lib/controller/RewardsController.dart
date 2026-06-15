@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:supervisors/models/RewardModel.dart';
+
 import 'package:supervisors/services/api_service.dart';
 
 
@@ -65,23 +66,142 @@ class RewardsController extends GetxController {
     );
   }
 
-  Future<void> updateReward({
+  // Future<void> updateReward({
+  //   required int rewardId,
+  //   required String description,
+  // }) async {
+  //
+  //   await api.put(
+  //     '/supervisor/rewards/$rewardId',
+  //     {
+  //       "description": description,
+  //     },
+  //   );
+  //
+  //   Get.snackbar(
+  //     "نجاح",
+  //     "تم تعديل المكافأة",
+  //   );
+  // }
+  Future<bool> updateReward({
+
     required int rewardId,
+
+    // required String rewardType,
+
+    required String title,
+
     required String description,
+
+    required String rewardDate,
+
+    // required int points,
+
+
   }) async {
 
-    await api.put(
-      '/supervisor/rewards/$rewardId',
-      {
-        "description": description,
-      },
-    );
 
-    Get.snackbar(
-      "نجاح",
-      "تم تعديل المكافأة",
-    );
+    loading(true);
+
+
+    try {
+
+
+      final response = await api.put(
+
+        '/supervisor/rewards/$rewardId',
+
+
+        {
+
+          "title":title,
+
+          "description":description,
+
+        },
+
+      );
+
+
+
+      print(
+          "UPDATE REWARD = $response"
+      );
+
+
+
+      final index =
+      rewards.indexWhere(
+              (e)=>e.id == rewardId
+      );
+
+
+
+      if(index!=-1){
+
+
+        rewards[index] = RewardModel(
+
+          id: rewardId,
+
+          title:title,
+
+          description:description,
+
+          createdAt:
+          rewards[index].createdAt,
+
+        );
+
+
+        rewards.refresh();
+
+
+      }
+
+
+
+      Get.snackbar(
+
+          "نجاح",
+
+          "تم تعديل المكافأة"
+
+      );
+
+
+      return true;
+
+
+
+    }catch(e){
+
+
+      Get.snackbar(
+
+          "خطأ",
+
+          e.toString()
+
+      );
+
+
+      return false;
+
+
+
+    }finally{
+
+
+      loading(false);
+
+
+    }
+
+
+
   }
+
 
   Future<void> deleteReward(
       int rewardId) async {

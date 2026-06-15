@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/view/EditReportView.dart';
+import 'package:supervisors/view/EditRewardView.dart';
+import 'package:supervisors/view/EditViolationView.dart';
+import 'package:supervisors/view/EditWarningView.dart';
 import 'package:supervisors/view/ReportDetailsView.dart';
 import 'package:supervisors/view/RewardDetailsView.dart';
 import 'package:supervisors/view/ViolationDetailsView.dart';
@@ -44,24 +48,120 @@ class StudentHistoryTab extends StatelessWidget {
             Colors.orange,
           ),
 
+          // ...warningsController.warnings.map(
+          //       (warning) => _historyCard(
+          //         icon: Icons.warning,
+          //         color: Colors.orange,
+          //         title: warning.title,
+          //         subtitle: warning.description,
+          //         date: warning.warningDate
+          //             .split('T')
+          //             .first,
+          //
+          //         onTap: () {
+          //
+          //           Get.to(
+          //                 ()=>WarningDetailsView(),
+          //             arguments: warning.id,
+          //           );
+          //
+          //         },
+          //
+          //
+          //         onDelete: (){
+          //
+          //           warningsController.deleteWarning(
+          //             warning.id,
+          //           );
+          //
+          //         },
+          //
+          //
+          //         onEdit: (){
+          //
+          //           print(
+          //               "تعديل التحذير ${warning.id}"
+          //           );
+          //
+          //         },
+          //       ),
+          // ),
+
           ...warningsController.warnings.map(
-                (warning) => _historyCard(
-                  icon: Icons.warning,
-                  color: Colors.orange,
-                  title: warning.title,
-                  subtitle: warning.description,
-                  date: warning.warningDate
-                      .split('T')
-                      .first,
 
-                  onTap: () {
+                (warning)=>_historyCard(
 
-                    Get.to(
-                          () => WarningDetailsView(),
-                      arguments: warning.id,
+              icon: Icons.warning,
+
+              color: Colors.orange,
+
+
+              title:
+              warning.title,
+
+
+              subtitle:
+              warning.description,
+
+
+              date:
+              warning.warningDate
+                  .split('T')
+                  .first,
+
+
+              onTap: (){
+
+                Get.to(
+                      ()=>WarningDetailsView(),
+
+                  arguments:
+                  warning.id,
+
+                );
+
+              },
+
+
+                  onEdit: () async {
+
+
+                    final result = await Get.to(
+
+                          ()=>EditWarningView(
+
+                        warning: warning,
+
+                      ),
+
                     );
+
+
+
+                    if(result == true){
+
+                      warningsController
+                          .getStudentWarnings(
+                        warning.id,
+                      );
+
+                    }
+
+
                   },
-                ),
+
+
+              onDelete: (){
+
+                warningsController.deleteWarning(
+                    warning.id
+                );
+
+              },
+
+
+            ),
+
           ),
 
           const SizedBox(height: 20),
@@ -98,6 +198,24 @@ class StudentHistoryTab extends StatelessWidget {
                       violation.id,
                     );
                   },
+
+                  onDelete: (){
+
+                    violationsController.deleteViolation(
+                      violation.id,
+                    );
+
+                  },
+
+
+                  onEdit: (){
+                    Get.to(
+                          () => EditViolationView(
+                        violation: violation,
+                      ),
+                    );
+
+                  },
                 ),
           ),
 
@@ -132,6 +250,30 @@ class StudentHistoryTab extends StatelessWidget {
                       reward.id,
                     );
                   },
+
+                  onDelete: (){
+
+                    rewardsController.deleteReward(
+                      reward.id,
+                    );
+
+                  },
+
+
+                  onEdit: (){
+
+                    Get.to(
+
+                          ()=>EditRewardView(
+
+                        reward: reward,
+
+                      ),
+
+
+                    );
+
+                  },
                 ),
           ),
 
@@ -164,6 +306,28 @@ class StudentHistoryTab extends StatelessWidget {
                       arguments:
                       report.id,
                     );
+                  },
+
+                  onDelete: (){
+
+                    reportsController.deleteReport(
+                      report.id,
+                    );
+
+                  },
+
+
+                  onEdit: (){
+                    Get.to(
+
+                          ()=>EditReportView(
+
+                        report: report,
+
+                      ),
+
+                    );
+
                   },
                 ),
           ),
@@ -212,24 +376,24 @@ class StudentHistoryTab extends StatelessWidget {
     required String subtitle,
     required String date,
     required VoidCallback onTap,
+    required VoidCallback onEdit,
+    required VoidCallback onDelete,
+
   }) {
 
     return InkWell(
 
-      borderRadius:
-      BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(20),
 
       onTap: onTap,
 
       child: Container(
 
-        margin:
-        const EdgeInsets.only(
+        margin: const EdgeInsets.only(
           bottom: 14,
         ),
 
-        padding:
-        const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
 
         decoration: BoxDecoration(
 
@@ -241,27 +405,20 @@ class StudentHistoryTab extends StatelessWidget {
           boxShadow: [
 
             BoxShadow(
-              color: Colors.black
-                  .withOpacity(0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 12,
-              offset: const Offset(
-                0,
-                4,
-              ),
-            ),
+              offset: const Offset(0,4),
+            )
+
           ],
 
-          border: Border.all(
-            color:
-            color.withOpacity(
-              0.15,
-            ),
-          ),
         ),
+
 
         child: Row(
 
           children: [
+
 
             Container(
 
@@ -269,85 +426,232 @@ class StudentHistoryTab extends StatelessWidget {
               height: 50,
 
               decoration: BoxDecoration(
-                color:
-                color.withOpacity(
-                  .12,
+                color: color.withOpacity(.12),
+                shape: BoxShape.circle,
+              ),
+
+            //   child: Icon(
+            //     icon,
+            //     color: color,
+            //   ),
+            // ),
+                child:  Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size:18,
                 ),
-                shape:
-                BoxShape.circle,
-              ),
-
-              child: Icon(
-                icon,
-                color: color,
-              ),
             ),
+            const SizedBox(width:14),
 
-            const SizedBox(width: 14),
 
             Expanded(
 
               child: Column(
 
                 crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
+                CrossAxisAlignment.start,
 
                 children: [
+
 
                   Text(
                     title,
                     style:
                     const TextStyle(
-                      fontSize: 16,
                       fontWeight:
-                      FontWeight
-                          .w700,
+                      FontWeight.bold,
+                      fontSize:16,
                     ),
                   ),
 
-                  const SizedBox(
-                    height: 6,
-                  ),
+
+                  const SizedBox(height:6),
+
 
                   Text(
                     subtitle,
-                    maxLines: 2,
+                    maxLines:2,
                     overflow:
-                    TextOverflow
-                        .ellipsis,
-                    style:
-                    TextStyle(
-                      color:
-                      Colors.grey[700],
-                    ),
+                    TextOverflow.ellipsis,
                   ),
 
-                  const SizedBox(
-                    height: 8,
-                  ),
+
+                  const SizedBox(height:8),
+
 
                   Text(
                     date,
                     style:
                     TextStyle(
-                      fontSize: 12,
-                      color:
-                      Colors.grey[500],
+                      color:Colors.grey[500],
+                      fontSize:12,
                     ),
                   ),
+
+
                 ],
               ),
             ),
+            PopupMenuButton(
 
-            const Icon(
-              Icons
-                  .arrow_forward_ios_rounded,
-              size: 18,
-              color: Colors.grey,
-            ),
+
+              itemBuilder:(context)=>[
+
+
+                const PopupMenuItem(
+
+                  value:"edit",
+
+                  child:Row(
+
+                    children:[
+
+                      Icon(Icons.edit),
+
+                      SizedBox(width:8),
+
+                      Text("تعديل"),
+
+                    ],
+
+                  ),
+
+                ),
+
+
+
+                const PopupMenuItem(
+
+                  value:"delete",
+
+                  child:Row(
+
+                    children:[
+
+                      Icon(Icons.delete,color:Colors.red),
+
+                      SizedBox(width:8),
+
+                      Text("حذف"),
+
+                    ],
+
+                  ),
+
+                ),
+
+
+
+              ],
+
+
+              onSelected:(value){
+
+
+                if(value=="edit"){
+
+                  onEdit();
+
+                }
+
+
+                if(value=="delete"){
+
+                  onDelete();
+
+                }
+
+
+              },
+
+            )
+
+            //
+            // PopupMenuButton(
+            //
+            //   itemBuilder: (context)=>[
+            //
+            //
+            //     PopupMenuItem(
+            //
+            //       child:
+            //       const Row(
+            //
+            //         children:[
+            //
+            //           Icon(
+            //             Icons.edit,
+            //             color:Colors.blue,
+            //           ),
+            //
+            //           SizedBox(width:8),
+            //
+            //           Text("تعديل")
+            //
+            //         ],
+            //       ),
+            //
+            //
+            //       onTap: (){
+            //
+            //         Future.delayed(
+            //             Duration.zero,
+            //                 (){
+            //               onEdit?.call();
+            //             }
+            //         );
+            //
+            //       },
+            //
+            //     ),
+            //
+            //
+            //
+            //     PopupMenuItem(
+            //
+            //       child:
+            //       const Row(
+            //
+            //         children:[
+            //
+            //           Icon(
+            //             Icons.delete,
+            //             color:Colors.red,
+            //           ),
+            //
+            //           SizedBox(width:8),
+            //
+            //           Text("حذف")
+            //
+            //         ],
+            //       ),
+            //
+            //
+            //       onTap: (){
+            //
+            //         Future.delayed(
+            //             Duration.zero,
+            //                 (){
+            //               onDelete?.call();
+            //             }
+            //         );
+            //
+            //       },
+            //
+            //     ),
+            //
+            //
+            //   ],
+            // )
+
           ],
+
         ),
+
       ),
     );
+
   }}
+
+
+
+

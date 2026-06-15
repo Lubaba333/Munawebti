@@ -72,33 +72,153 @@ class ViolationsController
     );
   }
 
-  Future<void> updateViolation({
+  // Future<void> updateViolation({
+  //   required int violationId,
+  //   required String title,
+  //   required String description,
+  //   required String category,
+  //   required String penalty,
+  // }) async {
+  //
+  //   await api.put(
+  //     '/supervisor/violations/$violationId',
+  //     {
+  //       "title": title,
+  //       "description":
+  //       description,
+  //       "category":
+  //       category,
+  //       "penalty":
+  //       penalty,
+  //     },
+  //   );
+  //
+  //   Get.snackbar(
+  //     "نجاح",
+  //     "تم تعديل المخالفة",
+  //   );
+  // }
+
+
+
+  Future<bool> updateViolation({
+
     required int violationId,
+
     required String title,
+
     required String description,
+
+    required String violationDate,
+
     required String category,
+
     required String penalty,
+
+
   }) async {
 
-    await api.put(
-      '/supervisor/violations/$violationId',
-      {
-        "title": title,
-        "description":
-        description,
-        "category":
-        category,
-        "penalty":
-        penalty,
-      },
-    );
 
-    Get.snackbar(
-      "نجاح",
-      "تم تعديل المخالفة",
-    );
+    loading(true);
+
+
+    try{
+
+
+      await api.put(
+
+        '/supervisor/violations/$violationId',
+
+        {
+
+
+          "title":title,
+
+          "description":description,
+
+          "violation_date":violationDate,
+
+          "category":category,
+
+          "penalty":penalty,
+
+
+        },
+
+      );
+
+
+
+      final index =
+      violations.indexWhere(
+              (e)=>e.id==violationId
+      );
+
+
+
+      if(index!=-1){
+
+
+        violations[index] =
+
+            violations[index].copyWith(
+
+
+              title:title,
+
+              description:description,
+
+              violationDate:violationDate,
+
+              category:category,
+
+              penalty:penalty,
+
+
+            );
+
+
+
+        violations.refresh();
+
+
+      }
+
+
+
+      Get.snackbar(
+        "نجاح",
+        "تم تعديل المخالفة",
+      );
+
+
+
+      return true;
+
+
+
+    }catch(e){
+
+
+      Get.snackbar(
+        "خطأ",
+        e.toString(),
+      );
+
+
+      return false;
+
+
+    }finally{
+
+
+      loading(false);
+
+
+    }
+
+
   }
-
   Future<void> deleteViolation(
       int violationId) async {
 

@@ -14,15 +14,21 @@ class ReportDetailsController
   Rxn<ReportModel>();
 
   RxBool loading = false.obs;
-
   @override
   void onInit() {
     super.onInit();
 
-    final int reportId =
-        Get.arguments;
 
-    loadReport(reportId);
+    final int reportId =
+        Get.arguments ?? 0;
+
+
+    if(reportId != 0){
+
+      loadReport(reportId);
+
+    }
+
   }
 
   Future<void> loadReport(

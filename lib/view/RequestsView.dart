@@ -875,9 +875,26 @@ class _CreateRequestViewState extends State<CreateRequestView> {
           controller: shiftDate,
           decoration: InputDecoration(
             labelText: "Shift Date",
+            hintText: "08:00",
             border: OutlineInputBorder(),
           ),
         ),
+        //
+        // TextField(
+        //   controller: fromHour,
+        //   readOnly: true,
+        //   onTap: () async {
+        //     final time = await showTimePicker(
+        //       context: context,
+        //       initialTime: TimeOfDay.now(),
+        //     );
+        //
+        //     if (time != null) {
+        //       fromHour.text =
+        //       "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+        //     }
+        //   },
+        // ),
 
         SizedBox(height: 10),
 
@@ -885,6 +902,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
           controller: fromHour,
           decoration: InputDecoration(
             labelText: "From Hour",
+            hintText: "12:00",
             border: OutlineInputBorder(),
           ),
         ),
@@ -895,6 +913,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
           controller: toHour,
           decoration: InputDecoration(
             labelText: "To Hour",
+            hintText: "02:30",
             border: OutlineInputBorder(),
           ),
         ),

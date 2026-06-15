@@ -162,6 +162,7 @@ class AddComplaintView extends StatelessWidget {
 
   final titleController = TextEditingController();
   final descController = TextEditingController();
+  final  complaintTypeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +181,21 @@ class AddComplaintView extends StatelessWidget {
                 labelText: "Title",
               ),
             ),
+
+            TextField(
+              controller: complaintTypeController,
+              decoration: const InputDecoration(
+                labelText: "complaint_type",
+              ),
+            ),
+
             TextField(
               controller: descController,
               decoration: const InputDecoration(
                 labelText: "Description",
               ),
             ),
+
 
             const SizedBox(height: 20),
 
@@ -197,6 +207,7 @@ class AddComplaintView extends StatelessWidget {
                 controller.createComplaint(
                   studentId: 1, // لاحقاً من user session
                   title: titleController.text,
+                  complaint_type:complaintTypeController.text,
                   description: descController.text,
                 );
               },

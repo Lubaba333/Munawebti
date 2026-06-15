@@ -2,34 +2,79 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/controller/warning_controller.dart';
 import 'package:supervisors/models/StudentModel.dart';
-
+//
+// class StudentDetailsController extends GetxController
+//     with GetSingleTickerProviderStateMixin {
+//
+//   late TabController tabController;
+//
+//   late StudentModel student;
+//   final WarningsController warningController =
+//   Get.put(WarningsController());
+//   @override
+//   void onInit() {
+//     super.onInit();
+//
+//     student = Get.arguments as StudentModel;
+//     warningController.getStudentWarnings(
+//       student.id,
+//     );
+//
+//     tabController = TabController(
+//       length: 3,
+//       vsync: this,
+//     );
+//   }
+//
+//   @override
+//   void onClose() {
+//     tabController.dispose();
+//     super.onClose();
+//   }
+// }
+//
 class StudentDetailsController extends GetxController
     with GetSingleTickerProviderStateMixin {
 
+
   late TabController tabController;
 
+
   late StudentModel student;
-  final WarningsController warningController =
-  Get.put(WarningsController());
+
+
+
   @override
   void onInit() {
+
     super.onInit();
 
-    student = Get.arguments as StudentModel;
-    warningController.getStudentWarnings(
-      student.id,
-    );
 
-    tabController = TabController(
-      length: 3,
-      vsync: this,
-    );
+    student =
+    Get.arguments as StudentModel;
+
+
+
+    tabController =
+        TabController(
+
+          length: 3,
+
+          vsync: this,
+
+        );
+
   }
+
+
 
   @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
-  }
-}
+  void onClose(){
 
+    tabController.dispose();
+
+    super.onClose();
+
+  }
+
+}

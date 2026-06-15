@@ -1,141 +1,733 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:supervisors/view/EditViolationView.dart';
+
 import '../const/app_colors.dart';
 import '../controller/ViolationDetailsController.dart';
 
+
+
 class ViolationDetailsView
     extends StatelessWidget {
+
 
   ViolationDetailsView({
     super.key,
   });
 
-  final controller = Get.put(
+
+
+  final controller =
+  Get.put(
     ViolationDetailsController(),
   );
 
+
+
+
   @override
-  Widget build(
-      BuildContext context) {
+  Widget build(BuildContext context) {
+
 
     return Scaffold(
+
 
       backgroundColor:
       AppColors.background,
 
+
+
       appBar: AppBar(
+
+
+        elevation: 0,
+
+
+        centerTitle: true,
+
+
         title:
+
         const Text(
+
           "تفاصيل المخالفة",
+
+          style:
+
+          TextStyle(
+
+            fontWeight:
+            FontWeight.bold,
+
+          ),
+
         ),
+
+
+
         backgroundColor:
+
         AppColors.primary,
+
+
       ),
 
-      body: Obx(() {
 
-        if (controller.loading.value) {
+
+
+
+      body:
+
+      Obx(() {
+
+
+
+        if(controller.loading.value){
+
 
           return const Center(
+
             child:
+
             CircularProgressIndicator(),
+
           );
+
         }
 
-        final violation =
-            controller
-                .violation
-                .value;
 
-        if (violation == null) {
+
+        final violation =
+
+            controller.violation.value;
+
+
+
+        if(violation == null){
+
 
           return const Center(
+
             child:
+
             Text(
               "لا توجد بيانات",
             ),
+
           );
+
         }
 
-        return ListView(
+
+
+
+
+        return SingleChildScrollView(
+
+
           padding:
-          const EdgeInsets.all(
-              16),
+
+          const EdgeInsets.all(20),
+
+
+
+          child:
+
+          Column(
+
+            children: [
+
+
+
+              _headerCard(violation.title),
+
+
+
+
+              const SizedBox(height:20),
+
+
+
+
+              _infoCard(
+
+                icon:
+                Icons.description_outlined,
+
+                title:
+                "الوصف",
+
+                value:
+                violation.description,
+
+              ),
+
+
+
+
+              _infoCard(
+
+                icon:
+                Icons.category_outlined,
+
+                title:
+                "التصنيف",
+
+                value:
+                violation.category,
+
+              ),
+
+
+
+
+
+              _infoCard(
+
+                icon:
+                Icons.warning_amber_outlined,
+
+                title:
+                "العقوبة",
+
+                value:
+                violation.penalty,
+
+              ),
+
+
+
+
+
+
+              _infoCard(
+
+                icon:
+                Icons.date_range,
+
+                title:
+                "تاريخ المخالفة",
+
+                value:
+                violation.violationDate,
+
+              ),
+
+
+
+
+
+
+              const SizedBox(height:30),
+
+
+
+
+
+              SizedBox(
+
+
+                width:
+                double.infinity,
+
+
+
+                child:
+
+                ElevatedButton.icon(
+
+
+                  icon:
+
+                  const Icon(
+                    Icons.edit,
+                  ),
+
+
+
+                  label:
+
+                  const Text(
+
+                    "تعديل المخالفة",
+
+                    style:
+
+                    TextStyle(
+
+                      fontSize:16,
+
+                      fontWeight:
+                      FontWeight.bold,
+
+                    ),
+
+                  ),
+
+
+
+
+                  style:
+
+                  ElevatedButton.styleFrom(
+
+
+                    backgroundColor:
+
+                    AppColors.primary,
+
+
+
+                    padding:
+
+                    const EdgeInsets.symmetric(
+
+                      vertical:16,
+
+                    ),
+
+
+
+                    shape:
+
+                    RoundedRectangleBorder(
+
+
+                      borderRadius:
+
+                      BorderRadius.circular(18),
+
+
+                    ),
+
+
+                  ),
+
+
+
+
+
+                  onPressed:(){
+
+
+
+                    Get.to(
+
+                          ()=>
+
+                          EditViolationView(
+
+                            violation:
+
+                            violation,
+
+                          ),
+
+                    );
+
+
+
+                  },
+
+
+                ),
+
+
+              )
+
+
+
+            ],
+
+          ),
+
+
+        );
+
+      }),
+
+
+    );
+
+  }
+
+
+
+
+
+
+
+
+  Widget _headerCard(String title){
+
+
+    return Container(
+
+
+      width:
+      double.infinity,
+
+
+
+      padding:
+
+      const EdgeInsets.all(20),
+
+
+
+      decoration:
+
+      BoxDecoration(
+
+
+        color:
+
+        AppColors.primary,
+
+
+
+        borderRadius:
+
+        BorderRadius.circular(22),
+
+
+      ),
+
+
+
+
+      child:
+
+      Column(
+
+
+        children: [
+
+
+
+          const Icon(
+
+            Icons.report_problem,
+
+            size:50,
+
+            color:Colors.white,
+
+          ),
+
+
+
+
+          const SizedBox(height:10),
+
+
+
+
+
+          Text(
+
+
+            title,
+
+
+
+            textAlign:
+            TextAlign.center,
+
+
+
+            style:
+
+            const TextStyle(
+
+
+              color:
+
+              Colors.white,
+
+
+
+              fontSize:20,
+
+
+              fontWeight:
+
+              FontWeight.bold,
+
+
+            ),
+
+
+
+          )
+
+
+
+        ],
+
+      ),
+
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+  Widget _infoCard({
+
+    required IconData icon,
+
+    required String title,
+
+    required String value,
+
+  }){
+
+
+    return Container(
+
+
+      margin:
+
+      const EdgeInsets.only(
+
+        bottom:15,
+
+      ),
+
+
+
+
+      decoration:
+
+      BoxDecoration(
+
+
+        color:
+
+        Colors.white,
+
+
+
+        borderRadius:
+
+        BorderRadius.circular(20),
+
+
+
+        boxShadow:[
+
+
+          BoxShadow(
+
+            color:
+
+            Colors.black12,
+
+            blurRadius:8,
+
+            offset:
+
+            const Offset(0,3),
+
+          )
+
+
+        ],
+
+
+      ),
+
+
+
+
+      child:
+
+      Padding(
+
+        padding:
+
+        const EdgeInsets.all(18),
+
+
+
+
+        child:
+
+        Row(
+
+
+          crossAxisAlignment:
+
+          CrossAxisAlignment.start,
+
+
 
           children: [
 
-            Card(
-              child: ListTile(
-                title:
-                const Text(
-                  "العنوان",
-                ),
-                subtitle:
-                Text(
-                  violation.title,
-                ),
+
+
+            Container(
+
+
+              padding:
+
+              const EdgeInsets.all(12),
+
+
+
+              decoration:
+
+              BoxDecoration(
+
+
+                color:
+
+                AppColors.primary.withOpacity(.15),
+
+
+
+                shape:
+
+                BoxShape.circle,
+
+
               ),
+
+
+
+              child:
+
+              Icon(
+
+                icon,
+
+                color:
+
+                AppColors.primary,
+
+              ),
+
+
+
             ),
 
-            Card(
-              child: ListTile(
-                title:
-                const Text(
-                  "الوصف",
-                ),
-                subtitle:
-                Text(
-                  violation
-                      .description,
-                ),
-              ),
-            ),
 
-            Card(
-              child: ListTile(
-                title:
-                const Text(
-                  "التصنيف",
-                ),
-                subtitle:
-                Text(
-                  violation
-                      .category,
-                ),
-              ),
-            ),
 
-            Card(
-              child: ListTile(
-                title:
-                const Text(
-                  "العقوبة",
-                ),
-                subtitle:
-                Text(
-                  violation
-                      .penalty,
-                ),
-              ),
-            ),
 
-            Card(
-              child: ListTile(
-                title:
-                const Text(
-                  "التاريخ",
-                ),
-                subtitle:
-                Text(
-                  violation
-                      .violationDate,
-                ),
+            const SizedBox(width:15),
+
+
+
+
+
+            Expanded(
+
+
+              child:
+
+              Column(
+
+
+                crossAxisAlignment:
+
+                CrossAxisAlignment.start,
+
+
+
+                children: [
+
+
+
+                  Text(
+
+
+                    title,
+
+
+                    style:
+
+                    const TextStyle(
+
+
+                      fontWeight:
+
+                      FontWeight.bold,
+
+                      fontSize:16,
+
+
+                    ),
+
+
+
+                  ),
+
+
+
+
+                  const SizedBox(height:8),
+
+
+
+
+                  Text(
+
+
+                    value,
+
+
+
+                    style:
+
+                    const TextStyle(
+
+                      fontSize:15,
+
+                      color:
+
+                      Colors.black87,
+
+                    ),
+
+
+                  )
+
+
+
+                ],
+
+
               ),
-            ),
+
+
+            )
+
+
+
+
           ],
-        );
-      }),
+
+
+        ),
+
+
+
+      ),
+
+
     );
+
+
   }
+
+
+
 }

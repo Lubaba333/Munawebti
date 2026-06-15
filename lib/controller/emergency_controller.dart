@@ -9,11 +9,9 @@ class EmergencyController extends GetxController {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final studentIdController = TextEditingController();
+  final severityController = TextEditingController();
+  final caseTypeController =  TextEditingController();
 
-
-  var severity = "high".obs;
-
-  var caseType = "medical".obs;
 
   var isLoading = false.obs;
   var cases = <EmergencyCase>[].obs;
@@ -23,6 +21,8 @@ class EmergencyController extends GetxController {
     titleController.dispose();
     descriptionController.dispose();
     studentIdController.dispose();
+    severityController.dispose();
+    caseTypeController.dispose();
     super.onClose();
   }
 
@@ -87,7 +87,7 @@ class EmergencyController extends GetxController {
 
 
             "case_type":
-            caseType.value,
+            caseTypeController.text,
 
 
             "title":
@@ -99,7 +99,7 @@ class EmergencyController extends GetxController {
 
 
             "severity":
-            severity.value,
+            severityController.text,
 
 
           });
