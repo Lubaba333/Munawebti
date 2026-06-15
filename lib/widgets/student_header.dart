@@ -1,3 +1,52 @@
+// import 'package:flutter/material.dart';
+// import 'package:supervisors/models/StudentModel.dart';
+//
+// class StudentHeader extends StatelessWidget {
+//   final StudentModel student;
+//
+//   const StudentHeader({
+//     super.key,
+//     required this.student,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       alignment: Alignment.center,
+//
+//       child: Column(
+//         mainAxisAlignment:
+//         MainAxisAlignment.center,
+//
+//         children: [
+//           CircleAvatar(
+//             radius: 45,
+//             child: Text(
+//               student.name[0],
+//             ),
+//           ),
+//
+//           const SizedBox(height: 10),
+//
+//           Text(
+//             student.name,
+//             style: const TextStyle(
+//               fontSize: 22,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//
+//           Text(
+//             student.universityId,
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:supervisors/models/StudentModel.dart';
 
@@ -22,14 +71,14 @@ class StudentHeader extends StatelessWidget {
           CircleAvatar(
             radius: 45,
             child: Text(
-              student.name[0],
+              student.fullName[0],
             ),
           ),
 
           const SizedBox(height: 10),
 
           Text(
-            student.name,
+            student.fullName,
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -37,7 +86,7 @@ class StudentHeader extends StatelessWidget {
           ),
 
           Text(
-            student.universityId,
+            student.studentIdentifier,
           ),
         ],
       ),
