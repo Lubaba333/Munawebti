@@ -14,6 +14,8 @@ class RequestController extends GetxController {
   var isLoadingSupervisors = false.obs;
 
 
+  int currentUserId = 0;
+
   @override
   void onInit() {
     print("Controller ready only");
@@ -100,6 +102,21 @@ class RequestController extends GetxController {
     fetchRequests();
   }
 
+  Future<void> cancelRequest(int id) async {
+    try {
+      final response = await api.post(
+        '/supervisor/requests/$id/cancel',
+        {},
+      );
+
+      if (response['status_code'] == 200) {
+        Get.snackbar("Success", response['message']);
+        fetchRequests();
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
 
   Future<RequestModel?> getRequestDetails(int id) async {
 

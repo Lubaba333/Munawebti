@@ -71,11 +71,13 @@ class AuthController extends GetxController {
 
        await _api.setToken(token);
 
+
+        final requestController = Get.find<RequestController>();
+        requestController.currentUserId =
+        response['data']['supervisor']['id'];
+
         await getSupervisorProfile();
 
-        Get.put(StudentsController());
-        Get.put(EmergencyController());
-        Get.put(RequestController());
         Get.offAll(() => MainView());
 
       } else {

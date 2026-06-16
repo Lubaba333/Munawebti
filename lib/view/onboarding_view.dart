@@ -31,7 +31,7 @@ class OnboardingView extends StatelessWidget {
     },
   ];
 
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +55,7 @@ class OnboardingView extends StatelessWidget {
                         child: Text(
                           "Skip",
                           style: TextStyle(
-                            color: AppColors.textLight,
+                            color: AppColors.textDark,
                             fontSize: 14,
                           ),
                         ),
@@ -123,7 +123,7 @@ class OnboardingView extends StatelessWidget {
                               child: Text(
                                 "Back",
                                 style: TextStyle(
-                                  color: AppColors.textLight,
+                                  color: AppColors.textDark,
                                   fontSize: 14,
                                 ),
                               ),
@@ -137,7 +137,7 @@ class OnboardingView extends StatelessWidget {
 
                         return AnimatedSwitcher(
                           duration: Duration(milliseconds: 400),
-                          child: isLast 
+                          child: isLast
                               ? GestureDetector(
                                   key: ValueKey("start"),
                                   onTap: () {
@@ -162,7 +162,7 @@ class OnboardingView extends StatelessWidget {
                                         )
                                       ],
                                     ),
-                                  
+
                                     child: Text(
                                       "Get started",
                                       style: TextStyle(
@@ -239,7 +239,7 @@ class OnboardingView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.textLight,
+              color: AppColors.textDark,
               height: 1.6,
             ),
           ),
@@ -341,3 +341,733 @@ class GradientTrailButton extends StatelessWidget {
     );
   }
 }
+
+
+//
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:supervisors/const/app_colors.dart';
+// import 'package:supervisors/controller/onboarding_controller.dart';
+// import 'LoginView.dart';
+//
+//
+// class OnboardingView extends StatelessWidget {
+//
+//   final controller = Get.put(OnboardingController());
+//
+//   final PageController pageController = PageController();
+//
+//
+//   final List<Map<String,String>> pages = [
+//
+//     {
+//       "image":"assets/on1.png",
+//       "title":"Manage Students Easily",
+//       "desc":"Track and manage nursing students efficiently in school and housing."
+//     },
+//
+//     {
+//       "image":"assets/on2.png",
+//       "title":"Organize Schedules",
+//       "desc":"Easily manage supervisors shifts and student schedules."
+//     },
+//
+//     {
+//       "image":"assets/on3.png",
+//       "title":"Hospital Training Tracking",
+//       "desc":"Monitor students training and progress in hospitals in real-time."
+//     },
+//
+//   ];
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//
+//     final height = MediaQuery.of(context).size.height;
+//
+//
+//     return Scaffold(
+//
+//       backgroundColor: AppColors.background,
+//
+//
+//       body: SafeArea(
+//
+//         child: Column(
+//
+//           children: [
+//
+//
+//             /// Skip
+//
+//             Padding(
+//
+//               padding:
+//               const EdgeInsets.symmetric(
+//                   horizontal:20,
+//                   vertical:15
+//               ),
+//
+//               child: Align(
+//
+//                 alignment:Alignment.topRight,
+//
+//                 child: Obx(()=>AnimatedOpacity(
+//
+//                   duration:
+//                   const Duration(milliseconds:300),
+//
+//                   opacity:
+//                   controller.currentPage.value ==
+//                       pages.length-1
+//                       ?0
+//                       :1,
+//
+//
+//                   child: GestureDetector(
+//
+//                     onTap:(){
+//
+//                       pageController.animateToPage(
+//
+//                           pages.length-1,
+//
+//                           duration:
+//                           const Duration(milliseconds:500),
+//
+//                           curve:
+//                           Curves.easeOut
+//                       );
+//
+//                     },
+//
+//
+//                     child: Text(
+//
+//                       "Skip",
+//
+//                       style:TextStyle(
+//                         color:AppColors.textDark,
+//                       ),
+//
+//                     ),
+//
+//                   ),
+//
+//                 )),
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//             /// Pages
+//
+//             Expanded(
+//
+//               child: PageView.builder(
+//
+//                 controller: pageController,
+//
+//                 onPageChanged:
+//                 controller.changePage,
+//
+//
+//                 itemCount: pages.length,
+//
+//
+//                 itemBuilder:(context,index){
+//
+//                   return _buildPage(
+//                       pages[index],
+//                       height
+//                   );
+//
+//                 },
+//
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//
+//
+//             /// Bottom
+//
+//             Padding(
+//
+//               padding:
+//               const EdgeInsets.symmetric(
+//                   horizontal:24,
+//                   vertical:25
+//               ),
+//
+//
+//               child:Column(
+//
+//                 mainAxisSize:
+//                 MainAxisSize.min,
+//
+//
+//                 children:[
+//
+//
+//
+//                   /// dots
+//
+//
+//                   Obx(()=>Row(
+//
+//                     mainAxisAlignment:
+//                     MainAxisAlignment.center,
+//
+//
+//                     children:List.generate(
+//
+//                         pages.length,
+//
+//
+//                             (index)=>AnimatedContainer(
+//
+//                           duration:
+//                           const Duration(milliseconds:400),
+//
+//
+//                           margin:
+//                           const EdgeInsets.symmetric(
+//                               horizontal:4
+//                           ),
+//
+//
+//                           width:
+//                           controller.currentPage.value==index
+//                               ?20
+//                               :7,
+//
+//
+//                           height:6,
+//
+//
+//                           decoration:BoxDecoration(
+//
+//                             color:
+//                             controller.currentPage.value==index
+//                                 ?
+//                             AppColors.primary
+//                                 :
+//                             Colors.grey,
+//
+//
+//                             borderRadius:
+//                             BorderRadius.circular(20),
+//
+//                           ),
+//
+//
+//                         )
+//
+//                     ),
+//
+//                   )),
+//
+//
+//
+//                   const SizedBox(height:30),
+//
+//
+//
+//
+//
+//                   Row(
+//
+//                     mainAxisAlignment:
+//                     MainAxisAlignment.spaceBetween,
+//
+//
+//                     children:[
+//
+//
+//
+//                       Obx(()=>AnimatedOpacity(
+//
+//                         duration:
+//                         const Duration(milliseconds:300),
+//
+//                         opacity:
+//                         controller.currentPage.value==0
+//                             ?0
+//                             :1,
+//
+//
+//                         child:GestureDetector(
+//
+//                           onTap:(){
+//
+//                             pageController.previousPage(
+//
+//                                 duration:
+//                                 const Duration(milliseconds:300),
+//
+//                                 curve:
+//                                 Curves.easeInOut
+//                             );
+//
+//                           },
+//
+//
+//                           child:
+//                           const Text("Back"),
+//
+//                         ),
+//
+//                       )),
+//
+//
+//
+//
+//
+//
+//
+//                       Obx(()=>AnimatedSwitcher(
+//
+//                         duration:
+//                         const Duration(milliseconds:400),
+//
+//
+//                         child:
+//
+//                         controller.currentPage.value ==
+//                             pages.length-1
+//
+//
+//                             ?
+//
+//                         ElevatedButton(
+//
+//                           key:
+//                           const ValueKey("start"),
+//
+//
+//                           style:
+//                           ElevatedButton.styleFrom(
+//
+//                               backgroundColor:
+//                               AppColors.primary,
+//
+//
+//                               shape:
+//                               RoundedRectangleBorder(
+//
+//                                 borderRadius:
+//                                 BorderRadius.circular(30),
+//
+//                               ),
+//
+//                               padding:
+//                               const EdgeInsets.symmetric(
+//                                 horizontal:30,
+//                                 vertical:14,
+//                               )
+//
+//                           ),
+//
+//
+//                           onPressed:(){
+//
+//                             Get.off(
+//                                     ()=>LoginView()
+//                             );
+//
+//                           },
+//
+//
+//                           child:
+//                           const Text(
+//                             "Get started",
+//                             style:TextStyle(
+//                                 color:Colors.white
+//                             ),
+//                           ),
+//
+//                         )
+//
+//                             :
+//
+//                         GradientTrailButton(
+//
+//                           key:
+//                           const ValueKey("next"),
+//
+//
+//                           onTap:(){
+//
+//                             pageController.nextPage(
+//
+//                               duration:
+//                               const Duration(milliseconds:300),
+//
+//                               curve:
+//                               Curves.easeInOut,
+//
+//                             );
+//
+//                           },
+//
+//                         ),
+//
+//
+//                       ))
+//
+//
+//
+//                     ],
+//
+//
+//                   )
+//
+//
+//                 ],
+//
+//               ),
+//
+//             )
+//
+//           ],
+//
+//
+//         ),
+//
+//
+//       ),
+//
+//
+//     );
+//
+//   }
+//
+//
+//
+//
+//
+//
+//
+//   Widget _buildPage(
+//       Map<String,String> data,
+//       double height
+//       ){
+//
+//
+//     return SingleChildScrollView(
+//
+//       physics:
+//       const BouncingScrollPhysics(),
+//
+//
+//       child:Padding(
+//
+//         padding:
+//         const EdgeInsets.symmetric(
+//             horizontal:30
+//         ),
+//
+//
+//         child:Column(
+//
+//           mainAxisAlignment:
+//           MainAxisAlignment.center,
+//
+//
+//           children:[
+//
+//
+//
+//             const SizedBox(height:20),
+//
+//
+//
+//             TweenAnimationBuilder(
+//
+//               tween:
+//               Tween<double>(
+//                   begin:.7,
+//                   end:1
+//               ),
+//
+//
+//               duration:
+//               const Duration(milliseconds:600),
+//
+//
+//
+//               builder:(context,value,child){
+//
+//
+//                 return Transform.scale(
+//
+//                   scale:value,
+//
+//
+//                   child:Opacity(
+//
+//                     opacity:value,
+//
+//
+//                     child:child,
+//
+//                   ),
+//
+//                 );
+//
+//
+//               },
+//
+//
+//
+//               child:Image.asset(
+//
+//                 data["image"]!,
+//
+//                 height:
+//                 height < 700
+//                     ?
+//                 180
+//                     :
+//                 250,
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//
+//
+//             const SizedBox(height:30),
+//
+//
+//
+//
+//             Text(
+//
+//               data["title"]!,
+//
+//               textAlign:
+//               TextAlign.center,
+//
+//
+//               style:
+//               TextStyle(
+//
+//                 fontSize:
+//                 height <700
+//                     ?18
+//                     :22,
+//
+//
+//                 fontWeight:
+//                 FontWeight.bold,
+//
+//
+//                 color:
+//                 AppColors.textDark,
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//
+//             const SizedBox(height:10),
+//
+//
+//
+//
+//
+//             Text(
+//
+//               data["desc"]!,
+//
+//               textAlign:
+//               TextAlign.center,
+//
+//
+//               style:
+//               TextStyle(
+//
+//                 fontSize:14,
+//
+//
+//                 height:1.5,
+//
+//
+//                 color:
+//                 AppColors.textDark,
+//
+//               ),
+//
+//             ),
+//
+//
+//             const SizedBox(height:20),
+//
+//
+//
+//           ],
+//
+//         ),
+//
+//       ),
+//
+//     );
+//
+//
+//   }
+//
+//
+// }
+//
+// class GradientTrailButton extends StatelessWidget {
+//
+//   final VoidCallback onTap;
+//
+//   const GradientTrailButton({
+//     super.key,
+//     required this.onTap,
+//   });
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return GestureDetector(
+//
+//       onTap: onTap,
+//
+//       child: SizedBox(
+//
+//         width: 90,
+//         height: 70,
+//
+//
+//         child: Stack(
+//
+//           alignment: Alignment.center,
+//
+//
+//           children: [
+//
+//
+//             /// glow
+//
+//             Container(
+//
+//               width:75,
+//               height:75,
+//
+//
+//               decoration:BoxDecoration(
+//
+//                 shape:BoxShape.circle,
+//
+//
+//                 color:
+//                 AppColors.primary
+//                     .withOpacity(.15),
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//
+//             /// Button
+//
+//             Container(
+//
+//               width:60,
+//               height:60,
+//
+//
+//               decoration:BoxDecoration(
+//
+//
+//                 shape:BoxShape.circle,
+//
+//
+//                 gradient:LinearGradient(
+//
+//                   colors:[
+//
+//                     AppColors.primary,
+//
+//                     AppColors.secondary,
+//
+//                   ],
+//
+//                   begin:
+//                   Alignment.topLeft,
+//
+//
+//                   end:
+//                   Alignment.bottomRight,
+//
+//                 ),
+//
+//
+//
+//                 boxShadow:[
+//
+//                   BoxShadow(
+//
+//                     color:
+//                     AppColors.primary
+//                         .withOpacity(.4),
+//
+//
+//                     blurRadius:15,
+//
+//
+//                     spreadRadius:2,
+//
+//                   )
+//
+//                 ],
+//
+//
+//               ),
+//
+//
+//
+//               child:
+//               const Icon(
+//
+//                 Icons.arrow_forward,
+//
+//                 color:Colors.white,
+//
+//               ),
+//
+//
+//             ),
+//
+//
+//           ],
+//
+//
+//         ),
+//
+//       ),
+//
+//     );
+//
+//   }
+//
+// }

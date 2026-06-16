@@ -59,12 +59,12 @@ class _RequestDetailsViewState
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      //
-      // appBar: AppBar(
-      //   title: const Text("Request Details"),
-      //   backgroundColor: AppColors.primary,
-      //   elevation: 0,
-      // ),
+
+      appBar: AppBar(
+        title: const Text("Request Details"),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+      ),
 
       body: FadeTransition(
         opacity: fade,

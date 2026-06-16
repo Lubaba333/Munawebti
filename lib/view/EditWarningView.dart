@@ -4,6 +4,7 @@ import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/warning_controller.dart';
 import 'package:supervisors/models/WarningModel.dart';
 import 'package:supervisors/view/StudentsView.dart';
+import 'package:supervisors/view/WarningDetailsView.dart';
 
 
 
@@ -274,16 +275,15 @@ class _EditWarningViewState
                   );
 
 
-
                   if(success){
 
-
-                    Get.offAll(
-                            ()=>StudentsView()
+                    Get.off(
+                          ()=>WarningDetailsView(),
+                      arguments: widget.warning.id,
                     );
 
-
                   }
+
 
 
 

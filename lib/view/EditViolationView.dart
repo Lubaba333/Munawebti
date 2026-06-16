@@ -4,6 +4,7 @@ import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/ViolationsController.dart';
 import 'package:supervisors/models/ViolationModel.dart';
 import 'package:supervisors/view/StudentsView.dart';
+import 'package:supervisors/view/ViolationDetailsView.dart';
 
 
 class EditViolationView extends StatefulWidget {
@@ -250,10 +251,10 @@ class _EditViolationViewState
 
                   if(success){
 
-                    Get.offAll(
-                            ()=>StudentsView()
+                    Get.off(
+                          ()=>ViolationDetailsView(),
+                      arguments: widget.violation.id,
                     );
-
 
                   }
 

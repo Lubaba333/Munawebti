@@ -68,7 +68,7 @@ class LoginView extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: ClipOval(
                       child: Image.asset(
-                        "assets/munawebti.jpg",
+                        "assets/munawebti.png",
                         fit: BoxFit.cover,
                         width: 150,
                         height: 150,

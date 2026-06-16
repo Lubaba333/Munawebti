@@ -49,141 +49,6 @@ class _RequestsViewState extends State<RequestsView> {
           return _emptyState();
         }
 
-        // return ListView.builder(
-        //   padding: EdgeInsets.all(12),
-        //   itemCount: controller.requests.length,
-        //   itemBuilder: (context, index) {
-        //     final item = controller.requests[index];
-        //
-        //     return TweenAnimationBuilder<double>(
-        //
-        //         duration: Duration(
-        //           milliseconds: 400 + (index * 100),
-        //         ),
-        //
-        //
-        //         tween: Tween(
-        //           begin: 0,
-        //           end: 1,
-        //         ),
-        //
-        //
-        //         builder: (context,value,child){
-        //
-        //
-        //           return Transform.translate(
-        //
-        //             offset: Offset(
-        //               0,
-        //               40 * (1-value),
-        //             ),
-        //
-        //
-        //             child: Opacity(
-        //
-        //               opacity:value,
-        //
-        //
-        //               child: child,
-        //
-        //             ),
-        //
-        //           );
-        //
-        //
-        //         },
-        //
-        //
-        //
-        //         child: InkWell(
-        //
-        //
-        //             borderRadius: BorderRadius.circular(16),
-        //
-        //
-        //             onTap: (){
-        //
-        //
-        //               Get.to(
-        //
-        //                     ()=>RequestDetailsView(
-        //                   request:item,
-        //                 ),
-        //
-        //
-        //                 transition:
-        //                 Transition.rightToLeftWithFade,
-        //
-        //
-        //                 duration:
-        //                 Duration(milliseconds:350),
-        //
-        //
-        //               );
-        //
-        //
-        //             },
-        //
-        //
-        //             child: AnimatedScale(
-        //
-        //                 scale: 1,
-        //
-        //                 duration:
-        //                 Duration(milliseconds:150),
-        //
-        //
-        //                 child: Container(
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //
-        //           Row(
-        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //             children: [
-        //               Expanded(
-        //                 child: Text(
-        //                   item.title,
-        //                   style: TextStyle(
-        //                     fontSize: 16,
-        //                     fontWeight: FontWeight.bold,
-        //                   ),
-        //                 ),
-        //               ),
-        //               _statusChip(item.status),
-        //             ],
-        //           ),
-        //
-        //           SizedBox(height: 8),
-        //
-        //           Text(
-        //             item.description,
-        //             style: TextStyle(color: Colors.grey[700]),
-        //           ),
-        //
-        //           SizedBox(height: 10),
-        //
-        //           Container(
-        //             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        //             decoration: BoxDecoration(
-        //               color: AppColors.primary.withOpacity(0.1),
-        //               borderRadius: BorderRadius.circular(8),
-        //             ),
-        //             child: Text(
-        //               item.type,
-        //               style: TextStyle(
-        //                 color: AppColors.primary,
-        //                 fontSize: 12,
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ))));
-        //   },
-        // );
-
-
         return ListView.builder(
 
           padding: const EdgeInsets.all(16),
@@ -547,12 +412,44 @@ class _RequestsViewState extends State<RequestsView> {
 
                           )
 
-
-
                         ],
 
-                      )
+                      ),
 
+                      const SizedBox(height: 10),
+
+                      if (item.status == "pending")
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: Text("Cancel Request"),
+                                  content: Text("Are you sure you want to cancel this request?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Get.back(),
+                                      child: Text("No"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Get.back();
+                                        controller.cancelRequest(item.id);
+                                      },
+                                      child: Text("Yes"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.cancel, color: Colors.red),
+                            label: Text(
+                              "Cancel Request",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ),
 
                     ],
 
@@ -606,31 +503,47 @@ class _RequestsViewState extends State<RequestsView> {
 
   Widget _statusChip(String status) {
     Color color;
+    String label;
 
     switch (status) {
       case 'pending':
         color = Colors.orange;
+        label = "Pending";
         break;
+
       case 'approved':
         color = Colors.green;
+        label = "Approved";
         break;
+
       case 'rejected':
         color = Colors.red;
+        label = "Rejected";
+
         break;
+
       default:
         color = Colors.grey;
+        label = status;
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color),
       ),
       child: Text(
-        status,
-        style: TextStyle(color: color, fontSize: 12),
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+
     );
   }
 }
@@ -655,9 +568,8 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
   final description = TextEditingController();
 
-  final targetSupervisorId = TextEditingController();
-
-  final shiftId = TextEditingController();
+  int? selectedSupervisorId;
+  int? selectedShiftId;
 
   final shiftDate = TextEditingController();
 
@@ -790,9 +702,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
           return DropdownButtonFormField<int>(
             isExpanded: true,
-            value: targetSupervisorId.text.isEmpty
-                ? null
-                : int.tryParse(targetSupervisorId.text),
+            value: selectedSupervisorId,
 
             decoration: InputDecoration(
               labelText: "Select Supervisor",
@@ -801,46 +711,19 @@ class _CreateRequestViewState extends State<CreateRequestView> {
               ),
             ),
 
-            items: controller.supervisors.map((sup) {
-
+            items: controller.supervisors
+                .where((sup) => sup.id != controller.currentUserId)
+                .map((sup) {
               return DropdownMenuItem<int>(
-
                 value: sup.id,
-
-
-                child: SizedBox(
-
-                  width: MediaQuery.of(context).size.width * 0.65,
-
-
-                  child: Text(
-
-                    "${sup.fullName} (${sup.specialization})",
-
-
-                    overflow: TextOverflow.ellipsis,
-
-
-                    maxLines: 1,
-
-
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-
-                  ),
-
-                ),
-
+                child: Text("${sup.fullName} (${sup.specialization})"),
               );
-
-
             }).toList(),
 
             onChanged: (value) {
-              if (value != null) {
-                targetSupervisorId.text = value.toString();
-              }
+              setState(() {
+                selectedSupervisorId = value;
+              });
             },
           );
         }),
@@ -862,11 +745,14 @@ class _CreateRequestViewState extends State<CreateRequestView> {
         SizedBox(height: 10),
 
         TextField(
-          controller: shiftId,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: "Original Shift ID",
             border: OutlineInputBorder(),
           ),
+          onChanged: (value) {
+            selectedShiftId = int.tryParse(value);
+          },
         ),
 
         SizedBox(height: 10),
@@ -875,7 +761,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
           controller: shiftDate,
           decoration: InputDecoration(
             labelText: "Shift Date",
-            hintText: "08:00",
+            hintText: "2026-12-3",
             border: OutlineInputBorder(),
           ),
         ),
@@ -898,25 +784,68 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
         SizedBox(height: 10),
 
+        // TextField(
+        //   controller: fromHour,
+        //   decoration: InputDecoration(
+        //     labelText: "From Hour",
+        //     hintText: "12:00",
+        //     border: OutlineInputBorder(),
+        //   ),
+        // ),
+
+
         TextField(
+          readOnly: true,
           controller: fromHour,
           decoration: InputDecoration(
             labelText: "From Hour",
-            hintText: "12:00",
             border: OutlineInputBorder(),
           ),
+          onTap: () async {
+            final time = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+
+            if (time != null) {
+              fromHour.text =
+              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+            }
+          },
         ),
 
         SizedBox(height: 10),
 
+        // TextField(
+        //   controller: toHour,
+        //   decoration: InputDecoration(
+        //     labelText: "To Hour",
+        //     hintText: "02:30",
+        //     border: OutlineInputBorder(),
+        //   ),
+        // ),
+
         TextField(
+          readOnly: true,
           controller: toHour,
           decoration: InputDecoration(
             labelText: "To Hour",
-            hintText: "02:30",
             border: OutlineInputBorder(),
           ),
+          onTap: () async {
+            final time = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+
+            if (time != null) {
+              toHour.text =
+              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+            }
+          },
         ),
+
+
       ],
     );
   }
@@ -931,13 +860,12 @@ class _CreateRequestViewState extends State<CreateRequestView> {
       );
     } else {
       await controller.createShiftExchange(
-        targetSupervisorId: int.parse(targetSupervisorId.text),
-        shiftId: int.parse(shiftId.text),
+        targetSupervisorId: selectedSupervisorId!,
+        shiftId: selectedShiftId!,
         date: shiftDate.text,
         fromHour: fromHour.text,
         toHour: toHour.text,
-        description:description.text,
-
+        description: shiftDescription.text,
       );
     }
 

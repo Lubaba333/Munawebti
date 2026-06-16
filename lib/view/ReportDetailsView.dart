@@ -1,18 +1,296 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:supervisors/const/app_colors.dart';
+// import 'package:supervisors/controller/ReportDetailsController.dart';
+// import 'package:supervisors/view/EditReportView.dart';
+//
+//
+//
+//
+//
+// class ReportDetailsView extends StatelessWidget {
+//
+//
+//   ReportDetailsView({
+//     super.key
+//   });
+//
+//
+//   final controller =
+//   Get.put(
+//       ReportDetailsController()
+//   );
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//
+//     return Scaffold(
+//
+//
+//       backgroundColor:
+//       AppColors.background,
+//
+//
+//       appBar:
+//
+//       AppBar(
+//
+//         title:
+//         const Text(
+//             "تفاصيل التقرير"
+//         ),
+//
+//         backgroundColor:
+//         AppColors.primary,
+//
+//       ),
+//
+//
+//
+//       body:
+//
+//
+//       Obx((){
+//
+//
+//         if(controller.loading.value){
+//
+//           return const Center(
+//               child:
+//               CircularProgressIndicator()
+//           );
+//
+//         }
+//
+//
+//
+//         final report =
+//             controller.report.value;
+//
+//
+//
+//         if(report == null){
+//
+//           return const Center(
+//               child:
+//               Text(
+//                   "لا يوجد بيانات"
+//               )
+//           );
+//
+//         }
+//
+//
+//
+//         return ListView(
+//
+//           padding:
+//           const EdgeInsets.all(20),
+//
+//
+//           children:[
+//
+//
+//
+//             // _card(
+//             //     "نوع التقرير",
+//             //     report.reportType
+//             // ),
+//             //
+//             //
+//             //
+//             // _card(
+//             //     "الوصف",
+//             //     report.description
+//             // ),
+//
+//
+//
+//             _card(
+//                 "الملاحظات",
+//                 report.notes
+//             ),
+//
+//             const SizedBox(
+//                 height:25
+//             ),
+//
+//
+//
+//             ElevatedButton.icon(
+//
+//
+//                 style:
+//                 ElevatedButton.styleFrom(
+//
+//                   backgroundColor:
+//                   AppColors.primary,
+//
+//                   padding:
+//                   const EdgeInsets.all(15),
+//
+//                   shape:
+//                   RoundedRectangleBorder(
+//
+//                       borderRadius:
+//                       BorderRadius.circular(15)
+//
+//                   ),
+//
+//                 ),
+//
+//
+//
+//                 icon:
+//                 const Icon(
+//                     Icons.edit
+//                 ),
+//
+//
+//
+//                 label:
+//                 const Text(
+//                     "تعديل التقرير"
+//                 ),
+//
+//
+//
+//                 onPressed:(){
+//
+//
+//                   Get.to(
+//
+//                         ()=>EditReportView(
+//                           report: report,
+//
+//                     ),
+//
+//                   );
+//
+//
+//                 }
+//
+//             )
+//
+//
+//
+//           ],
+//
+//
+//
+//         );
+//
+//
+//       }),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+//
+//   Widget _card(
+//       String title,
+//       String value
+//       ){
+//
+//     return Card(
+//
+//       elevation:4,
+//
+//
+//       margin:
+//       const EdgeInsets.only(
+//           bottom:15
+//       ),
+//
+//
+//
+//       child:
+//
+//       Padding(
+//
+//         padding:
+//         const EdgeInsets.all(18),
+//
+//
+//         child:
+//
+//         Column(
+//
+//           crossAxisAlignment:
+//           CrossAxisAlignment.start,
+//
+//
+//           children:[
+//
+//
+//             Text(
+//
+//               title,
+//
+//               style:
+//               const TextStyle(
+//
+//                   fontWeight:
+//                   FontWeight.bold,
+//
+//                   fontSize:16
+//
+//               ),
+//
+//             ),
+//
+//
+//
+//             const SizedBox(
+//                 height:8
+//             ),
+//
+//
+//
+//             Text(
+//                 value
+//             )
+//
+//
+//           ],
+//
+//         ),
+//
+//       ),
+//
+//
+//     );
+//
+//
+//   }
+//
+//
+//
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/ReportDetailsController.dart';
 import 'package:supervisors/view/EditReportView.dart';
-
-
-
 
 
 class ReportDetailsView extends StatelessWidget {
 
 
   ReportDetailsView({
-    super.key
+    super.key,
   });
 
 
@@ -34,36 +312,57 @@ class ReportDetailsView extends StatelessWidget {
       AppColors.background,
 
 
-      appBar:
 
-      AppBar(
+      appBar: AppBar(
 
-        title:
-        const Text(
-            "تفاصيل التقرير"
-        ),
+
+        elevation: 0,
+
+
+        centerTitle: true,
+
 
         backgroundColor:
         AppColors.primary,
+
+
+        title: const Text(
+
+          "تفاصيل التقرير",
+
+          style: TextStyle(
+
+            fontWeight:
+            FontWeight.bold,
+
+            fontSize: 20,
+
+          ),
+
+        ),
+
 
       ),
 
 
 
-      body:
 
 
-      Obx((){
+      body: Obx((){
 
 
         if(controller.loading.value){
 
+
           return const Center(
-              child:
-              CircularProgressIndicator()
+
+            child:
+            CircularProgressIndicator(),
+
           );
 
         }
+
 
 
 
@@ -72,119 +371,337 @@ class ReportDetailsView extends StatelessWidget {
 
 
 
+
         if(report == null){
 
+
           return const Center(
-              child:
-              Text(
-                  "لا يوجد بيانات"
-              )
+
+            child:
+
+            Text(
+
+              "لا يوجد بيانات",
+
+              style:
+
+              TextStyle(
+
+                fontSize:16,
+
+              ),
+
+            ),
+
           );
 
         }
 
 
 
-        return ListView(
+
+        return SingleChildScrollView(
+
 
           padding:
+
           const EdgeInsets.all(20),
 
 
-          children:[
+
+          child: Column(
+
+
+            children: [
 
 
 
-            // _card(
-            //     "نوع التقرير",
-            //     report.reportType
-            // ),
-            //
-            //
-            //
-            // _card(
-            //     "الوصف",
-            //     report.description
-            // ),
+              Container(
+
+
+                width:
+                double.infinity,
+
+
+                padding:
+
+                const EdgeInsets.all(20),
 
 
 
-            _card(
-                "الملاحظات",
-                report.notes
-            ),
+                decoration:
 
-            const SizedBox(
-                height:25
-            ),
+                BoxDecoration(
 
 
-
-            ElevatedButton.icon(
-
-
-                style:
-                ElevatedButton.styleFrom(
-
-                  backgroundColor:
+                  color:
                   AppColors.primary,
 
-                  padding:
-                  const EdgeInsets.all(15),
 
-                  shape:
-                  RoundedRectangleBorder(
+                  borderRadius:
 
-                      borderRadius:
-                      BorderRadius.circular(15)
+                  BorderRadius.circular(25),
 
-                  ),
 
                 ),
 
 
 
-                icon:
-                const Icon(
-                    Icons.edit
-                ),
+                child: Column(
+
+
+                  children: [
 
 
 
-                label:
-                const Text(
-                    "تعديل التقرير"
-                ),
+                    const Icon(
 
 
+                      Icons.description_outlined,
 
-                onPressed:(){
+
+                      size:55,
 
 
-                  Get.to(
-
-                        ()=>EditReportView(
-                          report: report,
+                      color:
+                      Colors.white,
 
                     ),
 
-                  );
-
-
-                }
-
-            )
 
 
 
-          ],
+                    const SizedBox(
+
+                      height:15,
+
+                    ),
+
+
+
+                    const Text(
+
+
+                      "تقرير الطالب",
+
+                      style:
+
+                      TextStyle(
+
+                        color:
+                        Colors.white,
+
+
+                        fontSize:22,
+
+
+                        fontWeight:
+                        FontWeight.bold,
+
+                      ),
+
+                    ),
+
+
+
+                  ],
+
+                ),
+
+
+
+              ),
+
+
+
+
+
+              const SizedBox(
+
+                height:25,
+
+              ),
+
+
+
+
+
+              _infoCard(
+
+                icon:
+                Icons.notes,
+
+
+                title:
+                "الملاحظات",
+
+
+                value:
+                report.notes,
+
+              ),
+
+
+
+
+
+              const SizedBox(
+
+                height:30,
+
+              ),
+
+
+
+
+
+              SizedBox(
+
+
+                width:
+
+                double.infinity,
+
+
+
+                child:
+
+
+                ElevatedButton.icon(
+
+
+
+                  onPressed:(){
+
+
+
+                    Get.to(
+
+
+                          ()=>EditReportView(
+
+                        report: report,
+
+
+                      ),
+
+
+                    );
+
+
+
+                  },
+
+
+
+                  icon:
+
+
+                  const Icon(
+
+                      Icons.edit
+
+                  ),
+
+
+
+                  label:
+
+
+                  const Text(
+
+
+                    "تعديل التقرير",
+
+
+                    style:
+
+
+                    TextStyle(
+
+                      fontSize:16,
+
+                      fontWeight:
+
+                      FontWeight.bold,
+
+                    ),
+
+
+                  ),
+
+
+
+
+
+                  style:
+
+
+                  ElevatedButton.styleFrom(
+
+
+                    backgroundColor:
+
+                    AppColors.primary,
+
+
+
+                    foregroundColor:
+
+                    Colors.white,
+
+
+
+                    padding:
+
+                    const EdgeInsets.symmetric(
+
+                      vertical:16,
+
+                    ),
+
+
+
+                    shape:
+
+
+                    RoundedRectangleBorder(
+
+
+                      borderRadius:
+
+                      BorderRadius.circular(18),
+
+
+                    ),
+
+
+
+                  ),
+
+
+                ),
+
+
+
+              )
+
+
+
+            ],
+
+
+
+          ),
 
 
 
         );
 
 
+
       }),
+
 
 
     );
@@ -195,79 +712,258 @@ class ReportDetailsView extends StatelessWidget {
 
 
 
-  Widget _card(
-      String title,
-      String value
-      ){
 
-    return Card(
-
-      elevation:4,
+  Widget _infoCard({
 
 
-      margin:
-      const EdgeInsets.only(
-          bottom:15
+    required IconData icon,
+
+
+    required String title,
+
+
+    required String value,
+
+
+  }){
+
+
+    return Container(
+
+
+      width:
+
+      double.infinity,
+
+
+
+      padding:
+
+      const EdgeInsets.all(18),
+
+
+
+
+      decoration:
+
+
+      BoxDecoration(
+
+
+
+        color:
+        Colors.white,
+
+
+
+        borderRadius:
+
+        BorderRadius.circular(20),
+
+
+
+        boxShadow: [
+
+
+          BoxShadow(
+
+
+            blurRadius:10,
+
+
+            offset:
+
+            const Offset(0,4),
+
+
+            color:
+
+            Colors.black.withOpacity(.08),
+
+
+          )
+
+
+        ],
+
+
       ),
 
 
 
-      child:
 
-      Padding(
-
-        padding:
-        const EdgeInsets.all(18),
+      child: Column(
 
 
-        child:
+        crossAxisAlignment:
 
-        Column(
-
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+        CrossAxisAlignment.start,
 
 
-          children:[
+
+        children: [
 
 
-            Text(
 
-              title,
+          Row(
 
-              style:
-              const TextStyle(
 
-                  fontWeight:
-                  FontWeight.bold,
+            children: [
 
-                  fontSize:16
+
+
+              Container(
+
+
+                padding:
+
+                const EdgeInsets.all(10),
+
+
+
+                decoration:
+
+
+                BoxDecoration(
+
+
+                  color:
+
+                  AppColors.primary.withOpacity(.15),
+
+
+                  shape:
+
+                  BoxShape.circle,
+
+
+                ),
+
+
+
+                child:
+
+                Icon(
+
+
+                  icon,
+
+
+                  color:
+
+                  AppColors.primary,
+
+
+                ),
+
+
 
               ),
 
+
+
+
+
+              const SizedBox(
+
+                width:12,
+
+              ),
+
+
+
+
+              Text(
+
+
+                title,
+
+
+                style:
+
+
+                const TextStyle(
+
+
+
+                  fontSize:17,
+
+
+                  fontWeight:
+
+                  FontWeight.bold,
+
+
+
+                ),
+
+
+              ),
+
+
+
+
+            ],
+
+
+
+          ),
+
+
+
+
+
+          const SizedBox(
+
+            height:15,
+
+          ),
+
+
+
+
+
+          Text(
+
+
+            value,
+
+
+            style:
+
+
+            const TextStyle(
+
+
+              fontSize:16,
+
+
+              height:1.5,
+
+
+              color:
+
+              Colors.black87,
+
+
             ),
 
 
 
-            const SizedBox(
-                height:8
-            ),
+          ),
 
 
 
-            Text(
-                value
-            )
 
+        ],
 
-          ],
-
-        ),
 
       ),
 
 
+
     );
+
 
 
   }
