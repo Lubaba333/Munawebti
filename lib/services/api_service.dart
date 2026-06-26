@@ -161,6 +161,10 @@ Future<void> setToken(String? token) async {
 
       throw Exception('Unauthorized: Session expired or invalid token.');
     } else {
+
+      print(
+          "SERVER BODY => ${response.body}"
+      );
       String errorMessage = 'فشل في الاتصال: ${response.statusCode}';
       try {
         final errorBody = json.decode(response.body);
