@@ -66,28 +66,11 @@ class RewardsController extends GetxController {
     );
   }
 
-  // Future<void> updateReward({
-  //   required int rewardId,
-  //   required String description,
-  // }) async {
-  //
-  //   await api.put(
-  //     '/supervisor/rewards/$rewardId',
-  //     {
-  //       "description": description,
-  //     },
-  //   );
-  //
-  //   Get.snackbar(
-  //     "نجاح",
-  //     "تم تعديل المكافأة",
-  //   );
-  // }
   Future<bool> updateReward({
 
     required int rewardId,
 
-    // required String rewardType,
+
 
     required String title,
 
@@ -95,7 +78,7 @@ class RewardsController extends GetxController {
 
     required String rewardDate,
 
-    // required int points,
+
 
 
   }) async {

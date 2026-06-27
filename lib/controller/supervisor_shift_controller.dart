@@ -59,6 +59,7 @@ class SupervisorShiftsController extends GetxController {
   void onInit() {
     super.onInit();
     loadShifts();
+
   }
 
   ///=========================
@@ -74,6 +75,7 @@ class SupervisorShiftsController extends GetxController {
       shiftsMap[DateTime(date.year, date.month, date.day)] = day.shifts;
     }
   }
+
 
   void selectDate(DateTime date) {
     selectedDate.value = DateTime(
@@ -123,6 +125,10 @@ class SupervisorShiftsController extends GetxController {
       shifts.assignAll(result.data);
 
       buildShiftsMap();
+      shifts.refresh();
+      shiftsMap.refresh();
+      selectedMonth.refresh();
+      selectedDate.refresh();
 
       /// إذا أول مرة يدخل الصفحة
       if (shifts.isNotEmpty) {
@@ -153,13 +159,16 @@ class SupervisorShiftsController extends GetxController {
   ///=========================
   /// TAB
   ///=========================
+  Future<void> changeType(ShiftType type) async {
 
-  void changeType(ShiftType type) {
     if (selectedType.value == type) return;
 
-    selectedType(type);
+    selectedType.value = type;
+    shifts.clear();
+    shiftsMap.clear();
 
-    loadShifts();
+    update();
+    await loadShifts();
   }
 
   ///=========================

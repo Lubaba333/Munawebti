@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/controller/supervisor_shift_controller.dart';
 import 'package:supervisors/models/supervisor_shift_model.dart';
@@ -34,6 +35,18 @@ class ScheduleCalendar extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: TableCalendar<SupervisorShift>(
+            key: ValueKey(
+              "${controller.selectedType.value}-${controller.monthString}",
+            ),
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
 
             firstDay: DateTime(2025),
 
@@ -55,59 +68,23 @@ class ScheduleCalendar extends StatelessWidget {
               return controller.getEventsForDay(day);
 
             },
-
             onDaySelected: (selectedDay, focusedDay) {
-
               controller.selectDate(selectedDay);
 
-              final shifts =
-              controller.getEventsForDay(selectedDay);
-
+              final shifts = controller.getEventsForDay(selectedDay);
               if (shifts.isEmpty) return;
 
-              showModalBottomSheet(
-
-                context: context,
-
-                isScrollControlled: true,
-
-                backgroundColor: Colors.transparent,
-
-                builder: (_) => ShiftBottomSheet(
-                  shifts: shifts,
-                ),
-              );
+              Future.delayed(const Duration(milliseconds: 120), () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ShiftBottomSheet(
+                    shifts: shifts,
+                  ),
+                );
+              });
             },
-            // calendarBuilders: CalendarBuilders(
-            //
-            //   markerBuilder: (context, day, events) {
-            //
-            //     if (events.isEmpty) {
-            //       return const SizedBox();
-            //     }
-            //
-            //     return Positioned(
-            //
-            //       bottom: 5,
-            //
-            //       child: Container(
-            //
-            //         width: 8,
-            //
-            //         height: 8,
-            //
-            //         decoration: const BoxDecoration(
-            //
-            //           color: Color(0xFFA467A7),
-            //
-            //           shape: BoxShape.circle,
-            //
-            //         ),
-            //       ),
-            //     );
-            //   },
-            // ),
-
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, date, events) {
 
@@ -123,13 +100,8 @@ class ScheduleCalendar extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(
-
-                      shifts.length > 3
-                          ? 3
-                          : shifts.length,
-
+                      shifts.length > 3 ? 3 : shifts.length,
                           (index) {
-
                         final shift = shifts[index];
 
                         final markerColor =
@@ -138,20 +110,70 @@ class ScheduleCalendar extends StatelessWidget {
                             : Colors.blue;
 
                         return Container(
-                          margin:
-                          const EdgeInsets.symmetric(
-                            horizontal: 1,
-                          ),
-                          width: 6,
-                          height: 6,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          width: 9,
+                          height: 9,
                           decoration: BoxDecoration(
                             color: markerColor,
                             shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: markerColor.withOpacity(.45),
+                                blurRadius: 6,
+                              )
+                            ],
                           ),
+                        )
+                            .animate(onPlay: (c) => c.repeat(reverse: true))
+                            .scale(
+                          begin: const Offset(.9, .9),
+                          end: const Offset(1.15, 1.15),
+                          duration: 900.ms,
                         );
                       },
                     ),
                   ),
+                );
+              },
+
+              defaultBuilder: (context, day, focusedDay) {
+
+                final hasShift =
+                    controller.getEventsForDay(day).isNotEmpty;
+
+                return _dayCell(
+                  day: day,
+                  selected: false,
+                  today: false,
+                  hasShift: hasShift,
+                  selectedType: controller.selectedType.value,
+                );
+              },
+
+              todayBuilder: (context, day, focusedDay) {
+
+                final hasShift =
+                    controller.getEventsForDay(day).isNotEmpty;
+
+                return _dayCell(
+                  day: day,
+                  selected: true,
+                  today: false,
+                  hasShift: hasShift,
+                  selectedType: controller.selectedType.value,
+                );
+              },
+              selectedBuilder: (context, day, focusedDay) {
+
+                final hasShift =
+                    controller.getEventsForDay(day).isNotEmpty;
+
+                return _dayCell(
+                  day: day,
+                  selected: false,
+                  today: false,
+                  hasShift: hasShift,
+                  selectedType: controller.selectedType.value,
                 );
               },
             ),
@@ -159,29 +181,6 @@ class ScheduleCalendar extends StatelessWidget {
 
               outsideDaysVisible: false,
 
-              todayDecoration: const BoxDecoration(
-
-                color: Color(0xFFC28DBD),
-
-                shape: BoxShape.circle,
-
-              ),
-
-              selectedDecoration: const BoxDecoration(
-
-                color: Color(0xFFA467A7),
-
-                shape: BoxShape.circle,
-
-              ),
-
-              markerDecoration: const BoxDecoration(
-
-                color: Color(0xFFA467A7),
-
-                shape: BoxShape.circle,
-
-              ),
 
             ),
           ),
@@ -192,7 +191,59 @@ class ScheduleCalendar extends StatelessWidget {
   }
 }
 
+Widget _dayCell({
+  required DateTime day,
+  required bool selected,
+  required bool today,
+  required bool hasShift,
+  required ShiftType selectedType,
+}) {
+  final primary =
+  selectedType == ShiftType.lecture
+      ? const Color(0xFFA467A7)
+      : Colors.blue;
 
+  final light =
+  selectedType == ShiftType.lecture
+      ? const Color(0xFFDBB9D7)
+      : const Color(0xFFD6E9FF);
+
+  Color background = Colors.transparent;
+  Color textColor = Colors.black87;
+
+  if (selected) {
+    background = primary;
+    textColor = Colors.white;
+  } else if (today) {
+    background = light;
+  } else if (hasShift) {
+    background = primary.withOpacity(.10);
+  }
+
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    margin: const EdgeInsets.all(4),
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(12),
+      border: hasShift && !selected
+          ? Border.all(
+          color: primary.withOpacity(.08),
+          width: 1
+      )
+          : null,
+    ),
+    child: Center(
+      child: Text(
+        "${day.day}",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: textColor,
+        ),
+      ),
+    ),
+  );
+}
 
 class ShiftBottomSheet extends StatelessWidget {
   final List<SupervisorShift> shifts;
@@ -577,5 +628,107 @@ class ShiftBottomSheet extends StatelessWidget {
     return value.length >= 5
         ? value.substring(0, 5)
         : value;
+  }
+}
+
+
+
+class ShiftLegend extends StatelessWidget {
+  const ShiftLegend({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 18,
+        vertical: 14,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.05),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          )
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: const [
+
+          _LegendItem(
+            color: Color(0xFFA467A7),
+            title: "Lecture Shift",
+            icon: Icons.school_rounded,
+          ),
+
+          SizedBox(
+            height: 28,
+            child: VerticalDivider(),
+          ),
+
+          _LegendItem(
+            color: Colors.blue,
+            title: "Housing Shift",
+            icon: Icons.home_work_rounded,
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fade(duration: 500.ms)
+        .slideY(
+      begin: .25,
+      end: 0,
+      curve: Curves.easeOut,
+    );
+  }
+}
+
+class _LegendItem extends StatelessWidget {
+  final Color color;
+  final String title;
+  final IconData icon;
+
+  const _LegendItem({
+    required this.color,
+    required this.title,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: color.withOpacity(.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 18,
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
   }
 }

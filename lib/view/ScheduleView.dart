@@ -35,7 +35,8 @@ class ScheduleView extends StatelessWidget {
           /// Calendar
           const ScheduleCalendar(),
 
-          /// Lecture / Housing
+          const ShiftLegend(),
+
           _typeSelector(),
 
         ],
@@ -89,7 +90,7 @@ class ScheduleView extends StatelessWidget {
                     ShiftType.housing,
 
                 selectedColor:
-                const Color(0xFFA467A7),
+                 Colors.blue,
 
                 labelStyle: TextStyle(
                   color:

@@ -102,12 +102,12 @@ Future<void> setToken(String? token) async {
         bool authRequired = true,
       }) async {
     final finalHeaders = await _buildHeaders(authRequired: authRequired, customHeaders: headers);
-    print('======================');
-    print('POST URL => $baseUrl$endpoint');
-    print('TOKEN => $_token');
-    print('HEADERS => $finalHeaders');
-    print('BODY => ${jsonEncode(data)}');
-    print('======================');
+    // print('======================');
+    // print('POST URL => $baseUrl$endpoint');
+    // print('TOKEN => $_token');
+    // print('HEADERS => $finalHeaders');
+    // print('BODY => ${jsonEncode(data)}');
+    // print('======================');
 
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
