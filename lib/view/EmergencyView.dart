@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/emergency_controller.dart';
+import 'package:supervisors/models/StudentModel.dart';
 import 'package:supervisors/view/emergency_details_view.dart';
 
 class EmergencyView extends StatefulWidget {
@@ -430,9 +431,14 @@ class _EmergencyViewState extends State<EmergencyView>{
 
 
 
-        onPressed:(){
+        onPressed:() async {
+
+
+          await controller.fetchStudents();
+
 
           _showCreateSheet(context);
+
 
         },
 
@@ -564,10 +570,86 @@ class _EmergencyViewState extends State<EmergencyView>{
                 ),
                 const SizedBox(height: 10),
 
-                TextField(
-                  controller: controller.studentIdController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: "Student ID"),
+                Obx(() {
+                  if (controller.students.isEmpty) {
+                    return const Center(
+                      child: Text(
+                          "Loading students..."
+                      ),
+                    );
+                  }
+
+
+                  return DropdownButtonFormField<StudentModel>(
+
+
+                    isExpanded: true,
+
+
+                    value:
+                    controller.selectedStudent.value,
+
+
+                    decoration:
+
+                    InputDecoration(
+
+                        labelText:
+                        "Select Student",
+
+
+                        border:
+                        OutlineInputBorder(
+
+                            borderRadius:
+                            BorderRadius.circular(15)
+
+                        )
+
+                    ),
+
+
+                    items:
+
+
+                    controller.students.map((student) {
+                      return DropdownMenuItem<StudentModel>(
+
+
+                        value:
+                        student,
+
+
+                        child:
+
+
+                        Text(
+
+                          "${student.fullName} - ${student.studentIdentifier}",
+
+                          overflow:
+                          TextOverflow.ellipsis,
+
+                        ),
+
+
+                      );
+                    }).toList(),
+
+
+                    onChanged: (value) {
+                      controller.selectedStudent.value = value;
+
+
+                      print(
+                          "Selected ${value!.fullName}"
+                      );
+                    },
+
+
+                  );
+                }
+
                 ),
                 const SizedBox(height: 20),
 

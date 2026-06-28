@@ -19,9 +19,9 @@ void main() async {
 
     Get.put(SettingsController());
 
- Get.put(StudentsController());
- Get.put(EmergencyController());
- Get.put(RequestController());
+     Get.put(StudentsController());
+     Get.put(EmergencyController());
+     Get.put(RequestController());
 
   runApp(
     MyApp(),

@@ -1,89 +1,166 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/models/StudentModel.dart';
 import 'package:supervisors/models/emergency_case_model.dart';
-import '../services/api_service.dart';
+import 'package:supervisors/services/api_service.dart';
 
 
 class EmergencyController extends GetxController {
+
+
   final ApiService api = ApiService();
+
+
   final titleController = TextEditingController();
+
   final descriptionController = TextEditingController();
-  final studentIdController = TextEditingController();
+
   final severityController = TextEditingController();
-  final caseTypeController =  TextEditingController();
+
+  final caseTypeController = TextEditingController();
 
 
   var isLoading = false.obs;
+
+
   var cases = <EmergencyCase>[].obs;
 
+
+  var students = <StudentModel>[].obs;
+
+  Rx<StudentModel?> selectedStudent = Rx<StudentModel?>(null);
+
+
+
   @override
-  void onClose() {
+  void onClose(){
+
     titleController.dispose();
+
     descriptionController.dispose();
-    studentIdController.dispose();
+
     severityController.dispose();
+
     caseTypeController.dispose();
+
     super.onClose();
+
   }
 
-  /// 📥 GET ALL CASES
+
+
+
+
+
   Future<void> fetchCases() async {
+
     try {
-      isLoading.value = true;
+
+      isLoading.value=true;
+
 
       final response =
       await api.get('/supervisor/emergency-cases');
 
-      final List data = response['data']['data'];
+
+      final List data=response['data']['data'];
+
 
       cases.value =
-          data.map((e) => EmergencyCase.fromJson(e)).toList();
+          data.map((e)=>EmergencyCase.fromJson(e)).toList();
 
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
-      isLoading.value = false;
+
+
+    }catch(e){
+
+      Get.snackbar(
+          "Error",
+          e.toString()
+      );
+
     }
+
+    finally{
+
+      isLoading.value=false;
+
+    }
+
   }
 
-  /// 🚨 CREATE CASE
-  // Future<void> createCase() async {
-  //   try {
-  //     isLoading.value = true;
-  //
-  //     await api.post('/supervisor/emergency-cases', {
-  //       "student_id": int.parse(studentIdController.text),
-  //       "title": titleController.text,
-  //       "case_type": "medical",
-  //       "description": descriptionController.text,
-  //       "severity": "high"
-  //     });
-  //
-  //     await fetchCases();
-  //
-  //     Get.back();
-  //     Get.snackbar("Success", "Emergency created");
-  //
-  //   } catch (e) {
-  //     Get.snackbar("Error", e.toString());
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 
-  Future<void> createCase() async {
+
+
+
+
+  Future<void> fetchStudents() async {
 
     try {
 
-      isLoading.value = true;
+      final response =
+      await api.get('/supervisor/students');
+
+
+      final List data =
+      response['data']['data'];
+
+
+      students.value =
+          data.map(
+                (e)=>StudentModel.fromJson(e),
+          ).toList();
+
+
+
+      print("Students Loaded: ${students.length}");
+
+
+    }catch(e){
+
+      print(e);
+
+      Get.snackbar(
+          "Error",
+          e.toString()
+      );
+
+    }
+
+  }
+
+
+  Future<void> createCase() async {
+
+
+    try{
+
+
+      if(selectedStudent.value == null){
+
+        Get.snackbar(
+            "Error",
+            "Please select student"
+        );
+
+        return;
+
+      }
+
+
+
+      isLoading.value=true;
+
 
 
       await api.post(
+
           '/supervisor/emergency-cases',
+
           {
 
+
             "student_id":
-            int.parse(studentIdController.text),
+            selectedStudent.value!.id,
 
 
             "case_type":
@@ -112,6 +189,7 @@ class EmergencyController extends GetxController {
       Get.back();
 
 
+
       Get.snackbar(
           "Success",
           "Emergency created"
@@ -123,10 +201,12 @@ class EmergencyController extends GetxController {
 
     catch(e){
 
+
       Get.snackbar(
           "Error",
           e.toString()
       );
+
 
     }
 
@@ -138,7 +218,4 @@ class EmergencyController extends GetxController {
 
 
   }
-
-
-
 }
