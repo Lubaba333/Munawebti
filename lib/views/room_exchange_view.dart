@@ -19,6 +19,7 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
 
   final reasonController = TextEditingController();
 
+  final RxnInt selectedUnitId = RxnInt();
   final RxnInt targetRoomId = RxnInt();
   final RxnInt targetStudentId = RxnInt();
 
@@ -57,9 +58,53 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     return _unitArabicName(rawName);
   }
 
+  int? _unitIdFromRoom(dynamic room) {
+    final unit = room['dormitory_unit'];
+
+    if (unit != null && unit['id'] != null) {
+      return int.tryParse(unit['id'].toString());
+    }
+
+    if (room['dormitory_unit_id'] != null) {
+      return int.tryParse(room['dormitory_unit_id'].toString());
+    }
+
+    return null;
+  }
+
+  List<Map<String, dynamic>> _unitsFromRooms() {
+    final Map<int, Map<String, dynamic>> units = {};
+
+    for (final room in controller.rooms) {
+      final unitId = _unitIdFromRoom(room);
+      if (unitId == null) continue;
+
+      units[unitId] = {
+        'id': unitId,
+        'name': _unitName(room),
+      };
+    }
+
+    return units.values.toList();
+  }
+
+  List<dynamic> _filteredRooms() {
+    final currentId = controller.currentRoom.value?['id'];
+
+    return controller.rooms.where((room) {
+      final roomId = int.tryParse(room['id'].toString());
+      final unitId = _unitIdFromRoom(room);
+
+      if (roomId == currentId) return false;
+      if (selectedUnitId.value == null) return false;
+
+      return unitId == selectedUnitId.value;
+    }).toList();
+  }
+
   String _roomTitle(dynamic room) {
     final number = room['room_number'] ?? room['number'] ?? '-';
-    return "الغرفة: $number  |  الوحدة: ${_unitName(room)}";
+    return "الغرفة: $number";
   }
 
   String _studentTitle(dynamic student) {
@@ -120,7 +165,8 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
       ),
       child: Obx(() {
-        if (controller.isLoadingCurrentRoom.value) {
+        if (controller.isLoadingCurrentRoom.value ||
+            controller.isLoadingRooms.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -146,13 +192,15 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
               ),
               const SizedBox(height: 12),
               const Text(
-                "غرفتك الحالية ثابتة من حسابك. اختاري غرفة الطالبة البديلة، ثم اختاري اسم الطالبة واكتبي السبب.",
+                "غرفتك الحالية ثابتة من حسابك. اختاري الوحدة السكنية، ثم الغرفة، ثم اسم الطالبة واكتبي السبب.",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 22),
               _currentRoomCard(currentRoom),
               const SizedBox(height: 18),
+              _unitDropdown(),
+              const SizedBox(height: 14),
               _roomDropdown(),
               const SizedBox(height: 14),
               _studentDropdown(),
@@ -167,6 +215,11 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
                     text: "إرسال طلب التبديل",
                     isLoading: controller.isSubmitting.value,
                     onTap: () {
+                      if (selectedUnitId.value == null) {
+                        Get.snackbar("تنبيه", "اختاري الوحدة السكنية");
+                        return;
+                      }
+
                       if (targetRoomId.value == null) {
                         Get.snackbar(
                             "تنبيه", "اختاري الغرفة المراد التبديل معها");
@@ -238,14 +291,54 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     );
   }
 
+  Widget _unitDropdown() {
+    return Obx(() {
+      final units = _unitsFromRooms();
+
+      return DropdownButtonFormField<int>(
+        value: selectedUnitId.value,
+        isExpanded: true,
+        decoration: InputDecoration(
+          labelText: "الوحدة السكنية",
+          labelStyle: const TextStyle(color: AppColors.darkPurple),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: AppColors.mauve),
+          ),
+        ),
+        items: units.map((unit) {
+          return DropdownMenuItem<int>(
+            value: unit['id'],
+            child: Text(
+              unit['name'],
+              overflow: TextOverflow.ellipsis,
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          selectedUnitId.value = value;
+          targetRoomId.value = null;
+          targetStudentId.value = null;
+          controller.roomStudents.clear();
+        },
+      );
+    });
+  }
+
   Widget _roomDropdown() {
     return Obx(() {
-      final currentId = controller.currentRoom.value?['id'];
+      if (selectedUnitId.value == null) {
+        return _disabledBox("اختاري الوحدة أولاً لعرض الغرف");
+      }
 
-      final availableRooms = controller.rooms.where((room) {
-        final roomId = int.tryParse(room['id'].toString());
-        return roomId != currentId;
-      }).toList();
+      final availableRooms = _filteredRooms();
+
+      if (availableRooms.isEmpty) {
+        return _disabledBox("لا توجد غرف في هذه الوحدة");
+      }
 
       return DropdownButtonFormField<int>(
         value: targetRoomId.value,

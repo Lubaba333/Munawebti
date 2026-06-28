@@ -7,220 +7,170 @@ import '../utlis/app_colors.dart';
 class HousingComplaintDetailView extends StatelessWidget {
   const HousingComplaintDetailView({super.key});
 
+  static const complaintColor = AppColors.mauve;
+
+  String _text(dynamic value) {
+    if (value == null) return "غير محدد";
+    if (value.toString().isEmpty) return "غير محدد";
+    return value.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HousingComplaintController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F6FB),
-
-     appBar: AppBar(
-  backgroundColor: AppColors.darkPurple,
-  elevation: 0,
-  centerTitle: true,
-  iconTheme: const IconThemeData(color: Colors.white),
-  title: const Text(
-    "تفاصيل الشكوى",
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-      fontSize: 20,
-    ),
-  ),
-),
-
-     body: RefreshIndicator(
-  onRefresh: () async {
-    final controller = Get.find<HousingComplaintController>();
-
-    if (controller.selectedComplaint.value != null) {
-      await controller.fetchComplaintDetails(
-        controller.selectedComplaint.value!.id,
-      );
-    }
-  },
-
- 
-      
-      child: Stack(
-        children: [
-          _background(),
-
-          Obx(() {
-            final item = controller.selectedComplaint.value;
-
-            if (item == null || controller.isLoading.value) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            /// 📅 تحويل التاريخ
-            DateTime date;
-            try {
-              date = DateTime.parse(item.createdAt);
-            } catch (_) {
-              date = DateTime.now();
-            }
-
-            final formattedDate =
-                DateFormat('yyyy-MM-dd  •  HH:mm').format(date);
-
-            final isResolved = item.status == 'resolved';
-
-            return Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  /// 🟣 الحالة الكبيرة
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: isResolved
-                            ? [Colors.green, Colors.green.shade300]
-                            : [Colors.orange, Colors.orange.shade300],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
+      backgroundColor: AppColors.softLavender,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.mainGradient,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _header(),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(22),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(36),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          isResolved
-                              ? Icons.check_circle
-                              : Icons.hourglass_bottom,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          isResolved
-                              ? "تم حل الشكوى"
-                              : "قيد المعالجة",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  ),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      if (controller.selectedComplaint.value != null) {
+                        await controller.fetchComplaintDetails(
+                          controller.selectedComplaint.value!.id,
+                        );
+                      }
+                    },
+                    child: Obx(() {
+                      final item = controller.selectedComplaint.value;
+
+                      if (item == null || controller.isLoading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.mauve,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                      }
 
-                  const SizedBox(height: 20),
+                      DateTime date;
+                      try {
+                        date = DateTime.parse(item.createdAt);
+                      } catch (_) {
+                        date = DateTime.now();
+                      }
 
-                  /// 📝 العنوان
-                  _infoCard(
-                    "العنوان",
-                    item.title,
-                    icon: Icons.title,
-                  ),
+                      final formattedDate =
+                          DateFormat('yyyy-MM-dd  •  HH:mm').format(date);
 
-                  const SizedBox(height: 12),
+                      final isResolved = item.status == 'resolved';
 
-                  /// 📄 الوصف
-                  _infoCard(
-                    "الوصف",
-                    item.description,
-                    icon: Icons.description,
-                    multiline: true,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  /// 📅 التاريخ
-                  _infoCard(
-                    "تاريخ الإنشاء",
-                    formattedDate,
-                    icon: Icons.access_time,
-                  ),
-
-                  const Spacer(),
-
-                  /// 💡 ملاحظة
-                  if (!isResolved)
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.orange.shade200),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.info_outline,
-                              color: Colors.orange),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              "سيتم معالجة شكواك قريباً من قبل الإدارة",
-                              style: TextStyle(
-                                color: Colors.orange.shade800,
-                                fontSize: 13,
-                              ),
+                      return SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          children: [
+                            _certificateHeader(item, isResolved),
+                            const SizedBox(height: 22),
+                            _certificateItem(
+                              icon: Icons.description_outlined,
+                              title: "الوصف",
+                              value: _text(item.description),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
+                            _certificateItem(
+                              icon: Icons.calendar_month_rounded,
+                              title: "تاريخ الإنشاء",
+                              value: formattedDate,
+                            ),
+                            _certificateItem(
+                              icon: isResolved
+                                  ? Icons.check_circle_rounded
+                                  : Icons.hourglass_bottom_rounded,
+                              title: "حالة الشكوى",
+                              value: isResolved ? "تم حل الشكوى" : "قيد المعالجة",
+                              showDivider: !isResolved,
+                            ),
+                            if (!isResolved)
+                              _certificateItem(
+                                icon: Icons.info_outline_rounded,
+                                title: "ملاحظة",
+                                value: "سيتم معالجة شكواك قريباً من قبل الإدارة",
+                                showDivider: false,
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
               ),
-            );
-          }),
-        ],
+            ],
+          ),
+        ),
       ),
-     ) );
+    );
   }
 
-  /// 🔥 كارد معلومات
-  Widget _infoCard(
-    String label,
-    String value, {
-    required IconData icon,
-    bool multiline = false,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-          )
-        ],
-      ),
+  Widget _header() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
       child: Row(
-        crossAxisAlignment:
-            multiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: AppColors.mauve),
-          const SizedBox(width: 10),
-
-          Expanded(
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.white.withOpacity(.25)),
+            ),
+            child: const Icon(
+              Icons.campaign_outlined,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: 14),
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  label,
+                  "تفاصيل الشكوى",
                   style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
-                  value,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                  "عرض معلومات الشكوى كاملة",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
                   ),
-                  maxLines: multiline ? 5 : 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -230,31 +180,123 @@ class HousingComplaintDetailView extends StatelessWidget {
     );
   }
 
-  /// 🌸 الخلفية
-Widget _background() {
-  return Container(
-    decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Color(0xFFF8F6FB),
-          Color(0xFFF2ECFA),
-          Color(0xFFEDE4F8),
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ),
-    ),
-  );
-}
+  Widget _certificateHeader(dynamic item, bool isResolved) {
+    final statusColor = isResolved ? Colors.green : Colors.orange;
 
-  Widget _circle(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+    return Column(
+      children: [
+        Container(
+          width: 92,
+          height: 92,
+          decoration: BoxDecoration(
+            color: complaintColor.withOpacity(.13),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: complaintColor.withOpacity(.30),
+              width: 2,
+            ),
+          ),
+          child: const Icon(
+            Icons.campaign_outlined,
+            color: complaintColor,
+            size: 52,
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "شكوى سكن رسمية",
+          style: TextStyle(
+            color: AppColors.darkPurple,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          _text(item.title),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: AppColors.darkPurple,
+            fontSize: 23,
+            fontWeight: FontWeight.bold,
+            height: 1.35,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(.12),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            isResolved ? "تم الحل" : "قيد المعالجة",
+            style: TextStyle(
+              color: statusColor,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Container(
+          height: 1,
+          width: double.infinity,
+          color: Colors.grey.shade200,
+        ),
+      ],
+    );
+  }
+
+  Widget _certificateItem({
+    required IconData icon,
+    required String title,
+    required String value,
+    bool showDivider = true,
+  }) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: complaintColor,
+                size: 23,
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                width: 120,
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.darkPurple,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 14,
+                    height: 1.45,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (showDivider)
+          Divider(
+            height: 1,
+            color: Colors.grey.shade200,
+          ),
+      ],
     );
   }
 }

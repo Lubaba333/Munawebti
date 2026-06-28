@@ -8,7 +8,9 @@ class RequestDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RequestController controller = Get.find<RequestController>();
+   final RequestController controller = Get.isRegistered<RequestController>()
+    ? Get.find<RequestController>()
+    : Get.put(RequestController());
 
     return Scaffold(
       body: Container(

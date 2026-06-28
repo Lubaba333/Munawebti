@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/dormitory_attendance_controller.dart';
+import '../controllers/lecture_attendance_controller.dart';
+import '../models/lecture_attendance_model.dart';
 import '../utlis/app_colors.dart';
-import 'dormitory_attendance_detail_view.dart';
+import 'lecture_attendance_detail_view.dart';
 
-class DormitoryAttendanceView extends StatelessWidget {
-  DormitoryAttendanceView({super.key});
+class LectureAttendanceView extends StatelessWidget {
+  LectureAttendanceView({super.key});
 
-  final controller = Get.put(DormitoryAttendanceController());
+  final controller = Get.put(LectureAttendanceController());
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +50,9 @@ class DormitoryAttendanceView extends StatelessWidget {
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.fromLTRB(18, 22, 18, 24),
                         itemCount: controller.attendanceList.length,
-                        itemBuilder: (_, i) {
-                          final item = controller.attendanceList[i];
-                          return _card(item);
+                        itemBuilder: (_, index) {
+                          final item = controller.attendanceList[index];
+                          return _attendanceCard(item);
                         },
                       ),
                     );
@@ -96,7 +97,7 @@ class DormitoryAttendanceView extends StatelessWidget {
               border: Border.all(color: Colors.white.withOpacity(.25)),
             ),
             child: const Icon(
-              Icons.home_work_rounded,
+              Icons.fact_check_rounded,
               color: Colors.white,
               size: 30,
             ),
@@ -107,7 +108,7 @@ class DormitoryAttendanceView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "حضور السكن",
+                  "حضور المحاضرات",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -116,7 +117,7 @@ class DormitoryAttendanceView extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "سجل دخولك وخروجك من السكن",
+                  "سجل دوامك في المحاضرات",
                   style: TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
@@ -127,10 +128,8 @@ class DormitoryAttendanceView extends StatelessWidget {
     );
   }
 
-  Widget _card(dynamic item) {
-    final isPresent = item.status == 'present';
-    final statusColor = isPresent ? Colors.green : Colors.red;
-    final statusText = isPresent ? "داخل السكن" : "خارج السكن";
+  Widget _attendanceCard(LectureAttendanceModel item) {
+    final statusColor = _statusColor(item.status);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -157,7 +156,7 @@ class DormitoryAttendanceView extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
             child: Icon(
-              isPresent ? Icons.home_rounded : Icons.logout_rounded,
+              _statusIcon(item.status),
               color: statusColor,
               size: 30,
             ),
@@ -168,7 +167,9 @@ class DormitoryAttendanceView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  statusText,
+                  item.subjectName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppColors.darkPurple,
                     fontSize: 16,
@@ -177,13 +178,27 @@ class DormitoryAttendanceView extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  item.createdAt,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  "${item.day} • ${item.fromHour} - ${item.toHour}",
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 12.5,
                   ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    _smallChip(
+                      text: _statusText(item.status),
+                      color: statusColor,
+                      icon: Icons.circle,
+                    ),
+                    const SizedBox(width: 8),
+                    _smallChip(
+                      text: item.type,
+                      color: AppColors.darkPurple,
+                      icon: Icons.menu_book_rounded,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -191,9 +206,37 @@ class DormitoryAttendanceView extends StatelessWidget {
           TextButton(
             onPressed: () async {
               await controller.fetchAttendanceDetails(item.id);
-              Get.to(() => const DormitoryAttendanceDetailView());
+              Get.to(() => const LectureAttendanceDetailView());
             },
             child: const Text("تفاصيل"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _smallChip({
+    required String text,
+    required Color color,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(.10),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 11, color: color),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(
+              color: color,
+              fontSize: 10.5,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -203,12 +246,33 @@ class DormitoryAttendanceView extends StatelessWidget {
   Widget _emptyState() {
     return Center(
       child: Text(
-        "لا توجد سجلات حضور سكن",
+        "لا توجد سجلات حضور محاضرات",
         style: TextStyle(
           color: Colors.grey.shade600,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    if (status == 'present') return Colors.green;
+    if (status == 'absent') return Colors.red;
+    if (status == 'excused') return Colors.orange;
+    return AppColors.darkPurple;
+  }
+
+  IconData _statusIcon(String status) {
+    if (status == 'present') return Icons.check_circle_rounded;
+    if (status == 'absent') return Icons.cancel_rounded;
+    if (status == 'excused') return Icons.info_rounded;
+    return Icons.help_rounded;
+  }
+
+  String _statusText(String status) {
+    if (status == 'present') return "حاضر";
+    if (status == 'absent') return "غائب";
+    if (status == 'excused') return "معذور";
+    return status;
   }
 }

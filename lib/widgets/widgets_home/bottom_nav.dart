@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../utlis/app_colors.dart';
 
 class BottomNav extends StatelessWidget {
-  /// الفهرس الحالي للصفحة المفتوحة
   final int currentIndex;
-  
-  /// دالة التبديل بين الصفحات
   final Function(int) onTap;
 
   const BottomNav({
@@ -34,10 +31,9 @@ class BottomNav extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            /// 📅 محاضراتي
+            _buildNavItem(4, Icons.settings, "إعدادات", Colors.grey),
             _buildNavItem(0, Icons.calendar_month, "محاضراتي", Colors.grey),
 
-            /// 🏠 الرئيسية - بارزة بالوسط (نفس التصميم لكن أصغر قليلاً)
             GestureDetector(
               onTap: () => onTap(1),
               child: Container(
@@ -62,10 +58,7 @@ class BottomNav extends StatelessWidget {
               ),
             ),
 
-            /// 📝 طلباتي
             _buildNavItem(2, Icons.request_page, "طلباتي", Colors.grey),
-
-            /// 🚨 طوارئ - نفس التصميم لكن الأيقونة حمراء
             _buildNavItem(3, Icons.sos, "طوارئ", Colors.red),
           ],
         ),
@@ -73,17 +66,17 @@ class BottomNav extends StatelessWidget {
     );
   }
 
-  /// 🧩 عنصر التنقل (أيقونة + نص) - مع لون أيقونة مخصص
   Widget _buildNavItem(int index, IconData icon, String label, Color iconColor) {
     final isSelected = currentIndex == index;
+
     return GestureDetector(
       onTap: () => onTap(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? AppColors.softLavender.withOpacity(0.6) 
+          color: isSelected
+              ? AppColors.softLavender.withOpacity(0.6)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -92,8 +85,9 @@ class BottomNav extends StatelessWidget {
           children: [
             Icon(
               icon,
-              // ✅ الأيقونة تأخذ اللون المخصص (أحمر للطوارئ)
-              color: isSelected ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple) : iconColor,
+              color: isSelected
+                  ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple)
+                  : iconColor,
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -102,8 +96,9 @@ class BottomNav extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                // ✅ النص أيضاً يتلون حسب الحالة
-                color: isSelected ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple) : iconColor,
+                color: isSelected
+                    ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple)
+                    : iconColor,
               ),
             ),
           ],

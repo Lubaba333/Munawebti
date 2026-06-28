@@ -6,6 +6,7 @@ import 'package:studants/views/EmergencyListView.dart';
 import 'package:studants/views/SettingsDrawerview.dart';
 import 'package:studants/views/dormitory_attendance_view.dart';
 import 'package:studants/views/housing_complaints_view.dart';
+import 'package:studants/views/lecture_attendance_view.dart';
 import 'package:studants/views/lectures_view.dart';
 import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/views/rewards_view.dart';
@@ -31,7 +32,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   late AnimationController animController;
   late AnimationController entryController;
-
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Random _random = Random();
   final List<Offset> _randomOffsets = [];
 
@@ -82,7 +83,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   }
 
 void _onNavItemTapped(int index) async {
-  if (index == _currentIndex) return;
+  if (index == _currentIndex && index != 4) return;
+
+  if (index == 4) {
+    _scaffoldKey.currentState?.openDrawer();
+    setState(() => _currentIndex = 1);
+    return;
+  }
 
   setState(() => _currentIndex = index);
 
@@ -192,8 +199,16 @@ void _onNavItemTapped(int index) async {
         index: 9,
         child: ServiceItem(
           icon: Icons.menu_book,
-          title: "حضور السكن",
+          title: "سجل دوام السكن",
           onTap: () => Get.to(() => DormitoryAttendanceView()),
+        ),
+      ),
+       _randomEntry(
+        index: 9,
+        child: ServiceItem(
+          icon: Icons.menu_book,
+          title: "سجل دوام المحاضرات",
+          onTap: () => Get.to(() => LectureAttendanceView()),
         ),
       ),
     ];
@@ -201,9 +216,10 @@ void _onNavItemTapped(int index) async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      drawer: SettingsDrawer(),
+   return Scaffold(
+  key: _scaffoldKey,
+  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  drawer: SettingsDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(18),
@@ -215,31 +231,23 @@ void _onNavItemTapped(int index) async {
                 child: const TopBar(),
               ),
 
-              const SizedBox(height: 20),
 
-              _randomEntry(
-                index: 1,
-                child: Text(
-                  "مرحباً 👋",
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 5),
+              
 
               _randomEntry(
                 index: 2,
-                child: Obx(
-                  () => Text(
-                    controller.studentName.value,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                child:Obx(
+  () => Center(
+    child: Text(
+      profileController.name.value.isEmpty
+          ? "طالبة"
+          : profileController.name.value,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+  ),
                 ),
               ),
 

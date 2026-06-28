@@ -10,47 +10,77 @@ class LectureController extends GetxController {
 
   @override
   void onInit() {
-    getLectures();
     super.onInit();
+    getLectures();
   }
 
-  Future<void> getLectures() async {
+  Future<void> getLectures({String? day, String? date}) async {
     try {
       isLoading.value = true;
 
+      String url = '/student/my-lectures?per_page=15&page=1';
+
+      if (day != null && day.isNotEmpty) {
+        url += '&day=$day';
+      }
+
+      if (date != null && date.isNotEmpty) {
+        url += '&date=$date';
+      }
+
       final response = await _apiService.get(
-        '/student/lecture-attendance?per_page=15&page=1',
+        url,
         authRequired: true,
       );
 
-      print("📥 Lecture Response: $response");
-
       final data = response['data'];
 
-      /// 🔥 الحل هنا
-      if (data is Map && data['data'] is List) {
-        lectures.value = (data['data'] as List)
-            .map((e) => LectureModel.fromJson(
-                  Map<String, dynamic>.from(e),
-                ))
-            .toList();
-      } else if (data is List) {
-        lectures.value = data
-            .map((e) => LectureModel.fromJson(
-                  Map<String, dynamic>.from(e),
-                ))
-            .toList();
-      } else {
-        lectures.value = [];
+      final List<LectureModel> loadedLectures = [];
+
+      if (data is List) {
+        for (final dayItem in data) {
+          if (dayItem is Map && dayItem['lectures'] is List) {
+            final lecturesList = dayItem['lectures'] as List;
+
+            for (final lecture in lecturesList) {
+              if (lecture is Map) {
+                loadedLectures.add(
+                  LectureModel.fromJson(
+                    Map<String, dynamic>.from(lecture),
+                  ),
+                );
+              }
+            }
+          }
+        }
+      } else if (data is Map) {
+        final list = data['data'] ?? data['lectures'] ?? data['items'];
+
+        if (list is List) {
+          for (final lecture in list) {
+            if (lecture is Map) {
+              loadedLectures.add(
+                LectureModel.fromJson(
+                  Map<String, dynamic>.from(lecture),
+                ),
+              );
+            }
+          }
+        }
       }
 
-      print("✅ Loaded lectures: ${lectures.length}");
+      lectures.value = loadedLectures;
 
+      print("✅ Loaded lectures: ${lectures.length}");
     } catch (e) {
-      print("❌ Lecture Error: $e");
-      lectures.value = [];
+      print("❌ My Lectures Error: $e");
+      lectures.clear();
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> refreshLectures() async {
+    await getLectures();
   }
 }
