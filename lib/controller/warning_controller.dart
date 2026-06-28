@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:supervisors/models/WarningModel.dart';
-import '../services/api_service.dart';
+import 'package:supervisors/services/api_service.dart';
+
 
 class WarningsController extends GetxController {
 
@@ -9,42 +10,54 @@ class WarningsController extends GetxController {
   RxList<WarningModel> warnings =
       <WarningModel>[].obs;
 
+  RxInt currentStudentId = 0.obs;
+
   RxBool loading = false.obs;
 
   Future<void> getStudentWarnings(int studentId) async {
-    print("Student Id = $studentId");
+
+    currentStudentId.value = studentId;
 
     loading(true);
 
     try {
-      print("Calling API...");
 
       final response = await api.get(
         '/supervisor/warnings',
       );
 
-      print(response);
 
-      final List list = response['data']['data'];
+      final List list =
+      response['data']['data'];
+
 
       warnings.value = list
-          .where((e) => e['target_id'] == studentId)
-          .map((e) => WarningModel.fromJson(e))
+          .where(
+              (e)=> e['target_id'] == studentId
+      )
+          .map(
+              (e)=> WarningModel.fromJson(e)
+      )
           .toList();
 
-      print("Warnings Count = ${warnings.length}");
 
-    } catch (e) {
-      print(e);
+
+    } catch(e){
 
       Get.snackbar(
-        "خطأ",
-        e.toString(),
+          "خطأ",
+          e.toString()
       );
-    } finally {
-      loading(false);
+
     }
+    finally{
+
+      loading(false);
+
+    }
+
   }
+
   Future<WarningModel?> getWarning(
       int warningId,
       ) async {
@@ -115,9 +128,8 @@ class WarningsController extends GetxController {
       );
 
 
-
       await getStudentWarnings(
-          warnings.first.id
+          currentStudentId.value
       );
 
 

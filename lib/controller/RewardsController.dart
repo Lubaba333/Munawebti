@@ -10,47 +10,67 @@ class RewardsController extends GetxController {
 
   RxList<RewardModel> rewards =
       <RewardModel>[].obs;
+  RxInt currentStudentId = 0.obs;
 
   RxBool loading = false.obs;
-
   Future<void> getStudentRewards(
       int studentId) async {
 
+
+    currentStudentId.value = studentId;
+
+
     loading(true);
 
+
     try {
+
 
       final response =
       await api.get(
         '/supervisor/rewards',
       );
 
+
       final List list =
       response['data']['data'];
 
+
+
       rewards.value = list
+
           .where(
-            (e) =>
-        e['target_id'] ==
-            studentId,
+            (e)=>
+        e['target_id']==studentId,
       )
+
+
           .map(
-            (e) =>
+            (e)=>
             RewardModel.fromJson(e),
       )
+
+
           .toList();
 
-    } catch (e) {
+
+
+    }catch(e){
+
 
       Get.snackbar(
         "خطأ",
         e.toString(),
       );
 
-    } finally {
+
+    }finally{
+
 
       loading(false);
+
     }
+
   }
 
   Future<RewardModel> getReward(

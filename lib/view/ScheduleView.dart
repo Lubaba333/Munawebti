@@ -13,7 +13,11 @@ class ScheduleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EFE7),
+
+
+      backgroundColor:
+      Theme.of(context).scaffoldBackgroundColor,
+      // backgroundColor: const Color(0xFFF5EFE7),
 
       appBar: AppBar(
         elevation: 0,

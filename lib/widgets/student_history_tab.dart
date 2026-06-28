@@ -8,6 +8,7 @@ import 'package:supervisors/view/ReportDetailsView.dart';
 import 'package:supervisors/view/RewardDetailsView.dart';
 import 'package:supervisors/view/ViolationDetailsView.dart';
 import 'package:supervisors/view/WarningDetailsView.dart';
+import 'package:supervisors/widgets/StudentRecordSection.dart';
 
 import '../controller/warning_controller.dart';
 import '../controller/ViolationsController.dart';
@@ -41,295 +42,435 @@ class StudentHistoryTab extends StatelessWidget {
 
         children: [
 
-          /// WARNINGS
-          _sectionTitle(
-            "التحذيرات",
-            Icons.warning_amber_rounded,
-            Colors.orange,
-          ),
+          ///// WARNINGS
+          StudentRecordSection(
 
-          // ...warningsController.warnings.map(
-          //       (warning) => _historyCard(
-          //         icon: Icons.warning,
-          //         color: Colors.orange,
-          //         title: warning.title,
-          //         subtitle: warning.description,
-          //         date: warning.warningDate
+            title:"التحذيرات",
+
+            icon:
+            Icons.warning_amber_rounded,
+
+            color:
+            Colors.orange,
+
+
+            children:
+
+            warningsController.warnings.map(
+
+                    (warning)=>
+
+                    _historyCard(
+
+                      icon:Icons.warning,
+
+                      color:Colors.orange,
+
+                      title:warning.title,
+
+                      subtitle:warning.description,
+
+                      date:
+                      warning.warningDate
+                          .split('T')
+                          .first,
+
+
+                      onTap:(){
+
+                        Get.to(
+                              ()=>WarningDetailsView(),
+                          arguments:
+                          warning.id,
+                        );
+
+                      },
+
+
+                      onEdit:(){
+
+                        Get.to(
+                              ()=>EditWarningView(
+                            warning: warning,
+                          ),
+                        );
+
+                      },
+
+
+                      onDelete:(){
+
+                        warningsController
+                            .deleteWarning(
+                            warning.id
+                        );
+
+                      },
+
+
+                    )
+
+            ).toList(),
+
+
+          ),
+          const SizedBox(height: 20),
+
+          ///// VIOLATIONS
+
+          StudentRecordSection(
+
+            title:
+            "المخالفات",
+
+            icon:
+            Icons.block,
+
+            color:
+            Colors.red,
+
+
+            children:
+
+            violationsController.violations.map(
+
+                    (violation)=>
+
+                    _historyCard(
+
+                      icon:
+                      Icons.block,
+
+                      color:
+                      Colors.red,
+
+
+                      title:
+                      violation.title,
+
+
+                      subtitle:
+                      violation.description,
+
+
+                      date:
+                      violation.violationDate
+                          .split('T')
+                          .first,
+
+
+                      onTap:(){
+
+                        Get.to(
+
+                              ()=>ViolationDetailsView(),
+
+                          arguments:
+                          violation.id,
+
+                        );
+
+                      },
+
+
+                      onEdit:(){
+
+                        Get.to(
+
+                              ()=>EditViolationView(
+
+                            violation:
+                            violation,
+
+                          ),
+
+                        );
+
+                      },
+
+
+
+                      onDelete:(){
+
+                        violationsController
+                            .deleteViolation(
+                            violation.id
+                        );
+
+                      },
+
+
+
+                    )
+
+            ).toList(),
+
+
+          ),
+          const SizedBox(height: 20),
+
+          ///// REWARDS
+
+          StudentRecordSection(
+
+            title:
+            "المكافآت",
+
+
+            icon:
+            Icons.star,
+
+
+            color:
+            Colors.green,
+
+
+
+            children:
+
+            rewardsController.rewards.map(
+
+                    (reward)=>
+
+
+                    _historyCard(
+
+
+                      icon:
+                      Icons.star,
+
+
+                      color:
+                      Colors.green,
+
+
+                      title:
+                      reward.title,
+
+
+                      subtitle:
+                      reward.description,
+
+
+                      date:
+                      reward.createdAt
+                          .split('T')
+                          .first,
+
+
+
+                      onTap:(){
+
+                        Get.to(
+
+                              ()=>RewardDetailsView(),
+
+                          arguments:
+                          reward.id,
+
+                        );
+
+                      },
+
+
+
+                      onEdit:(){
+
+
+                        Get.to(
+
+                              ()=>EditRewardView(
+
+                            reward:
+                            reward,
+
+                          ),
+
+                        );
+
+                      },
+
+
+
+                      onDelete:(){
+
+
+                        rewardsController
+                            .deleteReward(
+                            reward.id
+                        );
+
+
+                      },
+
+
+                    )
+
+
+            ).toList(),
+
+
+          ),
+          const SizedBox(height: 20),
+
+          // /// REPORTS
+          // _sectionTitle(
+          //   "التقارير",
+          //   Icons.article,
+          //   Colors.blue,
+          // ),
+          //
+          // ...reportsController.reports.map(
+          //       (report) => _historyCard(
+          //         icon: Icons.article,
+          //         color: Colors.blue,
+          //
+          //         title: "تقرير",
+          //
+          //         subtitle: report.notes,
+          //
+          //         date: report.createdAt
           //             .split('T')
           //             .first,
           //
           //         onTap: () {
           //
           //           Get.to(
-          //                 ()=>WarningDetailsView(),
-          //             arguments: warning.id,
+          //                 () => ReportDetailsView(),
+          //             arguments:
+          //             report.id,
           //           );
-          //
           //         },
-          //
           //
           //         onDelete: (){
           //
-          //           warningsController.deleteWarning(
-          //             warning.id,
+          //           reportsController.deleteReport(
+          //             report.id,
           //           );
           //
           //         },
           //
           //
           //         onEdit: (){
+          //           Get.to(
           //
-          //           print(
-          //               "تعديل التحذير ${warning.id}"
+          //                 ()=>EditReportView(
+          //
+          //               report: report,
+          //
+          //             ),
+          //
           //           );
           //
           //         },
-          //       ),
-          // ),
+          //       ), ),
 
-          ...warningsController.warnings.map(
+          StudentRecordSection(
 
-                (warning)=>_historyCard(
+          title:
+          "التقارير",
 
-              icon: Icons.warning,
 
-              color: Colors.orange,
+          icon:
+          Icons.article,
 
 
-              title:
-              warning.title,
+          color:
+          Colors.blue,
 
 
-              subtitle:
-              warning.description,
 
+          children:
 
-              date:
-              warning.warningDate
-                  .split('T')
-                  .first,
+          reportsController.reports.map(
 
 
-              onTap: (){
+          (report)=>
 
-                Get.to(
-                      ()=>WarningDetailsView(),
 
-                  arguments:
-                  warning.id,
+          _historyCard(
 
-                );
 
-              },
+          icon:
+          Icons.article,
 
 
-                  onEdit: () async {
+          color:
+          Colors.blue,
 
 
-                    final result = await Get.to(
+          title:
+          "تقرير",
 
-                          ()=>EditWarningView(
 
-                        warning: warning,
+          subtitle:
+          report.notes,
 
-                      ),
 
-                    );
+          date:
+          report.createdAt
+              .split('T')
+              .first,
 
 
 
-                    if(result == true){
+          onTap:(){
 
-                      warningsController
-                          .getStudentWarnings(
-                        warning.id,
-                      );
 
-                    }
+          Get.to(
 
+          ()=>ReportDetailsView(),
 
-                  },
+          arguments:
+          report.id,
 
+          );
 
-              onDelete: (){
 
-                warningsController.deleteWarning(
-                    warning.id
-                );
+          },
 
-              },
 
 
-            ),
+      onEdit:(){
 
-          ),
 
-          const SizedBox(height: 20),
+      Get.to(
 
-          /// VIOLATIONS
-          _sectionTitle(
-            "المخالفات",
-            Icons.block,
-            Colors.red,
-          ),
+      ()=>EditReportView(
 
-          ...violationsController
-              .violations
-              .map(
-                (violation) => _historyCard(
-                  icon: Icons.block,
-                  color: Colors.red,
+      report:
+      report,
 
-                  title: violation.title,
+      ),
 
-                  subtitle:
-                  violation.description,
+      );
 
-                  date: violation
-                      .violationDate
-                      .split('T')
-                      .first,
 
-                  onTap: () {
+      },
 
-                    Get.to(
-                          () => ViolationDetailsView(),
-                      arguments:
-                      violation.id,
-                    );
-                  },
 
-                  onDelete: (){
 
-                    violationsController.deleteViolation(
-                      violation.id,
-                    );
+      onDelete:(){
 
-                  },
 
+      reportsController
+          .deleteReport(
+      report.id
+      );
 
-                  onEdit: (){
-                    Get.to(
-                          () => EditViolationView(
-                        violation: violation,
-                      ),
-                    );
 
-                  },
-                ),
-          ),
+      },
 
-          const SizedBox(height: 20),
 
-          /// REWARDS
-          _sectionTitle(
-            "المكافآت",
-            Icons.star,
-            Colors.green,
-          ),
 
-          ...rewardsController.rewards.map(
-                (reward) => _historyCard(
-                  icon: Icons.star,
-                  color: Colors.green,
+      )
 
-                  title: reward.title,
 
-                  subtitle:
-                  reward.description,
+      ).toList(),
 
-                  date: reward.createdAt
-                      .split('T')
-                      .first,
 
-                  onTap: () {
 
-                    Get.to(
-                          () => RewardDetailsView(),
-                      arguments:
-                      reward.id,
-                    );
-                  },
 
-                  onDelete: (){
-
-                    rewardsController.deleteReward(
-                      reward.id,
-                    );
-
-                  },
-
-
-                  onEdit: (){
-
-                    Get.to(
-
-                          ()=>EditRewardView(
-
-                        reward: reward,
-
-                      ),
-
-
-                    );
-
-                  },
-                ),
-          ),
-
-          const SizedBox(height: 20),
-
-          /// REPORTS
-          _sectionTitle(
-            "التقارير",
-            Icons.article,
-            Colors.blue,
-          ),
-
-          ...reportsController.reports.map(
-                (report) => _historyCard(
-                  icon: Icons.article,
-                  color: Colors.blue,
-
-                  title: "تقرير",
-
-                  subtitle: report.notes,
-
-                  date: report.createdAt
-                      .split('T')
-                      .first,
-
-                  onTap: () {
-
-                    Get.to(
-                          () => ReportDetailsView(),
-                      arguments:
-                      report.id,
-                    );
-                  },
-
-                  onDelete: (){
-
-                    reportsController.deleteReport(
-                      report.id,
-                    );
-
-                  },
-
-
-                  onEdit: (){
-                    Get.to(
-
-                          ()=>EditReportView(
-
-                        report: report,
-
-                      ),
-
-                    );
-
-                  },
-                ),
           ),
         ],
       );
@@ -564,85 +705,6 @@ class StudentHistoryTab extends StatelessWidget {
               },
 
             )
-
-            //
-            // PopupMenuButton(
-            //
-            //   itemBuilder: (context)=>[
-            //
-            //
-            //     PopupMenuItem(
-            //
-            //       child:
-            //       const Row(
-            //
-            //         children:[
-            //
-            //           Icon(
-            //             Icons.edit,
-            //             color:Colors.blue,
-            //           ),
-            //
-            //           SizedBox(width:8),
-            //
-            //           Text("تعديل")
-            //
-            //         ],
-            //       ),
-            //
-            //
-            //       onTap: (){
-            //
-            //         Future.delayed(
-            //             Duration.zero,
-            //                 (){
-            //               onEdit?.call();
-            //             }
-            //         );
-            //
-            //       },
-            //
-            //     ),
-            //
-            //
-            //
-            //     PopupMenuItem(
-            //
-            //       child:
-            //       const Row(
-            //
-            //         children:[
-            //
-            //           Icon(
-            //             Icons.delete,
-            //             color:Colors.red,
-            //           ),
-            //
-            //           SizedBox(width:8),
-            //
-            //           Text("حذف")
-            //
-            //         ],
-            //       ),
-            //
-            //
-            //       onTap: (){
-            //
-            //         Future.delayed(
-            //             Duration.zero,
-            //                 (){
-            //               onDelete?.call();
-            //             }
-            //         );
-            //
-            //       },
-            //
-            //     ),
-            //
-            //
-            //   ],
-            // )
-
           ],
 
         ),

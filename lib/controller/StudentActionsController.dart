@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:supervisors/controller/ReportsController.dart';
+import 'package:supervisors/controller/RewardsController.dart';
+import 'package:supervisors/controller/ViolationsController.dart';
+import 'package:supervisors/controller/warning_controller.dart';
 import 'package:supervisors/services/api_service.dart';
 
 
@@ -20,14 +24,6 @@ class StudentActionsController extends GetxController {
 
     try {
 
-      print("=== CREATE WARNING START ===");
-      print("studentId = $studentId");
-      print("title = $title");
-      print("description = $description");
-      print("warningDate = $warningDate");
-      print("possiblePenalty = $possiblePenalty");
-
-
       await _api.post(
         '/supervisor/warnings',
         {
@@ -39,7 +35,14 @@ class StudentActionsController extends GetxController {
           "possible_penalty": possiblePenalty,
         },
       );
-      print("=== CREATE WARNING SUCCESS ===");
+
+
+      final warningsController =
+      Get.find<WarningsController>();
+
+
+      await warningsController
+          .getStudentWarnings(studentId);
 
       Get.back();
 
@@ -86,6 +89,11 @@ class StudentActionsController extends GetxController {
         },
       );
 
+      final controller =
+      Get.find<ViolationsController>();
+
+      await controller.getStudentViolations(studentId);
+
       Get.back();
 
       Get.snackbar(
@@ -130,6 +138,11 @@ class StudentActionsController extends GetxController {
           "points": points,
         },
       );
+      final rewardsController =
+      Get.find<RewardsController>();
+
+      await rewardsController
+          .getStudentRewards(studentId);
 
       Get.back();
 
@@ -171,6 +184,14 @@ class StudentActionsController extends GetxController {
           "report_date": reportDate,
           "notes": notes,
         },
+      );
+
+      final reportsController =
+      Get.find<ReportsController>();
+
+
+      await reportsController.getStudentReports(
+        studentId,
       );
 
       Get.back();

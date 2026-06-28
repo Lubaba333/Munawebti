@@ -1,33 +1,3 @@
-// class RequestModel {
-//   final int id;
-//   final String type;
-//   final String status;
-//   final String title;
-//   final String description;
-//   final Map<String, dynamic> metadata;
-//
-//   RequestModel({
-//     required this.id,
-//     required this.type,
-//     required this.status,
-//     required this.title,
-//     required this.description,
-//     required this.metadata,
-//   });
-//
-//   factory RequestModel.fromJson(Map<String, dynamic> json) {
-//     return RequestModel(
-//       id: json['id'],
-//       type: json['request_type'],
-//       status: json['status'],
-//       title: json['title'],
-//       description: json['description'],
-//       metadata: json['metadata'] ?? {},
-//     );
-//   }
-// }
-
-
 class RequestModel {
   final int id;
   final String type;

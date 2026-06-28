@@ -9,11 +9,14 @@ class ReportsController extends GetxController {
 
   RxList<ReportModel> reports =
       <ReportModel>[].obs;
+  RxInt currentStudentId = 0.obs;
 
   RxBool loading = false.obs;
 
   Future<void> getStudentReports(
       int studentId) async {
+
+    currentStudentId.value = studentId;
 
     loading(true);
 
@@ -24,32 +27,34 @@ class ReportsController extends GetxController {
         '/supervisor/student-reports',
       );
 
+
       final List list =
       response['data']['data'];
 
+
       reports.value = list
           .where(
-            (e) =>
-        e['student_id'] ==
-            studentId,
+            (e)=> e['student_id'] == studentId,
       )
           .map(
-            (e) =>
-            ReportModel.fromJson(e),
+            (e)=> ReportModel.fromJson(e),
       )
           .toList();
 
-    } catch (e) {
+
+    }catch(e){
 
       Get.snackbar(
         "خطأ",
         e.toString(),
       );
 
-    } finally {
+    }finally{
 
       loading(false);
+
     }
+
   }
 
   Future<ReportModel> getReport(
@@ -198,8 +203,8 @@ class ReportsController extends GetxController {
       '/supervisor/student-reports/$reportId',
     );
 
-    reports.removeWhere(
-          (e) => e.id == reportId,
+    await getStudentReports(
+        currentStudentId.value
     );
 
     Get.snackbar(

@@ -17,8 +17,8 @@ class WarningDetailsController extends GetxController {
   void onInit() {
     super.onInit();
 
-    final int warningId =
-    Get.arguments as int;
+    final warningId =
+        Get.arguments;
 
     loadWarning(warningId);
   }
