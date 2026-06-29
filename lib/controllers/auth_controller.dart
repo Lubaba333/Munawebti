@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/services/service.dart';
 import 'package:studants/views/home_view.dart';
+import 'package:studants/views/main_navigation_view.dart';
 
 class AuthController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -177,7 +178,7 @@ await Get.find<ProfileController>().getProfile();
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      Get.offAll(() => HomeView());
+      Get.offAll(() =>  MainNavigationView());
 
     } catch (e) {
       print("❌ Register Error: $e");
@@ -234,7 +235,7 @@ await Get.find<ProfileController>().getProfile();
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      Get.offAll(() => HomeView());
+      Get.offAll(() =>  MainNavigationView());
 
     } catch (e) {
       print("❌ Login Error: $e");

@@ -53,7 +53,7 @@ class BottomNav extends StatelessWidget {
                 child: const Icon(
                   Icons.home_rounded,
                   color: Colors.white,
-                  size: 24,
+                  size: 35,
                 ),
               ),
             ),

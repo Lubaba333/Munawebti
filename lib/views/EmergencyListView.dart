@@ -7,7 +7,12 @@ import 'package:studants/views/EmergencyDetailView.dart';
 import '../../utlis/app_colors.dart';
 
 class EmergencyListView extends StatelessWidget {
-  const EmergencyListView({super.key});
+  final bool showBackButton;
+
+  const EmergencyListView({
+    super.key,
+    this.showBackButton = true,
+  });
 
   static const emergencyRed = Color(0xFFD84A4A);
 
@@ -80,29 +85,30 @@ class EmergencyListView extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+Widget _header() {
   return Padding(
     padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
     child: Row(
       children: [
-        Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(.20),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Colors.white,
-              size: 18,
+        if (showBackButton)
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(width: 12),
+        if (showBackButton) const SizedBox(width: 12),
 
         Container(
           width: 52,

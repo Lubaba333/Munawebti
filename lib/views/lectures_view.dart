@@ -5,7 +5,12 @@ import '../models/lecture_model.dart';
 import '../utlis/app_colors.dart';
 
 class LecturesView extends StatelessWidget {
-  LecturesView({super.key});
+  final bool showBackButton;
+
+  LecturesView({
+    super.key,
+    this.showBackButton = true,
+  });
 
   final LectureController controller = Get.put(LectureController());
 
@@ -80,11 +85,12 @@ class LecturesView extends StatelessWidget {
     );
   }
 
-  Widget _header() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
-      child: Row(
-        children: [
+Widget _header() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+    child: Row(
+      children: [
+        if (showBackButton)
           Container(
             width: 45,
             height: 45,
@@ -101,49 +107,53 @@ class LecturesView extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.20),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white.withOpacity(.25)),
-            ),
-            child: const Icon(
-              Icons.table_chart_rounded,
-              color: Colors.white,
-              size: 30,
-            ),
+
+        if (showBackButton) const SizedBox(width: 12),
+
+        Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(.20),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: Colors.white.withOpacity(.25)),
           ),
-          const SizedBox(width: 14),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "محاضراتي",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "جدول دوام المحاضرات الخاص بك",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
+          child: const Icon(
+            Icons.table_chart_rounded,
+            color: Colors.white,
+            size: 30,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+
+        const SizedBox(width: 14),
+
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "محاضراتي",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                "جدول دوام المحاضرات الخاص بك",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _weeklyTable(BuildContext context) {
     return Container(

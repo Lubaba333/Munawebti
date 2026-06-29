@@ -2,13 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
-import 'package:studants/views/EmergencyListView.dart';
-import 'package:studants/views/SettingsDrawerview.dart';
 import 'package:studants/views/dormitory_attendance_view.dart';
 import 'package:studants/views/housing_complaints_view.dart';
 import 'package:studants/views/lecture_attendance_view.dart';
-import 'package:studants/views/lectures_view.dart';
-import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/views/rewards_view.dart';
 import 'package:studants/views/violations_view.dart';
 import 'package:studants/views/warnings_view.dart';
@@ -16,8 +12,6 @@ import 'package:studants/widgets/widgets_home/main_card.dart';
 import 'package:studants/widgets/widgets_home/service_item.dart';
 import 'package:studants/widgets/widgets_home/top_bar.dart';
 import '../controllers/home_controller.dart';
-import '../../../utlis/app_colors.dart';
-import '../widgets/widgets_home/bottom_nav.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -32,11 +26,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   late AnimationController animController;
   late AnimationController entryController;
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final Random _random = Random();
   final List<Offset> _randomOffsets = [];
-
-  int _currentIndex = 1;
 
   @override
   void initState() {
@@ -81,40 +73,6 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     entryController.dispose();
     super.dispose();
   }
-
-void _onNavItemTapped(int index) async {
-  if (index == _currentIndex && index != 4) return;
-
-  if (index == 4) {
-    _scaffoldKey.currentState?.openDrawer();
-    setState(() => _currentIndex = 1);
-    return;
-  }
-
-  setState(() => _currentIndex = index);
-
-  switch (index) {
-    case 0:
-      await Get.to(() => LecturesView());
-      break;
-
-    case 1:
-      setState(() => _currentIndex = 1);
-      return;
-
-    case 2:
-      await Get.to(() => MyRequestsView());
-      break;
-
-    case 3:
-      await Get.to(() => EmergencyListView());
-      break;
-  }
-
-  if (mounted) {
-    setState(() => _currentIndex = 1);
-  }
-}
 
   Animation<double> _animationFor(int index) {
     final double start = (index * 0.06).clamp(0.0, 0.70);
@@ -203,8 +161,8 @@ void _onNavItemTapped(int index) async {
           onTap: () => Get.to(() => DormitoryAttendanceView()),
         ),
       ),
-       _randomEntry(
-        index: 9,
+      _randomEntry(
+        index: 10,
         child: ServiceItem(
           icon: Icons.menu_book,
           title: "سجل دوام المحاضرات",
@@ -216,81 +174,61 @@ void _onNavItemTapped(int index) async {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-  key: _scaffoldKey,
-  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-  drawer: SettingsDrawer(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _randomEntry(
-                index: 0,
-                child: const TopBar(),
-              ),
-
-
-              
-
-              _randomEntry(
-                index: 2,
-                child:Obx(
-  () => Center(
-    child: Text(
-      profileController.name.value.isEmpty
-          ? "طالبة"
-          : profileController.name.value,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _randomEntry(
+              index: 0,
+              child: const TopBar(),
+            ),
+            _randomEntry(
+              index: 2,
+              child: Obx(
+                () => Center(
+                  child: Text(
+                    profileController.name.value.isEmpty
+                        ? "طالبة"
+                        : profileController.name.value,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
-  ),
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              _randomEntry(
-                index: 3,
-                child: MainCard(animController: animController),
-              ),
-
-              const SizedBox(height: 30),
-
-              _randomEntry(
-                index: 4,
-                child: const Text(
-                  "الخدمات",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
-              const SizedBox(height: 15),
-
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                childAspectRatio: 1.1,
-                children: _services(),
+            ),
+            const SizedBox(height: 25),
+            _randomEntry(
+              index: 3,
+              child: MainCard(animController: animController),
+            ),
+            const SizedBox(height: 30),
+            _randomEntry(
+              index: 4,
+              child: const Text(
+                "الخدمات",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-
-              const SizedBox(height: 25),
-            ],
-          ),
+            ),
+            const SizedBox(height: 15),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 1.1,
+              children: _services(),
+            ),
+            const SizedBox(height: 25),
+          ],
         ),
-      ),
-      bottomNavigationBar: BottomNav(
-        currentIndex: _currentIndex,
-        onTap: _onNavItemTapped,
       ),
     );
   }

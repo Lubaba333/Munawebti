@@ -11,7 +11,12 @@ import 'package:studants/views/sent_requests_tab.dart';
 import 'package:studants/views/incoming_requests_tab.dart';
 
 class MyRequestsView extends StatefulWidget {
-  const MyRequestsView({super.key});
+  final bool showBackButton;
+
+  const MyRequestsView({
+    super.key,
+    this.showBackButton = true,
+  });
 
   @override
   State<MyRequestsView> createState() => _MyRequestsViewState();
@@ -43,51 +48,88 @@ class _MyRequestsViewState extends State<MyRequestsView>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: _newRequestButton(),
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _header(),
-              _tabs(),
-              Expanded(child: _body()),
-            ],
-          ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    floatingActionButton: GestureDetector(
+      onTap: _showNewRequestSheet,
+      child: Container(
+        height: 56,
+        padding: const EdgeInsets.symmetric(horizontal: 18),
+        decoration: BoxDecoration(
+          gradient: AppColors.mainGradient,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.darkPurple.withOpacity(.25),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _header() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-           onPressed: () {
-  Get.offAll(() => const HomeView());
-},
-          ),
-          const SizedBox(width: 8),
-          const Expanded(
-            child: Text(
-              "طلباتي",
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.add_circle_outline,
+              color: Colors.white,
+            ),
+            SizedBox(width: 8),
+            Text(
+              "طلب جديد",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 27,
                 fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    body: Container(
+      decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+      child: SafeArea(
+        child: Column(
+          children: [
+            _header(),
+            _tabs(),
+            Expanded(child: _body()),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+ Widget _header() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+    child: Row(
+      children: [
+        if (widget.showBackButton)
+          IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Get.back(),
+          ),
+
+        if (widget.showBackButton) const SizedBox(width: 8),
+
+        const Expanded(
+          child: Text(
+            "طلباتي",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 27,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _tabs() {
     return Container(
@@ -131,39 +173,7 @@ class _MyRequestsViewState extends State<MyRequestsView>
     );
   }
 
-  Widget _newRequestButton() {
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
-        color: Colors.white,
-        child: GestureDetector(
-          onTap: _showNewRequestSheet,
-          child: Container(
-            height: 56,
-            decoration: BoxDecoration(
-              gradient: AppColors.mainGradient,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_circle_outline, color: Colors.white),
-                SizedBox(width: 10),
-                Text(
-                  "طلب جديد",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   void _showNewRequestSheet() {
     Get.bottomSheet(
