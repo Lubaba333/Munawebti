@@ -59,6 +59,7 @@ class LecturesView extends StatelessWidget {
                     }
 
                     return RefreshIndicator(
+                      color: AppColors.mauve,
                       onRefresh: controller.refreshLectures,
                       child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
@@ -150,11 +151,11 @@ class LecturesView extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: AppColors.darkPurple.withOpacity(.14),
+          color: AppColors.darkPurple.withOpacity(.18),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkPurple.withOpacity(.08),
+            color: AppColors.darkPurple.withOpacity(.10),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -169,7 +170,7 @@ class LecturesView extends StatelessWidget {
         children: [
           TableRow(
             decoration: BoxDecoration(
-              color: AppColors.softLavender,
+              color: AppColors.softLavender.withOpacity(.85),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(22),
               ),
@@ -179,10 +180,18 @@ class LecturesView extends StatelessWidget {
               ...timeSlots.map((t) => _headerCell(_formatTime(t))),
             ],
           ),
-          ...days.map((day) {
+          ...days.asMap().entries.map((entry) {
+            final index = entry.key;
+            final day = entry.value;
+
             return TableRow(
+              decoration: BoxDecoration(
+                color: index.isEven
+                    ? Colors.white
+                    : AppColors.softLavender.withOpacity(.90),
+              ),
               children: [
-                _dayCell(_arabicDay(day)),
+                _dayCell(_arabicDay(day), index),
                 ...timeSlots.map((time) {
                   final lecture = _findLecture(day, time);
                   return _lectureCell(context, lecture);
@@ -222,12 +231,14 @@ class LecturesView extends StatelessWidget {
     );
   }
 
-  Widget _dayCell(String day) {
+  Widget _dayCell(String day, int index) {
     return Container(
       height: 82,
       alignment: Alignment.center,
       padding: const EdgeInsets.all(8),
-      color: AppColors.softLavender.withOpacity(.45),
+      color: index.isEven
+          ? AppColors.softLavender.withOpacity(.45)
+          : AppColors.softLavender.withOpacity(.62),
       child: Text(
         day,
         textAlign: TextAlign.center,
@@ -240,192 +251,345 @@ class LecturesView extends StatelessWidget {
     );
   }
 
- Widget _lectureCell(BuildContext context, LectureModel? lecture) {
-  if (lecture == null) {
-    return Container(
-      height: 82,
-      alignment: Alignment.center,
-      child: Text(
-        "—",
-        style: TextStyle(
-          color: Colors.grey.shade300,
-          fontSize: 18,
+  Widget _lectureCell(BuildContext context, LectureModel? lecture) {
+    if (lecture == null) {
+      return Container(
+        height: 82,
+        alignment: Alignment.center,
+        child: Text(
+          "—",
+          style: TextStyle(
+            color: Colors.grey.shade300,
+            fontSize: 18,
+          ),
+        ),
+      );
+    }
+
+    final color = lecture.isPractical ? Colors.orange : AppColors.darkPurple;
+
+    return InkWell(
+      onTap: () => _showLectureSheet(context, lecture),
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        height: 82,
+        padding: const EdgeInsets.all(8),
+        color: color.withOpacity(.09),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 18),
+                    child: Text(
+                      lecture.subjectName,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(.16),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.visibility_rounded,
+                        size: 11,
+                        color: color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              lecture.isPractical ? "عملي" : "نظري",
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  final color = lecture.isPractical
-      ? Colors.orange
-      : AppColors.darkPurple;
+void _showLectureSheet(BuildContext context, LectureModel lecture) {
+  final color = lecture.isPractical ? Colors.orange : AppColors.darkPurple;
 
-  return InkWell(
-    onTap: () => _showLectureSheet(context, lecture),
-    borderRadius: BorderRadius.circular(10),
-    child: Container(
-      height: 82,
-      padding: const EdgeInsets.all(8),
-      color: color.withOpacity(.06),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Stack(
-              clipBehavior: Clip.none,
+  Get.bottomSheet(
+    Container(
+      padding: const EdgeInsets.fromLTRB(22, 14, 22, 22),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 55,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.mauve.withOpacity(.45),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 18),
+
+            Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 18),
+                Icon(
+                  lecture.isPractical
+                      ? Icons.science_rounded
+                      : Icons.menu_book_rounded,
+                  color: color,
+                  size: 34,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
                   child: Text(
                     lecture.subjectName,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 12,
+                    style: const TextStyle(
+                      color: AppColors.darkPurple,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  top: -2,
-                  right: -2,
-                  child: Container(
-                    width: 18,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.visibility_rounded,
-                      size: 11,
-                      color: color,
                     ),
                   ),
                 ),
               ],
             ),
-          ),
 
-          const SizedBox(height: 6),
-
-          Text(
-            lecture.isPractical ? "عملي" : "نظري",
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-  void _showLectureSheet(BuildContext context, LectureModel lecture) {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(22),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(30),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 55,
-              height: 5,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
             const SizedBox(height: 18),
-            Icon(
-              lecture.isPractical
-                  ? Icons.science_rounded
-                  : Icons.menu_book_rounded,
-              color: lecture.isPractical ? Colors.orange : AppColors.darkPurple,
-              size: 45,
+
+            _lectureDetailLine(
+              icon: Icons.info_outline_rounded,
+              title: "النوع",
+              value: lecture.isPractical ? "عملي" : "نظري",
             ),
-            const SizedBox(height: 10),
-            Text(
-              lecture.subjectName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.darkPurple,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            _lectureDetailLine(
+              icon: Icons.person_rounded,
+              title: "الدكتور",
+              value: lecture.teacherName,
             ),
-            const SizedBox(height: 18),
-            _sheetRow(Icons.person_rounded, "الدكتور", lecture.teacherName),
-            _sheetRow(
-              Icons.access_time_rounded,
-              "الوقت",
-              "${_formatTime(lecture.fromHour)} - ${_formatTime(lecture.toHour)}",
+            _lectureDetailLine(
+              icon: Icons.access_time_rounded,
+              title: "الوقت",
+              value:
+                  "${_formatTime(lecture.fromHour)} - ${_formatTime(lecture.toHour)}",
             ),
-            _sheetRow(Icons.calendar_month_rounded, "اليوم", _arabicDay(lecture.day)),
-            _sheetRow(Icons.location_on_rounded, "المكان", lecture.labName),
-            _sheetRow(Icons.groups_rounded, "الفئة", lecture.groupNumber),
-            _sheetRow(Icons.account_tree_rounded, "الشعبة", lecture.branch),
-            _sheetRow(
-              Icons.info_outline_rounded,
-              "النوع",
-              lecture.isPractical ? "عملي" : "نظري",
+            _lectureDetailLine(
+              icon: Icons.calendar_month_rounded,
+              title: "اليوم",
+              value: _arabicDay(lecture.day),
+            ),
+            _lectureDetailLine(
+              icon: Icons.location_on_rounded,
+              title: "المكان",
+              value: lecture.labName,
+            ),
+            _lectureDetailLine(
+              icon: Icons.groups_rounded,
+              title: "الفئة",
+              value: lecture.groupNumber,
+            ),
+            _lectureDetailLine(
+              icon: Icons.account_tree_rounded,
+              title: "الشعبة",
+              value: lecture.branch,
+              isLast: true,
             ),
           ],
         ),
       ),
-      isScrollControlled: true,
-    );
-  }
+    ),
+    isScrollControlled: true,
+  );
+}
 
-  Widget _sheetRow(IconData icon, String label, String value) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(13),
-      decoration: BoxDecoration(
-        color: AppColors.softLavender.withOpacity(.55),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.darkPurple, size: 20),
-          const SizedBox(width: 10),
-          Text(
-            "$label: ",
-            style: const TextStyle(
+Widget _lectureDetailLine({
+  required IconData icon,
+  required String title,
+  required String value,
+  bool isLast = false,
+}) {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 13),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              icon,
               color: AppColors.darkPurple,
-              fontWeight: FontWeight.bold,
+              size: 22,
             ),
-          ),
-          Expanded(
-            child: Text(
-              value.isEmpty ? "غير محدد" : value,
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontSize: 13,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppColors.darkPurple,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    value.isEmpty ? "غير محدد" : value,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 14,
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
+      if (!isLast)
+        Divider(
+          color: Colors.grey.shade300,
+          thickness: 1,
+          height: 1,
+        ),
+    ],
+  );
+}
+
+
+Widget _miniInfoCard({
+  required IconData icon,
+  required String title,
+  required String value,
+  bool fullWidth = false,
+}) {
+  return Container(
+    width: fullWidth ? double.infinity : null,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: AppColors.softLavender.withOpacity(.65),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: AppColors.mauve.withOpacity(.22),
+      ),
+    ),
+    child: Row(
+      children: [
+        Icon(icon, color: AppColors.darkPurple, size: 20),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value.isEmpty ? "غير محدد" : value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppColors.darkPurple,
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _sheetRow(IconData icon, String label, String value) {
+  return Container(
+    margin: const EdgeInsets.only(bottom: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(
+        color: AppColors.mauve.withOpacity(.16),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.darkPurple.withOpacity(.05),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Row(
+      children: [
+        Icon(icon, color: AppColors.darkPurple, size: 20),
+        const SizedBox(width: 10),
+        Text(
+          "$label:",
+          style: const TextStyle(
+            color: AppColors.darkPurple,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value.isEmpty ? "غير محدد" : value,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   String _formatTime(String time) {
-    if (time.length >= 5) {
-      return time.substring(0, 5);
-    }
-    return time;
+    return time.length >= 5 ? time.substring(0, 5) : time;
   }
 
   String _arabicDay(String day) {

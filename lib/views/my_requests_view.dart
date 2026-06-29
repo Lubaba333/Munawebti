@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:studants/controllers/request_controller.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/views/exit_permission_view.dart';
+import 'package:studants/views/home_view.dart';
 import 'package:studants/views/room_exchange_view.dart';
 import 'package:studants/views/room_transfer_view.dart';
 import 'package:studants/views/specific_room_change_view.dart';
@@ -68,7 +69,9 @@ class _MyRequestsViewState extends State<MyRequestsView>
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Get.back(),
+           onPressed: () {
+  Get.offAll(() => const HomeView());
+},
           ),
           const SizedBox(width: 8),
           const Expanded(

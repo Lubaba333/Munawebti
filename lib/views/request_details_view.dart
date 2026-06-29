@@ -8,9 +8,7 @@ class RequestDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   final RequestController controller = Get.isRegistered<RequestController>()
-    ? Get.find<RequestController>()
-    : Get.put(RequestController());
+    final RequestController controller = Get.find<RequestController>();
 
     return Scaffold(
       body: Container(
@@ -22,7 +20,7 @@ class RequestDetailsView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
@@ -46,45 +44,71 @@ class RequestDetailsView extends StatelessWidget {
                         ? request['metadata'] as Map
                         : {};
 
+                    final items = <_DetailItem>[
+                      _DetailItem(
+                        icon: _typeIcon(request),
+                        title: "نوع الطلب",
+                        value: _typeText(request),
+                      ),
+                      _DetailItem(
+                        icon: Icons.title_rounded,
+                        title: "العنوان",
+                        value: request['title'],
+                      ),
+                      
+                      _DetailItem(
+                        icon: Icons.calendar_month_rounded,
+                        title: "تاريخ الإنشاء",
+                        value: _formatDate(request['created_at']),
+                      ),
+                      ..._sortedMetadata(metadata).map(
+                        (e) => _DetailItem(
+                          icon: _metadataIcon(e.key),
+                          title: _metadataLabel(e.key, request),
+                          value: _metadataValue(
+                            key: e.key,
+                            value: e.value,
+                            controller: controller,
+                          ),
+                        ),
+                      ),
+                      if (request['admin_response_reason'] != null)
+                        _DetailItem(
+                          icon: Icons.admin_panel_settings_outlined,
+                          title: "رد الإدارة",
+                          value: request['admin_response_reason'],
+                        ),
+                    ].where((e) {
+                      return e.value != null &&
+                          e.value.toString().trim().isNotEmpty;
+                    }).toList();
+
                     return SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _statusBox(request['status']),
-                          const SizedBox(height: 18),
-
-                          _sectionTitle("معلومات الطلب"),
-                          _detailCard(
-                            icon: _typeIcon(request),
-                            title: "نوع الطلب",
-                            value: _typeText(request),
-                          ),
-                          _detailCard(
-                            icon: Icons.title,
-                            title: "العنوان",
-                            value: request['title'],
-                          ),
-                          _detailCard(
-                            icon: Icons.calendar_month,
-                            title: "تاريخ الإنشاء",
-                            value: _formatDate(request['created_at']),
-                          ),
-
-                          if (metadata.isNotEmpty) ...[
-                            const SizedBox(height: 14),
-                            _sectionTitle("تفاصيل الطلب"),
-                            ..._sortedMetadata(metadata).map(
-                              (e) => _detailCard(
-                                icon: _metadataIcon(e.key),
-                                title: _metadataLabel(e.key, request),
-                                value: _metadataValue(
-                                  key: e.key,
-                                  value: e.value,
-                                  controller: controller,
-                                ),
-                              ),
+                          _statusHeader(request['status']),
+                          const SizedBox(height: 26),
+                          const Text(
+                            "تفاصيل الطلب",
+                            style: TextStyle(
+                              color: AppColors.darkPurple,
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
+                          ),
+                          const SizedBox(height: 10),
+                          ...items.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final item = entry.value;
+
+                            return _detailLine(
+                              icon: item.icon,
+                              title: item.title,
+                              value: item.value.toString(),
+                              isLast: index == items.length - 1,
+                            );
+                          }),
                         ],
                       ),
                     );
@@ -122,109 +146,127 @@ class RequestDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _statusBox(dynamic status) {
+  Widget _statusHeader(dynamic status) {
     final color = _statusColor(status?.toString());
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
-        color: color.withOpacity(.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(.35)),
+        gradient: LinearGradient(
+          colors: [
+            color.withOpacity(.95),
+            color.withOpacity(.62),
+          ],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(.22),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: color),
-          const SizedBox(width: 10),
-          const Text(
-            "حالة الطلب:",
-            style: TextStyle(
-              color: AppColors.black,
-              fontWeight: FontWeight.bold,
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.22),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.assignment_turned_in_rounded,
+              color: Colors.white,
+              size: 26,
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            _statusText(status),
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+          const SizedBox(width: 14),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "حالة الطلب",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _statusText(status),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12, right: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: AppColors.darkPurple,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _detailCard({
+  Widget _detailLine({
     required IconData icon,
     required String title,
-    required dynamic value,
+    required String value,
+    required bool isLast,
   }) {
-    if (value == null || value.toString().trim().isEmpty) {
-      return const SizedBox();
-    }
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColors.softLavender.withOpacity(.55),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.mauve.withOpacity(.22)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.white,
-            child: Icon(icon, color: AppColors.darkPurple, size: 21),
-          ),
-          const SizedBox(width: 13),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: AppColors.darkPurple,
+                size: 23,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: AppColors.darkPurple,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 14,
+                        height: 1.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  value.toString(),
-                  style: const TextStyle(
-                    color: AppColors.black,
-                    fontSize: 14.5,
-                    height: 1.4,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        if (!isLast)
+          Divider(
+            color: Colors.grey.shade300,
+            thickness: 1,
+            height: 1,
+          ),
+      ],
     );
   }
 
@@ -302,12 +344,12 @@ class RequestDetailsView extends StatelessWidget {
     final type = request['request_type']?.toString();
     final changeType = request['room_change_type']?.toString();
 
-    if (type == 'student_exit_permission') return Icons.exit_to_app;
-    if (changeType == 'specific_room') return Icons.meeting_room;
-    if (changeType == 'exchange') return Icons.swap_horiz;
-    if (changeType == 'any_available') return Icons.move_up;
+    if (type == 'student_exit_permission') return Icons.exit_to_app_rounded;
+    if (changeType == 'specific_room') return Icons.meeting_room_rounded;
+    if (changeType == 'exchange') return Icons.swap_horiz_rounded;
+    if (changeType == 'any_available') return Icons.move_up_rounded;
 
-    return Icons.description;
+    return Icons.description_rounded;
   }
 
   Color _statusColor(String? status) {
@@ -380,17 +422,17 @@ class RequestDetailsView extends StatelessWidget {
   IconData _metadataIcon(dynamic key) {
     switch (key.toString()) {
       case 'exit_date':
-        return Icons.event;
+        return Icons.event_rounded;
       case 'from_hour':
       case 'to_hour':
-        return Icons.access_time;
+        return Icons.access_time_rounded;
       case 'reason':
-        return Icons.notes;
+        return Icons.notes_rounded;
       case 'current_room_id':
-        return Icons.home;
+        return Icons.home_rounded;
       case 'requested_room_id':
       case 'target_room_id':
-        return Icons.meeting_room;
+        return Icons.meeting_room_rounded;
       case 'admin_response':
       case 'approval_reason':
       case 'rejection_reason':
@@ -398,7 +440,7 @@ class RequestDetailsView extends StatelessWidget {
       case 'notes':
         return Icons.admin_panel_settings_outlined;
       default:
-        return Icons.info_outline;
+        return Icons.info_outline_rounded;
     }
   }
 
@@ -411,4 +453,16 @@ class RequestDetailsView extends StatelessWidget {
       return date.toString();
     }
   }
+}
+
+class _DetailItem {
+  final IconData icon;
+  final String title;
+  final dynamic value;
+
+  _DetailItem({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
 }

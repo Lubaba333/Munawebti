@@ -44,17 +44,18 @@ var initialLoading = true.obs;
   }
 
   Future<void> _handleRequestSuccess(String message) async {
-    Get.snackbar(
-      "تم بنجاح",
-      message,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  Get.snackbar(
+    "تم بنجاح",
+    message,
+    backgroundColor: Colors.green,
+    colorText: Colors.white,
+    snackPosition: SnackPosition.BOTTOM,
+  );
 
-    requests.clear();
-    Get.offAll(() => const MyRequestsView());
-  }
+  await getMyRequests();
+
+  Get.off(() => const MyRequestsView());
+}
 
   Future<void> getCurrentStudentRoom() async {
     try {
@@ -373,99 +374,130 @@ Get.snackbar(
     }
   }
 
-  Future<void> approveExchangeRequest(int requestId) async {
-    try {
-      isSubmitting.value = true;
+Future<void> approveExchangeRequest(int requestId) async {
+  try {
+    isSubmitting.value = true;
 
-      await _apiService.post(
-        '/student/requests/$requestId/approve-exchange',
-        {},
-        authRequired: true,
-      );
+    await _apiService.post(
+      '/student/requests/$requestId/approve-exchange',
+      {},
+      authRequired: true,
+    );
 
-      Get.snackbar(
-        "تم بنجاح",
-        "تم قبول طلب التبديل",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+    final index = requests.indexWhere(
+      (r) => r['id'].toString() == requestId.toString(),
+    );
 
-      await getMyRequests();
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        e.toString().replaceAll('Exception:', ''),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isSubmitting.value = false;
+    if (index != -1) {
+      requests[index]['target_student_approved_at'] =
+          DateTime.now().toIso8601String();
+      requests[index]['target_student_rejection_reason'] = null;
+      requests.refresh();
     }
+
+    Get.snackbar(
+      "تم بنجاح",
+      "تم قبول الطلب وتحويله للإدارة",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+
+    await getMyRequests();
+  } catch (e) {
+    Get.snackbar(
+      "Error",
+      e.toString().replaceAll('Exception:', ''),
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  } finally {
+    isSubmitting.value = false;
   }
+}
 
-  Future<void> rejectExchangeRequest({
-    required int requestId,
-    required String reason,
-  }) async {
-    try {
-      isSubmitting.value = true;
+Future<void> rejectExchangeRequest({
+  required int requestId,
+  required String reason,
+}) async {
+  try {
+    isSubmitting.value = true;
 
-      await _apiService.post(
-        '/student/requests/$requestId/reject-exchange',
-        {
-          "reason": reason.trim().isEmpty ? "Rejected by student" : reason.trim(),
-        },
-        authRequired: true,
-      );
+    await _apiService.post(
+      '/student/requests/$requestId/reject-exchange',
+      {
+        "reason": reason.trim().isEmpty
+            ? "Rejected by student"
+            : reason.trim(),
+      },
+      authRequired: true,
+    );
 
-      Get.snackbar(
-        "تم بنجاح",
-        "تم رفض طلب التبديل",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+    final index = requests.indexWhere(
+      (r) => r['id'].toString() == requestId.toString(),
+    );
 
-      await getMyRequests();
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        e.toString().replaceAll('Exception:', ''),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isSubmitting.value = false;
+    if (index != -1) {
+      requests[index]['target_student_rejection_reason'] =
+          reason.trim().isEmpty
+              ? "Rejected by student"
+              : reason.trim();
+
+      requests[index]['target_student_approved_at'] = null;
+
+      requests.refresh();
     }
+
+    Get.snackbar(
+      "تم بنجاح",
+      "تم رفض الطلب",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+
+    await getMyRequests();
+  } catch (e) {
+    Get.snackbar(
+      "Error",
+      e.toString().replaceAll('Exception:', ''),
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  } finally {
+    isSubmitting.value = false;
   }
+}
 
-  Future<void> cancelRequest(int requestId) async {
-    try {
-      isLoading.value = true;
+Future<void> cancelRequest(int requestId) async {
+  try {
+    isLoading.value = true;
 
-      await _apiService.delete(
-        '/student/requests/$requestId',
-        authRequired: true,
-      );
+    await _apiService.post(
+      '/student/requests/$requestId/cancel',
+      {},
+      authRequired: true,
+    );
 
-      Get.snackbar(
-        "Success",
-        "Request cancelled successfully",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+    Get.snackbar(
+      "تم بنجاح",
+      "تم إلغاء الطلب بنجاح",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
 
-      await getMyRequests();
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        e.toString().replaceAll('Exception:', ''),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
+    await getMyRequests();
+  } catch (e) {
+    Get.snackbar(
+      "تعذر إلغاء الطلب",
+      e.toString().replaceAll('Exception:', ''),
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  } finally {
+    isLoading.value = false;
   }
+}
   var selectedRequest = Rxn<Map<String, dynamic>>();
 var isLoadingRequestDetails = false.obs;
 
@@ -478,15 +510,20 @@ Future<void> showRequestDetails(int requestId) async {
       authRequired: true,
     );
 
-    final data = response['data'];
+    print("📌 Request Details Response: $response");
 
-    if (data is Map<String, dynamic>) {
-      selectedRequest.value = data;
-    } else if (data is Map && data['request'] != null) {
-      selectedRequest.value = Map<String, dynamic>.from(data['request']);
+    dynamic data = response['data'];
+
+    if (data is Map && data['request'] is Map) {
+      data = data['request'];
     }
 
-    Get.to(() => const RequestDetailsView());
+    if (data is Map) {
+      selectedRequest.value = Map<String, dynamic>.from(data);
+      Get.to(() => const RequestDetailsView());
+    } else {
+      Get.snackbar("تنبيه", "لم يتم تحميل تفاصيل الطلب");
+    }
   } catch (e) {
     Get.snackbar(
       "Error",

@@ -75,7 +75,7 @@ class IncomingRequestsTab extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15.5),
                 ),
               ),
-              _statusChip(status),
+              _statusChip(request),
             ],
           ),
           const SizedBox(height: 10),
@@ -84,7 +84,10 @@ class IncomingRequestsTab extends StatelessWidget {
             style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
           ),
           const SizedBox(height: 14),
-          if (status == 'pending' && id != null)
+          if (status == 'pending' &&
+    request['target_student_approved_at'] == null &&
+    request['target_student_rejection_reason'] == null &&
+    id != null)
             Row(
               children: [
                 Expanded(
@@ -141,28 +144,39 @@ class IncomingRequestsTab extends StatelessWidget {
     );
   }
 
-  Widget _statusChip(String status) {
-    Color color = Colors.orange;
-    String text = "قيد الانتظار";
+Widget _statusChip(dynamic request) {
+  Color color = Colors.orange;
+  String text = "بانتظار ردك";
 
-    if (status == 'approved') {
-      color = Colors.green;
-      text = "مقبول";
-    } else if (status == 'rejected') {
-      color = Colors.red;
-      text = "مرفوض";
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withOpacity(.12),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
-      ),
-    );
+  if (request['target_student_approved_at'] != null &&
+      request['status'] == 'pending') {
+    color = Colors.blue;
+    text = "أنتِ وافقتِ وتم تحويل الطلب للإدارة";
+  } else if (request['target_student_rejection_reason'] != null) {
+    color = Colors.red;
+    text = "أنتِ رفضتِ الطلب وتم إلغاؤه";
+  } else if (request['status'] == 'approved') {
+    color = Colors.green;
+    text = "وافقت الإدارة";
+  } else if (request['status'] == 'rejected') {
+    color = Colors.red;
+    text = "رفضت الإدارة";
   }
+
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    decoration: BoxDecoration(
+      color: color.withOpacity(.12),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Text(
+      text,
+      style: TextStyle(
+        color: color,
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  );
+}
 }

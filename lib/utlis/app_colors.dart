@@ -16,10 +16,11 @@ class AppColors {
   
   // التدرج الرئيسي (مثل الصورة)
   static const LinearGradient mainGradient = LinearGradient(
-    colors: [
-      Color(0xFFF1E2EE),  // فاتح
-      Color(0xFFC28DBD),  // متوسط
-      Color(0xFF904B99),  // غامق
+    colors: [ Color.fromARGB(255, 153, 88, 162), 
+        // فاتح
+      Color(0xFFC28DBD),
+      Color(0xFFF1E2EE),  // متوسط
+      // غامق
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
