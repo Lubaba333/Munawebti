@@ -192,7 +192,7 @@ class _StudentCardState extends State<StudentCard> {
       child: InkWell(
 
 
-        splashColor: AppColors.primary.withOpacity(.15),
+       splashColor: AppColors.primary.withOpacity(.15),
 
         highlightColor: Colors.transparent,
 
@@ -249,25 +249,6 @@ class _StudentCardState extends State<StudentCard> {
           ),
 
 
-
-          decoration: BoxDecoration(
-
-
-            border: Border(
-
-              bottom: BorderSide(
-
-                color: Colors.grey.shade200,
-
-              ),
-
-            ),
-
-
-          ),
-
-
-
           child: Row(
 
 
@@ -289,7 +270,7 @@ class _StudentCardState extends State<StudentCard> {
                   shape:BoxShape.circle,
 
 
-                  color:AppColors.primary.withOpacity(.12),
+                 color:AppColors.primary.withOpacity(.12),
 
 
                 ),
@@ -498,69 +479,6 @@ class _StudentCardState extends State<StudentCard> {
 
 
 }
-
-
-
-  Widget _status(StudentModel student){
-
-
-    return Container(
-
-      padding:const EdgeInsets.symmetric(
-
-        horizontal:10,
-
-        vertical:5,
-
-      ),
-
-
-
-      decoration:BoxDecoration(
-
-        color: student.isResident
-
-            ? Colors.green.withOpacity(.15)
-
-            : Colors.orange.withOpacity(.15),
-
-
-        borderRadius:BorderRadius.circular(20),
-
-      ),
-
-
-
-      child:Text(
-
-        student.isResident
-
-            ? "مقيم"
-
-            : "غير مقيم",
-
-
-        style:TextStyle(
-
-          fontSize:12,
-
-          color:student.isResident
-
-              ? Colors.green
-
-              : Colors.orange,
-
-
-          fontWeight:FontWeight.bold,
-
-        ),
-
-      ),
-
-    );
-
-
-  }
 
 
 

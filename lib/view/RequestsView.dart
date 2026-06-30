@@ -18,7 +18,6 @@ class _RequestsViewState extends State<RequestsView> {
   @override
   void initState() {
     super.initState();
-    controller.fetchRequests();
   }
 
   @override
@@ -581,7 +580,6 @@ class _CreateRequestViewState extends State<CreateRequestView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
 
       appBar: AppBar(
         title: Text("Create Request"),
@@ -668,10 +666,25 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
         TextField(
           controller: leaveDate,
+          readOnly: true,
           decoration: InputDecoration(
             labelText: "Leave Date",
             border: OutlineInputBorder(),
+            suffixIcon: Icon(Icons.calendar_today),
           ),
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2035),
+            );
+
+            if (pickedDate != null) {
+              leaveDate.text =
+              "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+            }
+          },
         ),
 
         SizedBox(height: 10),
@@ -686,7 +699,6 @@ class _CreateRequestViewState extends State<CreateRequestView> {
       ],
     );
   }
-
   /// ================= SHIFT =================
   Widget _shiftForm() {
     return Column(
@@ -755,42 +767,30 @@ class _CreateRequestViewState extends State<CreateRequestView> {
         ),
 
         SizedBox(height: 10),
-
         TextField(
           controller: shiftDate,
+          readOnly: true, // يمنع الكتابة اليدوية
           decoration: InputDecoration(
             labelText: "Shift Date",
-            hintText: "2026-12-3",
+            hintText: "Select Date",
             border: OutlineInputBorder(),
+            suffixIcon: Icon(Icons.calendar_today),
           ),
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2035),
+            );
+
+            if (pickedDate != null) {
+              shiftDate.text =
+              "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+            }
+          },
         ),
-        //
-        // TextField(
-        //   controller: fromHour,
-        //   readOnly: true,
-        //   onTap: () async {
-        //     final time = await showTimePicker(
-        //       context: context,
-        //       initialTime: TimeOfDay.now(),
-        //     );
-        //
-        //     if (time != null) {
-        //       fromHour.text =
-        //       "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
-        //     }
-        //   },
-        // ),
-
         SizedBox(height: 10),
-
-        // TextField(
-        //   controller: fromHour,
-        //   decoration: InputDecoration(
-        //     labelText: "From Hour",
-        //     hintText: "12:00",
-        //     border: OutlineInputBorder(),
-        //   ),
-        // ),
 
 
         TextField(
@@ -815,14 +815,6 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
         SizedBox(height: 10),
 
-        // TextField(
-        //   controller: toHour,
-        //   decoration: InputDecoration(
-        //     labelText: "To Hour",
-        //     hintText: "02:30",
-        //     border: OutlineInputBorder(),
-        //   ),
-        // ),
 
         TextField(
           readOnly: true,
@@ -871,4 +863,3 @@ class _CreateRequestViewState extends State<CreateRequestView> {
     Get.back();
   }
 }
-

@@ -525,8 +525,25 @@ class _EmergencyViewState extends State<EmergencyView>{
 
   }
 
+  InputDecoration buildInputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(color:AppColors.primary ),
+      ),
+    );
+  }
 
-  // ✅ داخل الكلاس
+
+
+
   void _showCreateSheet(BuildContext context) {
     Get.bottomSheet(
       SingleChildScrollView(
@@ -545,121 +562,69 @@ class _EmergencyViewState extends State<EmergencyView>{
               children: [
                 TextField(
                   controller: controller.titleController,
-                  decoration: const InputDecoration(labelText: "Title"),
+                  decoration: buildInputDecoration("Title"),
                 ),
                 const SizedBox(height: 10),
 
                 TextField(
                   controller: controller.descriptionController,
-                  decoration: const InputDecoration(labelText: "Description"),
+                  decoration: buildInputDecoration("Description"),
                 ),
                 const SizedBox(height: 10),
 
-
                 TextField(
                   controller: controller.severityController,
-                  decoration: const InputDecoration(labelText: "severity"),
+                  decoration: buildInputDecoration("Severity"),
                 ),
                 const SizedBox(height: 10),
 
                 TextField(
                   controller: controller.caseTypeController,
-                  decoration: const InputDecoration(labelText: "case_type"),
+                  decoration: buildInputDecoration("Case Type"),
                 ),
                 const SizedBox(height: 10),
 
                 Obx(() {
                   if (controller.students.isEmpty) {
                     return const Center(
-                      child: Text(
-                          "Loading students..."
-                      ),
+                      child: Text("Loading students..."),
                     );
                   }
 
-
                   return DropdownButtonFormField<StudentModel>(
-
-
                     isExpanded: true,
-
-
-                    value:
-                    controller.selectedStudent.value,
-
-
-                    decoration:
-
-                    InputDecoration(
-
-                        labelText:
-                        "Select Student",
-
-
-                        border:
-                        OutlineInputBorder(
-
-                            borderRadius:
-                            BorderRadius.circular(15)
-
-                        )
-
-                    ),
-
-
-                    items:
-
-
-                    controller.students.map((student) {
+                    value: controller.selectedStudent.value,
+                    decoration: buildInputDecoration("Select Student"),
+                    items: controller.students.map((student) {
                       return DropdownMenuItem<StudentModel>(
-
-
-                        value:
-                        student,
-
-
-                        child:
-
-
-                        Text(
-
+                        value: student,
+                        child: Text(
                           "${student.fullName} - ${student.studentIdentifier}",
-
-                          overflow:
-                          TextOverflow.ellipsis,
-
+                          overflow: TextOverflow.ellipsis,
                         ),
-
-
                       );
                     }).toList(),
-
-
                     onChanged: (value) {
                       controller.selectedStudent.value = value;
-
-
-                      print(
-                          "Selected ${value!.fullName}"
-                      );
+                      print("Selected ${value!.fullName}");
                     },
-
-
                   );
-                }
+                }),
 
-                ),
                 const SizedBox(height: 20),
 
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                    ),
+                    onPressed: () {
+                      controller.createCase();
+                    },
+                    child: const Text("Send Emergency"),
                   ),
-                  onPressed: () {
-                    controller.createCase();
-                  },
-                  child: const Text("Send Emergency"),
-                )
+                ),
               ],
             ),
           ),
@@ -669,3 +634,773 @@ class _EmergencyViewState extends State<EmergencyView>{
     );
   }
 }
+
+
+
+
+
+
+
+
+
+//
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:supervisors/const/app_colors.dart';
+// import 'package:supervisors/controller/emergency_controller.dart';
+// import 'package:supervisors/models/StudentModel.dart';
+// import 'package:supervisors/view/emergency_details_view.dart';
+//
+// class EmergencyView extends StatefulWidget {
+//   const EmergencyView({super.key});
+//
+//   @override
+//   State<EmergencyView> createState() => _EmergencyViewState();
+// }
+//
+// class _EmergencyViewState extends State<EmergencyView> {
+//   final controller = Get.find<EmergencyController>();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     controller.fetchCases();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//         return Scaffold(
+//       appBar: AppBar(
+//
+//         title:
+//         const Text("Emergency Cases"),
+//
+//         backgroundColor:
+//         AppColors.primary,
+//
+//         centerTitle:true,
+//
+//       ),
+//
+//         body: SafeArea(
+//             child: Obx(() {
+//
+//               if (controller.isLoading.value) {
+//                 return const Center(
+//                   child: CircularProgressIndicator(),
+//                 );
+//               }
+//
+//               if (controller.cases.isEmpty) {
+//                 return Center(
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: [
+//                       Icon(
+//                         Icons.inbox_outlined,
+//                         size: 70,
+//                         color: Colors.grey,
+//                       ),
+//                       const SizedBox(height: 16),
+//                       const Text(
+//                         "No Emergency Cases",
+//                         style: TextStyle(
+//                           fontSize: 18,
+//                           fontWeight: FontWeight.w600,
+//                         ),
+//                       )
+//                     ],
+//                   ),
+//                 );
+//               }
+//
+//               return ListView(
+//                 padding: const EdgeInsets.all(6),
+//
+//                 children: [
+//
+//                 SizedBox(
+//                 width: double.infinity,
+//                 child:Container(
+//
+//                     width: double.infinity,
+//
+//                   padding: const EdgeInsets.symmetric(
+//                     horizontal: 8,
+//                     vertical: 12,
+//                   ),
+//
+//                     decoration: BoxDecoration(
+//
+//                       color: Colors.white,
+//
+//                       borderRadius: BorderRadius.circular(18),
+//
+//                       boxShadow: [
+//
+//                         BoxShadow(
+//
+//                           color: Colors.black.withOpacity(.05),
+//
+//                           blurRadius: 12,
+//
+//                           offset: const Offset(0, 4),
+//
+//                         )
+//
+//                       ],
+//
+//                     ),
+//
+//                     child: ListView.separated(
+//
+//                         shrinkWrap: true,
+//
+//                         physics: const NeverScrollableScrollPhysics(),
+//
+//                         itemCount: controller.cases.length,
+//
+//                         separatorBuilder: (_, __) => Divider(
+//                           height: 1,
+//                           color: Colors.grey.shade200,
+//                           indent: 70,
+//                           endIndent: 20,
+//                         ),
+//
+//                   itemBuilder: (context, index) {
+//
+//                     final item = controller.cases[index];
+//
+//                     return InkWell(
+//
+//                       onTap: () {
+//
+//                         Get.to(
+//                               () => EmergencyDetailsView(emergency: item),
+//                           transition: Transition.rightToLeftWithFade,
+//                         );
+//
+//                       },
+//
+//                       child: Container(
+//
+//                         padding: const EdgeInsets.symmetric(
+//                           horizontal: 18,
+//                           vertical: 16,
+//                         ),
+//
+//                         child: Row(
+//
+//                           children: [
+//
+//                             CircleAvatar(
+//
+//                               radius: 24,
+//
+//                               backgroundColor: Colors.red.shade50,
+//
+//                               child: const Icon(
+//                                 Icons.warning_amber_rounded,
+//                                 color: Colors.red,
+//                                 size: 28,
+//                               ),
+//
+//                             ),
+//
+//                             const SizedBox(width: 16),
+//
+//                             Expanded(
+//
+//                               child: Column(
+//
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//
+//                                 children: [
+//
+//                                   Row(
+//
+//                                     children: [
+//
+//                                       Expanded(
+//
+//                                         child: Text(
+//
+//                                           item.title,
+//
+//                                           style: const TextStyle(
+//
+//                                             fontSize: 18,
+//
+//                                             fontWeight: FontWeight.bold,
+//
+//                                           ),
+//
+//                                         ),
+//
+//                                       ),
+//
+//                                       _status(item.status),
+//
+//                                     ],
+//
+//                                   ),
+//
+//                                   const SizedBox(height: 6),
+//
+//                                   Text(
+//
+//                                     item.description,
+//
+//                                     maxLines: 2,
+//
+//                                     overflow: TextOverflow.ellipsis,
+//
+//                                     style: TextStyle(
+//
+//                                       color: Colors.grey,
+//
+//                                       fontSize: 14,
+//
+//                                     ),
+//
+//                                   ),
+//
+//                                   const SizedBox(height: 12),
+//
+//                                   Row(
+//
+//                                     children: [
+//
+//                                       Icon(
+//                                         Icons.person_outline,
+//                                         size: 18,
+//                                         color: Colors.grey.shade600,
+//                                       ),
+//
+//                                       const SizedBox(width: 6),
+//
+//                                       Expanded(
+//
+//                                         child: Text(
+//
+//                                           item.student.fullName,
+//
+//                                           style: const TextStyle(
+//                                             fontWeight: FontWeight.w600,
+//                                           ),
+//
+//                                         ),
+//
+//                                       ),
+//
+//                                       Text(
+//
+//                                         item.student.specialization,
+//
+//                                         style: TextStyle(
+//                                           color: Colors.grey.shade600,
+//                                           fontSize: 13,
+//                                         ),
+//
+//                                       ),
+//
+//                                     ],
+//
+//                                   ),
+//
+//                                 ],
+//
+//                               ),
+//
+//                             ),
+//
+//                             const SizedBox(width: 8),
+//
+//                             Icon(
+//                               Icons.chevron_right,
+//                               color: Colors.grey.shade400,
+//                             ),
+//
+//                           ],
+//
+//                         ),
+//
+//                       ),
+//
+//                     );
+//
+//                   }
+//               ),
+//
+//               ),
+//
+//                 ), ],
+//
+//               );
+//
+//             }),
+//
+//         ),
+//
+//       floatingActionButton: FloatingActionButton.extended(
+//
+//         elevation: 0,
+//
+//         backgroundColor: AppColors.primary,
+//
+//         foregroundColor: Colors.white,
+//
+//         icon: const Icon(Icons.add),
+//
+//         label: const Text(
+//
+//           "New Emergency",
+//
+//           style: TextStyle(
+//
+//             fontWeight: FontWeight.bold,
+//
+//           ),
+//
+//         ),
+//
+//         onPressed: () async {
+//
+//           await controller.fetchStudents();
+//
+//           _showCreateSheet(context);
+//
+//         },
+//
+//       ),
+//
+//     );
+//
+//   }
+//   Widget _status(String status) {
+//
+//     Color color;
+//     IconData icon;
+//
+//     switch (status.toLowerCase()) {
+//
+//       case "pending":
+//         color = Colors.orange;
+//         icon = Icons.schedule_rounded;
+//         break;
+//
+//       case "approved":
+//         color = Colors.green;
+//         icon = Icons.check_circle_rounded;
+//         break;
+//
+//       case "rejected":
+//         color = Colors.red;
+//         icon = Icons.cancel_rounded;
+//         break;
+//
+//       default:
+//         color = Colors.blueGrey;
+//         icon = Icons.info_outline_rounded;
+//     }
+//
+//     return Container(
+//
+//       padding: const EdgeInsets.symmetric(
+//         horizontal: 12,
+//         vertical: 7,
+//       ),
+//
+//       decoration: BoxDecoration(
+//
+//         color: color.withOpacity(.12),
+//
+//         borderRadius: BorderRadius.circular(30),
+//
+//       ),
+//
+//       child: Row(
+//
+//         mainAxisSize: MainAxisSize.min,
+//
+//         children: [
+//
+//           Icon(
+//             icon,
+//             size: 15,
+//             color: color,
+//           ),
+//
+//           const SizedBox(width: 5),
+//
+//           Text(
+//
+//             status,
+//
+//             style: TextStyle(
+//
+//               color: color,
+//
+//               fontSize: 12,
+//
+//               fontWeight: FontWeight.w700,
+//
+//             ),
+//
+//           ),
+//
+//         ],
+//
+//       ),
+//
+//     );
+//
+//   }
+//   void _showCreateSheet(BuildContext context) {
+//
+//     Get.bottomSheet(
+//
+//         SingleChildScrollView(
+//
+//             child: Padding(
+//
+//               padding: EdgeInsets.only(
+//
+//                 left: 20,
+//                 right: 20,
+//                 top: 20,
+//                 bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+//
+//               ),
+//
+//               child: Container(
+//
+//                 decoration: const BoxDecoration(
+//
+//                   color: Colors.white,
+//
+//                   borderRadius: BorderRadius.vertical(
+//
+//                     top: Radius.circular(30),
+//
+//                   ),
+//
+//                 ),
+//
+//                 child: Column(
+//
+//                   mainAxisSize: MainAxisSize.min,
+//
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//
+//                   children: [
+//
+//                 Center(
+//
+//                 child: Container(
+//
+//                 width: 55,
+//
+//                   height: 5,
+//
+//                   decoration: BoxDecoration(
+//
+//                     color: Colors.grey.shade300,
+//
+//                     borderRadius: BorderRadius.circular(20),
+//
+//                   ),
+//
+//                 ),
+//
+//               ),
+//
+//               const SizedBox(height: 25),
+//
+//               const Text(
+//
+//                 "Create Emergency",
+//
+//                 style: TextStyle(
+//
+//                   fontSize: 24,
+//
+//                   fontWeight: FontWeight.bold,
+//
+//                 ),
+//
+//               ),
+//
+//               const SizedBox(height: 25),
+//
+//               TextField(
+//
+//                 controller: controller.titleController,
+//
+//                 decoration: InputDecoration(
+//
+//                   labelText: "Title",
+//
+//                   prefixIcon: const Icon(Icons.title),
+//
+//                   filled: true,
+//
+//                   fillColor: Colors.grey.shade100,
+//
+//                   border: OutlineInputBorder(
+//
+//                     borderRadius: BorderRadius.circular(16),
+//
+//                     borderSide: BorderSide.none,
+//
+//                   ),
+//
+//                 ),
+//
+//               ),
+//
+//               const SizedBox(height: 16),
+//
+//               TextField(
+//
+//                 controller: controller.descriptionController,
+//
+//                 maxLines: 3,
+//
+//                 decoration: InputDecoration(
+//
+//                   labelText: "Description",
+//
+//                   alignLabelWithHint: true,
+//
+//                   // prefixIcon: const Padding(
+//                   //
+//                   //   padding: EdgeInsets.only(bottom: 60),
+//                   //
+//                   //   child: Icon(Icons.description_outlined),
+//                   //
+//                   // ),
+//
+//                   filled: true,
+//
+//                   fillColor: Colors.grey.shade100,
+//
+//                   border: OutlineInputBorder(
+//
+//                     borderRadius: BorderRadius.circular(16),
+//
+//                     borderSide: BorderSide.none,
+//
+//                   ),
+//
+//                 ),
+//
+//               ),
+//
+//               const SizedBox(height: 16),
+//
+//               Row(
+//
+//                 children: [
+//
+//                   Expanded(
+//
+//                     child: TextField(
+//
+//                       controller: controller.severityController,
+//
+//                       decoration: InputDecoration(
+//
+//                         labelText: "Severity",
+//
+//                         prefixIcon: const Icon(Icons.priority_high),
+//
+//                         filled: true,
+//
+//                         fillColor: Colors.grey.shade100,
+//
+//                         border: OutlineInputBorder(
+//
+//                           borderRadius: BorderRadius.circular(16),
+//
+//                           borderSide: BorderSide.none,
+//
+//                         ),
+//
+//                       ),
+//
+//                     ),
+//
+//                   ),
+//
+//                   const SizedBox(width: 12),
+//
+//                   Expanded(
+//
+//                     child: TextField(
+//
+//                       controller: controller.caseTypeController,
+//
+//                       decoration: InputDecoration(
+//
+//                         labelText: "Case Type",
+//
+//                         prefixIcon: const Icon(Icons.category),
+//
+//                         filled: true,
+//
+//                         fillColor: Colors.grey.shade100,
+//
+//                         border: OutlineInputBorder(
+//
+//                           borderRadius: BorderRadius.circular(16),
+//
+//                           borderSide: BorderSide.none,
+//
+//                         ),
+//
+//                       ),
+//
+//                     ),
+//
+//                   ),
+//
+//                 ],
+//
+//               ),
+//
+//               const SizedBox(height: 18),
+//                     Obx(() {
+//
+//                       if (controller.students.isEmpty) {
+//                         return Container(
+//                           padding: const EdgeInsets.all(16),
+//                           alignment: Alignment.center,
+//                           child: const CircularProgressIndicator(),
+//                         );
+//                       }
+//
+//                       return DropdownButtonFormField<StudentModel>(
+//
+//                         value: controller.selectedStudent.value,
+//
+//                         isExpanded: true,
+//
+//                         decoration: InputDecoration(
+//
+//                           labelText: "Student",
+//
+//                           prefixIcon: const Icon(Icons.school_outlined),
+//
+//                           filled: true,
+//
+//                           fillColor: Colors.grey.shade100,
+//
+//                           border: OutlineInputBorder(
+//
+//                             borderRadius: BorderRadius.circular(16),
+//
+//                             borderSide: BorderSide.none,
+//
+//                           ),
+//
+//                         ),
+//
+//                         items: controller.students.map((student) {
+//
+//                           return DropdownMenuItem<StudentModel>(
+//
+//                             value: student,
+//
+//                             child: Text(
+//                               "${student.fullName} • ${student.studentIdentifier}",
+//                               overflow: TextOverflow.ellipsis,
+//                             ),
+//
+//                           );
+//
+//                         }).toList(),
+//
+//                         onChanged: (student) {
+//
+//                           controller.selectedStudent.value = student;
+//
+//                         },
+//
+//                       );
+//
+//                     }),
+//
+//                     const SizedBox(height: 28),
+//
+//                     SizedBox(
+//
+//                       width: double.infinity,
+//
+//                       height: 55,
+//
+//                       child: ElevatedButton.icon(
+//
+//                         style: ElevatedButton.styleFrom(
+//
+//                           backgroundColor: AppColors.primary,
+//
+//                           foregroundColor: Colors.white,
+//
+//                           elevation: 0,
+//
+//                           shape: RoundedRectangleBorder(
+//
+//                             borderRadius: BorderRadius.circular(16),
+//
+//                           ),
+//
+//                         ),
+//
+//                         icon: const Icon(Icons.send_rounded),
+//
+//                         label: const Text(
+//
+//                           "Send Emergency",
+//
+//                           style: TextStyle(
+//
+//                             fontSize: 16,
+//
+//                             fontWeight: FontWeight.bold,
+//
+//                           ),
+//
+//                         ),
+//
+//                         onPressed: () {
+//
+//                           controller.createCase();
+//
+//                         },
+//
+//                       ),
+//
+//                     ),
+//
+//                     const SizedBox(height: 10),
+//
+//                   ],
+//
+//                 ),
+//
+//               ),
+//
+//             ),
+//
+//         ),
+//
+//       isScrollControlled: true,
+//
+//       backgroundColor: Colors.transparent,
+//
+//     );
+//
+//   }
+//
+// }

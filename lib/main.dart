@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:supervisors/controller/StudentsController.dart';
 import 'package:supervisors/controller/emergency_controller.dart';
 import 'package:supervisors/controller/request_controller.dart';
+import 'package:supervisors/services/api_service.dart';
 import 'package:supervisors/view/onboarding_view.dart';
 import 'controller/AuthController.dart';
 import 'controller/SettingsController.dart';
@@ -17,8 +18,8 @@ void main() async {
 
   await GetStorage.init();
 
-    Get.put(SettingsController());
-
+     Get.put(SettingsController());
+     Get.put(ApiService());
      Get.put(StudentsController());
      Get.put(EmergencyController());
      Get.put(RequestController());
