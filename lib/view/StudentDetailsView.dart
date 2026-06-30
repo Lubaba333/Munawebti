@@ -71,9 +71,6 @@ class StudentDetailsView extends StatelessWidget {
 
     return Scaffold(
 
-      backgroundColor:
-      AppColors.background,
-
       floatingActionButton:
       FloatingActionButton(
 

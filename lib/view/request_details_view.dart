@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/models/request_model.dart';
-
 
 class RequestDetailsView extends StatefulWidget {
   final RequestModel request;
@@ -13,14 +11,11 @@ class RequestDetailsView extends StatefulWidget {
   });
 
   @override
-  State<RequestDetailsView> createState() =>
-      _RequestDetailsViewState();
+  State<RequestDetailsView> createState() => _RequestDetailsViewState();
 }
 
-class _RequestDetailsViewState
-    extends State<RequestDetailsView>
+class _RequestDetailsViewState extends State<RequestDetailsView>
     with SingleTickerProviderStateMixin {
-
   late AnimationController animationController;
   late Animation<double> fade;
   late Animation<Offset> slide;
@@ -40,7 +35,7 @@ class _RequestDetailsViewState
     );
 
     slide = Tween<Offset>(
-      begin: const Offset(0, 0.05),
+      begin: const Offset(0, .05),
       end: Offset.zero,
     ).animate(fade);
 
@@ -58,113 +53,93 @@ class _RequestDetailsViewState
     final request = widget.request;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-
       appBar: AppBar(
-        title: const Text("Request Details"),
-        backgroundColor: AppColors.primary,
         elevation: 0,
+        backgroundColor: AppColors.primary,
+        title: const Text("Request Details"),
       ),
-
       body: FadeTransition(
         opacity: fade,
         child: SlideTransition(
           position: slide,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 22,
+              vertical: 20,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                /// ================= TITLE =================
+                /// TITLE
                 Text(
                   request.title,
                   style: const TextStyle(
-                    fontSize: 26,
+                    fontSize: 23,
                     fontWeight: FontWeight.bold,
                     height: 1.2,
                   ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
 
-                /// STATUS BADGE (modern pill)
                 _statusBadge(request.status),
 
                 const SizedBox(height: 30),
 
-                /// ================= DESCRIPTION =================
+                Divider(color: Colors.grey.shade300),
+
+                const SizedBox(height: 20),
+
+                /// DESCRIPTION
                 _sectionHeader("Description"),
-                const SizedBox(height: 8),
 
                 Text(
                   request.description,
+                  textAlign: TextAlign.justify,
                   style: TextStyle(
-                    fontSize: 16,
-                    height: 1.6,
+                    fontSize: 14,
+                    height: 1.8,
                     color: Colors.grey.shade800,
                   ),
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-                /// ================= INFO =================
-                _sectionHeader("Request Info"),
-                const SizedBox(height: 12),
+                Divider(color: Colors.grey.shade300),
 
-                _plainRow("Type", request.type),
-                const Divider(height: 25),
+                  const SizedBox(height: 20),
 
-                _plainRow(
-                  "Created",
-                  request.createdAt ?? "-",
-                ),
+                  _sectionHeader("Additional Information"),
 
-                const SizedBox(height: 30),
+                  ...request.metadata.entries.map(
+                        (entry) => _infoRow(
+                      Icons.info_outline,
+                      entry.key,
+                      entry.value.toString(),
+                    ),
+                  ),
 
-                /// ================= METADATA =================
-                _sectionHeader("Additional Data"),
-                const SizedBox(height: 12),
+                if (request.adminResponseReason != null &&
+                    request.adminResponseReason!.isNotEmpty) ...[
+                  const SizedBox(height: 30),
 
-                ...request.metadata.entries.map((e) {
-                  return Column(
-                    children: [
-                      _plainRow(
-                        e.key,
-                        e.value.toString(),
-                      ),
-                      const Divider(height: 25),
-                    ],
-                  );
-                }),
+                  Divider(color: Colors.grey.shade300),
 
-                /// ================= ADMIN RESPONSE =================
-                if (request.adminResponseReason != null) ...[
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 25),
 
                   _sectionHeader("Admin Response"),
-                  const SizedBox(height: 10),
 
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                      ),
-                    ),
-                    child: Text(
-                      request.adminResponseReason!,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey.shade800,
-                        height: 1.5,
-                      ),
+                  Text(
+                    request.adminResponseReason!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.8,
+                      color: Colors.grey.shade800,
                     ),
                   ),
                 ],
+
+                const SizedBox(height: 40),
               ],
             ),
           ),
@@ -173,43 +148,25 @@ class _RequestDetailsViewState
     );
   }
 
-  /// ================= HEADER =================
-  Widget _sectionHeader(String text) {
-    return Text(
-      text.toUpperCase(),
-      style: TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.bold,
-        color: Colors.grey.shade600,
-        letterSpacing: 1.2,
-      ),
-    );
-  }
-
-  /// ================= SIMPLE ROW =================
-  Widget _plainRow(String title, String value) {
+  Widget _sectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.only(bottom: 18),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 110,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+          Container(
+            width: 4,
+            height: 20,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -217,39 +174,88 @@ class _RequestDetailsViewState
     );
   }
 
-  /// ================= STATUS BADGE =================
+  Widget _infoRow(
+      IconData icon,
+      String title,
+      String value,
+      ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 22,
+            color: AppColors.primary,
+          ),
+
+          const SizedBox(width: 15),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _statusBadge(String status) {
     Color color;
+    IconData icon;
 
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "approved":
         color = Colors.green;
+        icon = Icons.check_circle;
         break;
+
       case "rejected":
         color = Colors.red;
+        icon = Icons.cancel;
         break;
+
       default:
         color = Colors.orange;
+        icon = Icons.access_time_filled;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: color),
-      ),
-      child: Text(
-        status.toUpperCase(),
-        style: TextStyle(
+    return Row(
+      children: [
+        Icon(
+          icon,
           color: color,
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
+          size: 20,
         ),
-      ),
+        const SizedBox(width: 8),
+        Text(
+          status.toUpperCase(),
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      ],
     );
   }
 }

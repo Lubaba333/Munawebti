@@ -42,8 +42,6 @@ class _EmergencyViewState extends State<EmergencyView>{
 
 
     return Scaffold(
-
-
       appBar: AppBar(
 
         title:

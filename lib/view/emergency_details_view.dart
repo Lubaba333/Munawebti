@@ -21,7 +21,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
     return Scaffold(
 
-      backgroundColor: const Color(0xffF5F6FA),
+      // backgroundColor: const Color(0xffF5F6FA),
 
 
       appBar: AppBar(
@@ -36,21 +36,15 @@ class EmergencyDetailsView extends StatelessWidget {
 
       ),
 
-
-
       body: SingleChildScrollView(
 
-
         padding: const EdgeInsets.all(18),
-
 
         child: Column(
 
           crossAxisAlignment: CrossAxisAlignment.start,
 
-
           children: [
-
 
 
             _header(),
@@ -84,21 +78,27 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   "Email",
-                  emergency.student.email ?? "-",
+                  emergency.student.email.isNotEmpty
+                      ? emergency.student.email
+                      : "-",
                 ),
 
 
 
                 _item(
                   "Phone",
-                  emergency.student.phoneNumber ?? "-",
+                  emergency.student.phoneNumber.isNotEmpty
+                      ? emergency.student.phoneNumber
+                      : "-",
                 ),
 
 
 
                 _item(
                   "Specialization",
-                  emergency.student.specialization ?? "-",
+                  emergency.student.specialization.isNotEmpty
+                      ? emergency.student.specialization
+                      : "-",
                 ),
 
 
@@ -111,15 +111,8 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
-                  "Average",
-                  emergency.student.annualAverage.toString(),
-                ),
-
-
-
-                _item(
                   "Resident",
-                  emergency.student.isResident == true
+                  emergency.student.isResident
                       ? "Yes"
                       : "No",
                 ),
@@ -131,54 +124,6 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
 
-            const SizedBox(height:20),
-
-
-
-            _section(
-
-              title:"Supervisor Information",
-
-              icon:Icons.badge,
-
-
-              children:[
-
-
-                _item(
-                  "Name",
-                  emergency.supervisor.fullName,
-                ),
-
-
-
-                _item(
-                  "Email",
-                  emergency.supervisor.email ?? "-",
-                ),
-
-
-
-                _item(
-                  "Specialization",
-                  emergency.supervisor.specialization ?? "-",
-                ),
-
-
-
-                _item(
-                  "Identifier",
-                  emergency.supervisor.supervisorIdentifier ?? "-",
-                ),
-
-
-
-              ],
-
-            ),
-
-
-
 
             const SizedBox(height:20),
 
@@ -187,7 +132,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
             _section(
 
-              title:"Request Tracking",
+              title:"Emergency Status",
 
               icon:Icons.timeline,
 
@@ -203,35 +148,17 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
 
-                _item(
-                  "Created",
-                  emergency.createdAt,
-                ),
-
-
-
-                _item(
-                  "Updated",
-                  emergency.updatedAt ?? "-",
-                ),
-
-
               ],
 
 
             )
 
 
-
           ],
-
 
         ),
 
-
       ),
-
-
     );
 
   }

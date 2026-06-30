@@ -18,13 +18,12 @@ class _RequestsViewState extends State<RequestsView> {
   @override
   void initState() {
     super.initState();
-    controller.fetchRequests(); // 🔥 كل مرة تفتح الصفحة
+    controller.fetchRequests();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
 
       appBar: AppBar(
         title: Text("My Requests"),

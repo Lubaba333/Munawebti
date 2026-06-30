@@ -14,8 +14,6 @@ class ComplaintsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF6F7FB),
-
       appBar: AppBar(
         title: const Text("Complaints"),
         backgroundColor: AppColors.primary,
@@ -109,21 +107,42 @@ class _ComplaintTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // TITLE + STATUS
+            // TITLE
             Row(
               children: [
-                Expanded(
-                  child: Text(
-                    item.title,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  item.title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
 
+
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // DESCRIPTION
+            Text(
+              item.description,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade600,
+                height: 1.3,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // FOOTER + STATUS
+            Row(
+              children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -136,53 +155,17 @@ class _ComplaintTile extends StatelessWidget {
                   child: Text(
                     item.status.toUpperCase(),
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: color,
                     ),
                   ),
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 8),
-
-            // DESCRIPTION
-            Text(
-              item.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade600,
-                height: 1.3,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            // FOOTER
-            Row(
-              children: [
-                const Icon(Icons.person_outline,
-                    size: 16, color: Colors.grey),
-
-                const SizedBox(width: 6),
-
-                Expanded(
-                  child: Text(
-                    item.creator.fullName,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ),
-
+                const Spacer(),
                 Text(
                   item.createdAt.substring(0, 10),
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 13,
                     color: Colors.grey.shade500,
                   ),
                 ),

@@ -313,57 +313,7 @@ class StudentHistoryTab extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // /// REPORTS
-          // _sectionTitle(
-          //   "التقارير",
-          //   Icons.article,
-          //   Colors.blue,
-          // ),
-          //
-          // ...reportsController.reports.map(
-          //       (report) => _historyCard(
-          //         icon: Icons.article,
-          //         color: Colors.blue,
-          //
-          //         title: "تقرير",
-          //
-          //         subtitle: report.notes,
-          //
-          //         date: report.createdAt
-          //             .split('T')
-          //             .first,
-          //
-          //         onTap: () {
-          //
-          //           Get.to(
-          //                 () => ReportDetailsView(),
-          //             arguments:
-          //             report.id,
-          //           );
-          //         },
-          //
-          //         onDelete: (){
-          //
-          //           reportsController.deleteReport(
-          //             report.id,
-          //           );
-          //
-          //         },
-          //
-          //
-          //         onEdit: (){
-          //           Get.to(
-          //
-          //                 ()=>EditReportView(
-          //
-          //               report: report,
-          //
-          //             ),
-          //
-          //           );
-          //
-          //         },
-          //       ), ),
+          //// REPORTS
 
           StudentRecordSection(
 
@@ -571,11 +521,6 @@ class StudentHistoryTab extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
 
-            //   child: Icon(
-            //     icon,
-            //     color: color,
-            //   ),
-            // ),
                 child:  Icon(
                   Icons.arrow_forward_ios_rounded,
                   size:18,

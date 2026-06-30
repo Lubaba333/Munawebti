@@ -12,10 +12,10 @@ class StudentsView extends GetView<StudentsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppColors.background,
 
       backgroundColor:
       Theme.of(context).scaffoldBackgroundColor,
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: () {
@@ -36,7 +36,7 @@ class StudentsView extends GetView<StudentsController> {
 
               const SizedBox(height: 16),
 
-              /// Filters (مبسطة حسب الباك)
+              /// Filters
               SizedBox(
                 height: 40,
                 child: ListView(
@@ -117,132 +117,480 @@ class StudentsView extends GetView<StudentsController> {
 }
 
 
-class StudentCard extends StatelessWidget {
-final StudentModel student;
-final VoidCallback onTap;
+class StudentCard extends StatefulWidget {
 
-const StudentCard({
-super.key,
-required this.student,
-required this.onTap,
-});
+  final StudentModel student;
+  final VoidCallback onTap;
 
-@override
-Widget build(BuildContext context) {
-return InkWell(
-borderRadius: BorderRadius.circular(22),
-onTap: onTap,
-child: Container(
-margin: const EdgeInsets.only(bottom: 14),
-padding: const EdgeInsets.all(16),
-decoration: BoxDecoration(
-color: AppColors.white,
-borderRadius: BorderRadius.circular(22),
-boxShadow: [
-BoxShadow(
-color: Colors.black.withOpacity(0.05),
-blurRadius: 12,
-offset: const Offset(0, 4),
-),
-],
-),
-child: Row(
-children: [
-/// Avatar
-Container(
-width: 58,
-height: 58,
-decoration: BoxDecoration(
-color: AppColors.light,
-shape: BoxShape.circle,
-),
-child: const Icon(Icons.person, size: 30),
-),
 
-const SizedBox(width: 14),
+  const StudentCard({
 
-/// INFO
-Expanded(
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Text(
-student.fullName,
-style: const TextStyle(
-fontSize: 16,
-fontWeight: FontWeight.w700,
-),
-),
+    super.key,
 
-const SizedBox(height: 4),
+    required this.student,
 
-Text(student.studentIdentifier),
+    required this.onTap,
 
-const SizedBox(height: 2),
+  });
 
-Text(student.specialization),
 
-const SizedBox(height: 2),
+  @override
+  State<StudentCard> createState() => _StudentCardState();
 
-Text('السنة: ${student.year}'),
-],
-),
-),
-
-_statusWidget(student),
-],
-),
-),
-);
 }
 
-Widget _statusWidget(StudentModel student) {
-if (!student.isResident) {
-return _badge('غير مقيم', Colors.orange);
+
+
+
+class _StudentCardState extends State<StudentCard> {
+
+
+  bool pressed = false;
+
+
+
+  void _changePressed(bool value){
+
+    if(mounted){
+
+      setState(() {
+
+        pressed = value;
+
+      });
+
+    }
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    final student = widget.student;
+
+
+
+    return AnimatedContainer(
+
+      duration: const Duration(milliseconds:150),
+
+
+      curve: Curves.easeOut,
+
+
+      color: pressed
+
+          ? AppColors.primary.withOpacity(0.12)
+
+          : Colors.white,
+
+
+
+      child: InkWell(
+
+
+        splashColor: AppColors.primary.withOpacity(.15),
+
+        highlightColor: Colors.transparent,
+
+        onTapDown: (_) {
+
+
+          _changePressed(true);
+
+
+        },
+
+
+        onTapCancel: (){
+
+
+          _changePressed(false);
+
+
+        },
+
+
+        onTapUp: (_) async {
+
+
+          _changePressed(true);
+
+
+
+          await Future.delayed(
+              const Duration(milliseconds:120)
+          );
+
+
+          _changePressed(false);
+
+
+
+          widget.onTap();
+
+
+        },
+
+
+
+        child: Container(
+
+
+          padding: const EdgeInsets.symmetric(
+
+            horizontal:16,
+
+            vertical:12,
+
+          ),
+
+
+
+          decoration: BoxDecoration(
+
+
+            border: Border(
+
+              bottom: BorderSide(
+
+                color: Colors.grey.shade200,
+
+              ),
+
+            ),
+
+
+          ),
+
+
+
+          child: Row(
+
+
+            children: [
+
+
+
+              Container(
+
+
+                width:52,
+
+                height:52,
+
+
+                decoration:BoxDecoration(
+
+
+                  shape:BoxShape.circle,
+
+
+                  color:AppColors.primary.withOpacity(.12),
+
+
+                ),
+
+
+
+                child:Icon(
+
+                  Icons.person,
+
+                  color:AppColors.primary,
+
+                ),
+
+
+              ),
+
+
+
+
+              const SizedBox(width:14),
+
+
+
+
+              Expanded(
+
+
+                child:Column(
+
+
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
+
+                  children:[
+
+
+
+                    Text(
+
+                      student.fullName,
+
+
+                      style:const TextStyle(
+
+                        fontSize:16,
+
+                        fontWeight:FontWeight.w600,
+
+                      ),
+
+                    ),
+
+
+                    const SizedBox(height:3),
+
+
+
+
+                    Text(
+
+                      student.specialization,
+
+
+                      style:TextStyle(
+
+                        fontSize:13,
+
+                        color:Colors.grey.shade600,
+
+                      ),
+
+                    ),
+
+
+
+                  ],
+
+
+                ),
+
+
+              ),
+
+
+
+
+
+              _status(student),
+
+
+
+              const SizedBox(width:10),
+
+
+
+
+              Icon(
+
+                Icons.arrow_forward_ios,
+
+                size:15,
+
+                color:Colors.grey.shade500,
+
+              )
+
+
+
+            ],
+
+
+          ),
+
+
+        ),
+
+
+      ),
+
+
+    );
+
+
+  }
+
+
+
+
+
+  Widget _status(StudentModel student){
+
+
+    return Container(
+
+
+      padding:const EdgeInsets.symmetric(
+
+        horizontal:10,
+
+        vertical:5,
+
+      ),
+
+
+
+
+      decoration:BoxDecoration(
+
+
+        color: student.isResident
+
+
+            ? Colors.green.withOpacity(.15)
+
+            : Colors.orange.withOpacity(.15),
+
+
+
+        borderRadius:BorderRadius.circular(20),
+
+
+      ),
+
+
+
+
+      child:Text(
+
+
+        student.isResident
+
+            ? "مقيم"
+
+            : "غير مقيم",
+
+
+
+        style:TextStyle(
+
+
+          fontSize:12,
+
+
+          color: student.isResident
+
+              ? Colors.green
+
+              : Colors.orange,
+
+
+          fontWeight:FontWeight.bold,
+
+
+        ),
+
+
+      ),
+
+
+    );
+
+
+  }
+
+
 }
 
-return _badge('مقيم', Colors.green);
-}
 
-Widget _badge(String text, Color color) {
-return Container(
-padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-decoration: BoxDecoration(
-color: color.withOpacity(0.15),
-borderRadius: BorderRadius.circular(12),
-),
-child: Text(text),
-);
-}
-}
+
+  Widget _status(StudentModel student){
+
+
+    return Container(
+
+      padding:const EdgeInsets.symmetric(
+
+        horizontal:10,
+
+        vertical:5,
+
+      ),
+
+
+
+      decoration:BoxDecoration(
+
+        color: student.isResident
+
+            ? Colors.green.withOpacity(.15)
+
+            : Colors.orange.withOpacity(.15),
+
+
+        borderRadius:BorderRadius.circular(20),
+
+      ),
+
+
+
+      child:Text(
+
+        student.isResident
+
+            ? "مقيم"
+
+            : "غير مقيم",
+
+
+        style:TextStyle(
+
+          fontSize:12,
+
+          color:student.isResident
+
+              ? Colors.green
+
+              : Colors.orange,
+
+
+          fontWeight:FontWeight.bold,
+
+        ),
+
+      ),
+
+    );
+
+
+  }
+
 
 
 class StudentsSearchBar extends StatelessWidget {
-final TextEditingController controller;
-final Function(String) onChanged;
+    final TextEditingController controller;
+    final Function(String) onChanged;
 
-const StudentsSearchBar({
-super.key,
-required this.controller,
-required this.onChanged,
-});
+  const StudentsSearchBar({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+      }
+    );
 
-@override
-Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
 return TextField(
-controller: controller,
-onChanged: onChanged,
-decoration: InputDecoration(
-hintText: 'ابحث عن طالب...',
-prefixIcon: const Icon(Icons.search),
-filled: true,
-fillColor: AppColors.white,
-contentPadding: const EdgeInsets.symmetric(vertical: 16),
-border: OutlineInputBorder(
-borderRadius: BorderRadius.circular(18),
-borderSide: BorderSide.none,
-),
-),
-);
-}
-}
+    controller: controller,
+    onChanged: onChanged,
+    decoration: InputDecoration(
+    hintText: 'ابحث عن طالب...',
+    prefixIcon: const Icon(Icons.search),
+    filled: true,
+    fillColor: AppColors.white,
+       contentPadding: const EdgeInsets.symmetric(vertical: 16),
+         border: OutlineInputBorder(
+         borderRadius: BorderRadius.circular(18),
+         borderSide: BorderSide.none,
+         ),
+       ),
+      );
+       }
+    }

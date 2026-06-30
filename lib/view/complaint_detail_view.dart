@@ -35,7 +35,6 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
     final color = statusColor(c.status);
 
     return Scaffold(
-      backgroundColor: const Color(0xffF4F6FB),
 
       body: CustomScrollView(
         slivers: [
@@ -100,21 +99,21 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
                             c.title,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
 
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 6),
+                              horizontal: 35, vertical: 7),
                           decoration: BoxDecoration(
                             color: color.withOpacity(.25),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: Colors.white24),
                           ),
                           child: Text(
@@ -134,9 +133,11 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
           ),
 
           // ================= BODY =================
+
+
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -144,12 +145,8 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
                   _sectionTitle("الوصف"),
                   _animatedBlock(_textBlock(Icons.description, c.description)),
 
-                  const SizedBox(height: 25),
 
-                  _sectionTitle("معلومات المنشئ"),
-                  _animatedBlock(_creator(c)),
-
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 40),
 
                   _sectionTitle("رد الإدارة"),
                   _animatedBlock(
@@ -223,40 +220,6 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
           ),
         ),
       ],
-    );
-  }
-
-  // ================= CREATOR BLOCK =================
-
-  Widget _creator(HousingComplaint c) {
-    return Column(
-      children: [
-        _line(Icons.person, "الاسم", c.creator.fullName),
-        _line(Icons.email, "الايميل", c.creator.email),
-        _line(Icons.school, "الاختصاص", c.creator.specialization),
-      ],
-    );
-  }
-
-  Widget _line(IconData icon, String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: AppColors.primary),
-          const SizedBox(width: 10),
-          Text(
-            "$title: ",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.grey.shade700),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
