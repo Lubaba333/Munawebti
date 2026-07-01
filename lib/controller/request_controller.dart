@@ -16,12 +16,14 @@ class RequestController extends GetxController {
 
   int currentUserId = 0;
 
+
   @override
   void onInit() {
     print("Controller ready only");
     fetchRequests();
     fetchSupervisors();
     super.onInit();
+
   }
 
   Future<void> fetchSupervisors() async {
@@ -76,7 +78,7 @@ class RequestController extends GetxController {
       }
     });
 
-    fetchRequests();
+    await fetchRequests();
   }
 
   Future<void> createShiftExchange({
@@ -99,7 +101,7 @@ class RequestController extends GetxController {
         "requested_to_hour": toHour,
       }
     });
-    fetchRequests();
+    await fetchRequests();
   }
 
   Future<void> cancelRequest(int id) async {
@@ -146,5 +148,5 @@ class RequestController extends GetxController {
 
 
     return null;
-  }
+   }
 }

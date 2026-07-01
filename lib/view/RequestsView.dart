@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/request_controller.dart';
+import 'package:supervisors/controller/supervisor_shift_controller.dart';
+import 'package:supervisors/models/supervisor_shift_model.dart';
 import 'package:supervisors/view/request_details_view.dart';
 
 class RequestsView extends StatefulWidget {
@@ -14,6 +16,7 @@ class RequestsView extends StatefulWidget {
 
 class _RequestsViewState extends State<RequestsView> {
   final controller = Get.find<RequestController>();
+
 
   @override
   void initState() {
@@ -553,9 +556,13 @@ class CreateRequestView extends StatefulWidget {
 
   @override
   State<CreateRequestView> createState() => _CreateRequestViewState();
-}
+  }
+
 
 class _CreateRequestViewState extends State<CreateRequestView> {
+
+  final shiftsController = Get.find<SupervisorShiftsController>();
+
   final controller = Get.find<RequestController>();
 
   final RxString selectedType = "supervisor_leave".obs;
@@ -576,6 +583,10 @@ class _CreateRequestViewState extends State<CreateRequestView> {
   final toHour = TextEditingController();
 
   final shiftDescription = TextEditingController();
+
+  ShiftType? selectedShiftType;
+
+  SupervisorShift? selectedShift;
 
   @override
   Widget build(BuildContext context) {
@@ -621,11 +632,25 @@ class _CreateRequestViewState extends State<CreateRequestView> {
             SizedBox(height: 15),
 
             /// DYNAMIC FORM
-            Obx(() {
-              return selectedType.value == "supervisor_leave"
-                  ? _leaveForm()
-                  : _shiftForm();
-            }),
+            // Obx(() {
+            //   return selectedType.value == "supervisor_leave"
+            //       ? _leaveForm()
+            //       : _shiftForm();
+            // }),
+
+                Obx(() {
+
+                  if(selectedType.value == "supervisor_leave"){
+
+                    return _leaveForm();
+
+                  }else{
+
+                    return _shiftForm();
+
+                  }
+
+                }),
 
             SizedBox(height: 15),
 
@@ -700,6 +725,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
     );
   }
   /// ================= SHIFT =================
+
   Widget _shiftForm() {
     return Column(
       children: [
@@ -725,6 +751,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
             items: controller.supervisors
                 .where((sup) => sup.id != controller.currentUserId)
                 .map((sup) {
+            // items: controller.supervisors.map((sup) {
               return DropdownMenuItem<int>(
                 value: sup.id,
                 child: Text("${sup.fullName} (${sup.specialization})"),
@@ -755,85 +782,212 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
         SizedBox(height: 10),
 
-        TextField(
-          keyboardType: TextInputType.number,
+/////////////////////////////////////////
+        DropdownButtonFormField<ShiftType>(
+
+          value: selectedShiftType,
+
+
           decoration: InputDecoration(
-            labelText: "Original Shift ID",
-            border: OutlineInputBorder(),
+
+            labelText: "Shift Type",
+
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
           ),
-          onChanged: (value) {
-            selectedShiftId = int.tryParse(value);
+
+
+
+          items: const [
+
+
+            DropdownMenuItem(
+
+              value: ShiftType.lecture,
+
+              child: Text("Lecture"),
+
+            ),
+
+
+
+            DropdownMenuItem(
+
+              value: ShiftType.housing,
+
+              child: Text("Housing"),
+
+            ),
+
+
+          ],
+
+
+
+          onChanged: (value){
+
+            setState((){
+
+              selectedShiftType = value;
+
+              selectedShift = null;
+
+
+              shiftDate.clear();
+
+              fromHour.clear();
+
+              toHour.clear();
+
+            });
+
+
+            shiftsController.changeType(value!);
+
           },
+
         ),
+        //////////////////////////////////////////
+        SizedBox(height: 10),
+
+    Obx((){
+
+
+    final shifts =
+    shiftsController.shifts
+        .expand((day)=>day.shifts)
+        .toList();
+
+
+
+    return DropdownButtonFormField<SupervisorShift>(
+
+
+    value:selectedShift,
+
+
+    decoration: InputDecoration(
+
+    labelText:"Select Shift",
+
+    border:OutlineInputBorder(
+
+    borderRadius:BorderRadius.circular(12),
+
+    ),
+
+    ),
+
+
+
+    items: shifts.map((shift){
+
+
+    return DropdownMenuItem<SupervisorShift>(
+
+
+    value:shift,
+
+
+    child:Text(
+
+    "${shift.shiftDate.substring(0,10)} "
+    "${shift.startTime} - ${shift.endTime}",
+
+    ),
+
+
+    );
+
+
+    }).toList(),
+
+
+
+      onChanged:(value){
+
+        if(value == null) return;
+
+
+        setState((){
+
+          selectedShift = value;
+
+
+          shiftDate.text =
+              value.shiftDate.substring(0,10);
+
+
+          fromHour.text =
+              value.startTime.substring(0,5);
+
+
+          toHour.text =
+              value.endTime.substring(0,5);
+
+
+        });
+
+      },
+
+
+
+    );
+
+
+    }),
+   ////////////////////////////////////////////////
 
         SizedBox(height: 10),
         TextField(
           controller: shiftDate,
-          readOnly: true, // يمنع الكتابة اليدوية
+
+          readOnly: true,
+
           decoration: InputDecoration(
             labelText: "Shift Date",
-            hintText: "Select Date",
-            border: OutlineInputBorder(),
-            suffixIcon: Icon(Icons.calendar_today),
-          ),
-          onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(2020),
-              lastDate: DateTime(2035),
-            );
 
-            if (pickedDate != null) {
-              shiftDate.text =
-              "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
-            }
-          },
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
+          ),
         ),
+
         SizedBox(height: 10),
 
-
         TextField(
-          readOnly: true,
           controller: fromHour,
+
+          readOnly: true,
+
           decoration: InputDecoration(
             labelText: "From Hour",
-            border: OutlineInputBorder(),
-          ),
-          onTap: () async {
-            final time = await showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.now(),
-            );
 
-            if (time != null) {
-              fromHour.text =
-              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
-            }
-          },
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
+          ),
         ),
 
         SizedBox(height: 10),
 
-
         TextField(
-          readOnly: true,
           controller: toHour,
+
+          readOnly: true,
+
           decoration: InputDecoration(
             labelText: "To Hour",
-            border: OutlineInputBorder(),
-          ),
-          onTap: () async {
-            final time = await showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.now(),
-            );
 
-            if (time != null) {
-              toHour.text =
-              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
-            }
-          },
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
+          ),
         ),
 
 
@@ -843,23 +997,75 @@ class _CreateRequestViewState extends State<CreateRequestView> {
 
   /// ================= SUBMIT =================
   Future<void> _submit() async {
-    if (selectedType.value == "supervisor_leave") {
+
+
+    if(selectedType.value == "supervisor_leave"){
+
+
       await controller.createLeaveRequest(
+
         date: leaveDate.text,
+
         reason: reason.text,
-        description:description.text,
+
+        description: description.text,
+
       );
-    } else {
+
+
+    }else{
+
+
+      if(selectedSupervisorId == null){
+
+        Get.snackbar(
+          "Error",
+          "Please select supervisor",
+        );
+
+        return;
+
+      }
+
+
+      if(selectedShift == null){
+
+        Get.snackbar(
+          "Error",
+          "Please select shift",
+        );
+
+        return;
+
+      }
+
+
+
       await controller.createShiftExchange(
+
         targetSupervisorId: selectedSupervisorId!,
-        shiftId: selectedShiftId!,
+
+
+        shiftId: selectedShift!.id,
+
+
         date: shiftDate.text,
+
+
         fromHour: fromHour.text,
+
+
         toHour: toHour.text,
+
+
         description: shiftDescription.text,
+
       );
+
     }
 
+
     Get.back();
+
   }
 }
