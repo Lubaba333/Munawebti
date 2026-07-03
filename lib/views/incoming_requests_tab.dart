@@ -16,27 +16,18 @@ class IncomingRequestsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.isLoading.value && controller.requests.isEmpty) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+      if (controller.isLoading.value && controller.receivedRequests.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
       }
 
-      final myId = controller.currentStudentId.value;
-
-      final incoming = controller.requests.where((request) {
-        final targetId = int.tryParse(_text(request['target_student_id']));
-        return myId != null && targetId == myId;
-      }).toList();
+      final incoming = controller.receivedRequests;
 
       if (incoming.isEmpty) {
-        return Center(
-          child: Text("no_incoming_requests".tr),
-        );
+        return Center(child: Text("no_incoming_requests".tr));
       }
 
       return RefreshIndicator(
-        onRefresh: controller.getMyRequests,
+        onRefresh: controller.getReceivedRequests,
         child: ListView.builder(
           padding: const EdgeInsets.all(18),
           itemCount: incoming.length,
@@ -51,6 +42,11 @@ class IncomingRequestsTab extends StatelessWidget {
     final status =
         _text(request['status']).isEmpty ? 'pending' : _text(request['status']);
 
+    final canRespond = status == 'pending' &&
+        request['target_student_approved_at'] == null &&
+        request['target_student_rejection_reason'] == null &&
+        id != null;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(15),
@@ -64,9 +60,7 @@ class IncomingRequestsTab extends StatelessWidget {
             offset: const Offset(0, 7),
           ),
         ],
-        border: Border.all(
-          color: AppColors.mauve.withOpacity(.25),
-        ),
+        border: Border.all(color: AppColors.mauve.withOpacity(.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,10 +69,7 @@ class IncomingRequestsTab extends StatelessWidget {
             children: [
               const CircleAvatar(
                 backgroundColor: AppColors.softLavender,
-                child: Icon(
-                  Icons.swap_horiz,
-                  color: AppColors.darkPurple,
-                ),
+                child: Icon(Icons.swap_horiz, color: AppColors.darkPurple),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -95,25 +86,50 @@ class IncomingRequestsTab extends StatelessWidget {
               _statusChip(request),
             ],
           ),
+
           const SizedBox(height: 10),
-          Text(
-            _text(request['description']),
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: 14),
-          if (status == 'pending' &&
-              request['target_student_approved_at'] == null &&
-              request['target_student_rejection_reason'] == null &&
-              id != null)
+
+         Row(
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Expanded(
+      child: Text(
+        _text(request['description']),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 12,
+        ),
+      ),
+    ),
+
+    if (id != null) ...[
+      const SizedBox(width: 8),
+      TextButton.icon(
+        onPressed: () => controller.showRequestDetails(id),
+        icon: const Icon(Icons.visibility_outlined, size: 18),
+        label: Text("details".tr),
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.darkPurple,
+          padding: EdgeInsets.zero,
+          minimumSize: const Size(0, 36),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
+    ],
+  ],
+),
+
+const SizedBox(height: 12),
+
+          if (canRespond) ...[
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () =>
-                        controller.approveExchangeRequest(id),
+                    onPressed: () => controller.approveExchangeRequest(id),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                     ),
@@ -138,6 +154,7 @@ class IncomingRequestsTab extends StatelessWidget {
                 ),
               ],
             ),
+          ],
         ],
       ),
     );
@@ -198,10 +215,7 @@ class IncomingRequestsTab extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(.12),
         borderRadius: BorderRadius.circular(12),

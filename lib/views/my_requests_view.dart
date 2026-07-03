@@ -38,6 +38,7 @@ class _MyRequestsViewState extends State<MyRequestsView>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await controller.getCurrentStudentRoom();
       await controller.getMyRequests();
+      await controller.getReceivedRequests();
     });
   }
 
@@ -69,10 +70,7 @@ class _MyRequestsViewState extends State<MyRequestsView>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.add_circle_outline,
-                color: Colors.white,
-              ),
+              const Icon(Icons.add_circle_outline, color: Colors.white),
               const SizedBox(width: 8),
               Text(
                 "new_request".tr,

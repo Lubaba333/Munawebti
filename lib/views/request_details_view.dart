@@ -44,43 +44,92 @@ class RequestDetailsView extends StatelessWidget {
                         ? request['metadata'] as Map
                         : {};
 
-                    final items = <_DetailItem>[
-                      _DetailItem(
-                        icon: _typeIcon(request),
-                        title: "request_type".tr,
-                        value: _typeText(request),
-                      ),
-                      _DetailItem(
-                        icon: Icons.title_rounded,
-                        title: "title_type".tr,
-                        value: request['title'],
-                      ),
-                      _DetailItem(
-                        icon: Icons.calendar_month_rounded,
-                        title: "created_at".tr,
-                        value: _formatDate(request['created_at']),
-                      ),
-                      ..._sortedMetadata(metadata).map(
-                        (e) => _DetailItem(
-                          icon: _metadataIcon(e.key),
-                          title: _metadataLabel(e.key, request),
-                          value: _metadataValue(
-                            key: e.key,
-                            value: e.value,
-                            controller: controller,
-                          ),
-                        ),
-                      ),
-                      if (request['admin_response_reason'] != null)
-                        _DetailItem(
-                          icon: Icons.admin_panel_settings_outlined,
-                          title: "admin_response".tr,
-                          value: request['admin_response_reason'],
-                        ),
-                    ].where((e) {
-                      return e.value != null &&
-                          e.value.toString().trim().isNotEmpty;
-                    }).toList();
+                   final requester = request['requester'] is Map ? request['requester'] as Map : null;
+final targetStudent =
+    request['target_student'] is Map ? request['target_student'] as Map : null;
+
+final items = <_DetailItem>[
+  _DetailItem(
+    icon: _typeIcon(request),
+    title: "request_type".tr,
+    value: _typeText(request),
+  ),
+
+  if (requester != null)
+    _DetailItem(
+      icon: Icons.person_rounded,
+      title: "requester_student".tr,
+      value: requester['full_name'],
+    ),
+
+  if (requester?['current_room'] is Map)
+    _DetailItem(
+      icon: Icons.home_rounded,
+      title: "requester_room".tr,
+      value: _studentRoomText(requester?['current_room']),
+    ),
+
+  if (targetStudent != null)
+    _DetailItem(
+      icon: Icons.person_search_rounded,
+      title: "target_student".tr,
+      value: targetStudent['full_name'],
+    ),
+
+  if (targetStudent?['current_room'] is Map)
+    _DetailItem(
+      icon: Icons.meeting_room_rounded,
+      title: "target_student_room".tr,
+      value: _studentRoomText(targetStudent?['current_room']),
+    ),
+
+  _DetailItem(
+    icon: Icons.title_rounded,
+    title: "title_type".tr,
+    value: request['title'],
+  ),
+
+  _DetailItem(
+    icon: Icons.calendar_month_rounded,
+    title: "created_at".tr,
+    value: _formatDate(request['created_at']),
+  ),
+
+  ..._sortedMetadata(metadata).map(
+    (e) => _DetailItem(
+      icon: _metadataIcon(e.key),
+      title: _metadataLabel(e.key, request),
+      value: _metadataValue(
+        key: e.key,
+        value: e.value,
+        controller: controller,
+      ),
+    ),
+  ),
+
+  if (request['target_student_rejection_reason'] != null)
+    _DetailItem(
+      icon: Icons.cancel_rounded,
+      title: "target_student_rejection_reason".tr,
+      value: request['target_student_rejection_reason'],
+    ),
+
+  if (request['target_student_approved_at'] != null)
+    _DetailItem(
+      icon: Icons.check_circle_rounded,
+      title: 'target_student_approved_at'.tr,
+      value: _formatDate(request['target_student_approved_at']),
+    ),
+
+  if (request['admin_response_reason'] != null)
+    _DetailItem(
+      icon: Icons.admin_panel_settings_outlined,
+      title: "admin_response".tr,
+      value: request['admin_response_reason'],
+    ),
+].where((e) {
+  return e.value != null && e.value.toString().trim().isNotEmpty;
+}).toList();
 
                     return SingleChildScrollView(
                       child: Column(
@@ -325,19 +374,43 @@ class RequestDetailsView extends StatelessWidget {
 
     return "unknown_room".tr;
   }
+String _studentRoomText(dynamic room) {
+  if (room is! Map) return "not_specified".tr;
 
-  String _unitArabicName(String? name) {
-    switch (name) {
-      case "Building A":
-        return "building_1".tr;
-      case "Building B":
-        return "building_2".tr;
-      case "Building C":
-        return "building_3".tr;
-      default:
-        return name ?? "not_specified".tr;
-    }
+  final number = room['room_number'] ?? room['number'] ?? '-';
+  final unitRaw = room['dormitory_unit']?['name'] ??
+      room['dormitory_unit_name'];
+
+  return "${"room".tr} $number - ${_unitArabicName(unitRaw?.toString())}";
+}
+String _unitArabicName(String? name) {
+  if (name == null || name.trim().isEmpty) {
+    return "not_specified".tr;
   }
+
+  switch (name.trim()) {
+    case "Building A":
+    case "Building 1":
+    case "A":
+    case "1":
+      return "building_1".tr;
+
+    case "Building B":
+    case "Building 2":
+    case "B":
+    case "2":
+      return "building_2".tr;
+
+    case "Building C":
+    case "Building 3":
+    case "C":
+    case "3":
+      return "building_3".tr;
+
+    default:
+      return name;
+  }
+}
 
   IconData _typeIcon(Map<String, dynamic> request) {
     final type = request['request_type']?.toString();

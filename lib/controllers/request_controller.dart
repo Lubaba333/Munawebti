@@ -14,6 +14,7 @@ class RequestController extends GetxController {
   var isLoadingRoomStudents = false.obs;
 var isLoadingRooms = false.obs;
   var requests = <dynamic>[].obs;
+  var receivedRequests = <dynamic>[].obs;
   var rooms = <dynamic>[].obs;
   var roomStudents = <dynamic>[].obs;
 var initialLoading = true.obs;
@@ -146,29 +147,53 @@ var initialLoading = true.obs;
     }
   }
 
-  Future<void> getMyRequests() async {
-    try {
-      isLoading.value = true;
+Future<void> getMyRequests() async {
+  try {
+    isLoading.value = true;
 
-      final response = await _apiService.get(
-        '/student/requests',
-        queryParameters: {
-          'per_page': 15,
-          'page': 1,
-        },
-        authRequired: true,
-      );
+    final response = await _apiService.get(
+      '/student/requests',
+      queryParameters: {
+        'per_page': 15,
+        'page': 1,
+      },
+      authRequired: true,
+    );
 
-      requests.value = _extractList(response);
-      print("✅ Requests loaded: ${requests.length}");
-    } catch (e) {
-      print("❌ Get Requests Error: $e");
-      requests.value = [];
-    } finally {
-  isLoading.value = false;
-  initialLoading.value = false;
-}
+    requests.value = _extractList(response);
+    print("✅ Sent Requests loaded: ${requests.length}");
+  } catch (e) {
+    print("❌ Get Sent Requests Error: $e");
+    requests.value = [];
+  } finally {
+    isLoading.value = false;
+    initialLoading.value = false;
   }
+}
+Future<void> getReceivedRequests() async {
+  try {
+    isLoading.value = true;
+
+    final response = await _apiService.get(
+      '/student/requests',
+      queryParameters: {
+        'per_page': 15,
+        'page': 1,
+        'received': true,
+      },
+      authRequired: true,
+    );
+
+    receivedRequests.value = _extractList(response);
+    print("✅ Received Requests loaded: ${receivedRequests.length}");
+  } catch (e) {
+    print("❌ Get Received Requests Error: $e");
+    receivedRequests.value = [];
+  } finally {
+    isLoading.value = false;
+    initialLoading.value = false;
+  }
+}
 
   Future<void> createExitRequest(ExitPermissionRequest request) async {
     try {
@@ -402,7 +427,7 @@ Future<void> approveExchangeRequest(int requestId) async {
       colorText: Colors.white,
     );
 
-    await getMyRequests();
+   await getReceivedRequests();
   } catch (e) {
     Get.snackbar(
       "Error",
@@ -454,7 +479,7 @@ Future<void> rejectExchangeRequest({
       colorText: Colors.white,
     );
 
-    await getMyRequests();
+   await getReceivedRequests();
   } catch (e) {
     Get.snackbar(
       "Error",

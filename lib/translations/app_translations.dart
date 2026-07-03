@@ -464,7 +464,24 @@ class AppTranslations extends Translations {
   'type':'نوع المحاضرة',
   'group':' الفئة',
    'title_type':' عنوان الطلب ',
-   'target_student_room':'الغرفة البديلة'
+   'target_student_room':'الغرفة البديلة',
+   'requester_student': 'الطالبة مقدمة الطلب',
+'target_student': 'الطالبة البديلة',
+'unknown_room': 'غرفة غير معروفة',
+'requested_room': 'الغرفة المطلوبة',
+
+'admin_notes': 'ملاحظات الإدارة',
+'admin_response': 'رد الإدارة',
+
+'exit_permission': 'طلب إذن خروج',
+'exit_reason': 'سبب الخروج',
+'exit_date': 'تاريخ الخروج',
+'from_hour': 'من الساعة',
+'to_hour': 'حتى الساعة',
+
+'transfer_reason': 'سبب النقل',
+'target_student_rejection_reason':'سبب رفض الطالبة ',
+'target_student_approved_at':'وافقت الطالبة في',
     },
 
     'en': {
@@ -935,6 +952,20 @@ class AppTranslations extends Translations {
   'group':'Group ',
   'target_student_room':'Target_Student_Room',
   'title_type':'Title_Type',
+  'requester_student': 'Requesting Student',
+'target_student': 'Replacement Student',
+'unknown_room': 'Unknown Room',
+'requested_room': 'Requested Room',
+'admin_notes': 'Admin Notes',
+'admin_response': 'Admin Response',
+'exit_permission': 'Exit Permission',
+'exit_reason': 'Exit Reason',
+'exit_date': 'Exit Date',
+'from_hour': 'From',
+'to_hour': 'To',
+'transfer_reason': 'Transfer Reason',
+'target_student_rejection_reason':'Target_Student_Rejection_Reason',
+'target_student_approved_at':'Target_Student_Approved_At'
     },
   };
 }
