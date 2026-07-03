@@ -22,7 +22,7 @@ class ScheduleCalendar extends StatelessWidget {
       return Container(
         margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -38,13 +38,13 @@ class ScheduleCalendar extends StatelessWidget {
             key: ValueKey(
               "${controller.selectedType.value}-${controller.monthString}",
             ),
-            headerStyle: const HeaderStyle(
+            headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
               titleTextStyle: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: Theme.of(context).textTheme.titleLarge?.color,
               ),
             ),
 
@@ -142,6 +142,7 @@ class ScheduleCalendar extends StatelessWidget {
                     controller.getEventsForDay(day).isNotEmpty;
 
                 return _dayCell(
+                  context: context,
                   day: day,
                   selected: false,
                   today: false,
@@ -156,6 +157,7 @@ class ScheduleCalendar extends StatelessWidget {
                     controller.getEventsForDay(day).isNotEmpty;
 
                 return _dayCell(
+                  context: context,
                   day: day,
                   selected: true,
                   today: false,
@@ -169,6 +171,7 @@ class ScheduleCalendar extends StatelessWidget {
                     controller.getEventsForDay(day).isNotEmpty;
 
                 return _dayCell(
+                  context: context,
                   day: day,
                   selected: false,
                   today: false,
@@ -192,6 +195,7 @@ class ScheduleCalendar extends StatelessWidget {
 }
 
 Widget _dayCell({
+  required BuildContext context,
   required DateTime day,
   required bool selected,
   required bool today,
@@ -209,7 +213,7 @@ Widget _dayCell({
       : const Color(0xFFD6E9FF);
 
   Color background = Colors.transparent;
-  Color textColor = Colors.black87;
+  Color textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
 
   if (selected) {
     background = primary;
@@ -261,9 +265,9 @@ class ShiftBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.vertical(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(35),
         ),
       ),
@@ -300,7 +304,7 @@ class ShiftBottomSheet extends StatelessWidget {
               Text(
                 _formatDate(shifts.first.shiftDate),
                 style: TextStyle(
-                  color: Colors.grey.shade700,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                   fontSize: 16,
                 ),
               ),
@@ -329,7 +333,7 @@ class ShiftBottomSheet extends StatelessWidget {
                     return Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardColor,
                         borderRadius:
                         BorderRadius.circular(28),
                         boxShadow: [
@@ -405,6 +409,7 @@ class ShiftBottomSheet extends StatelessWidget {
                           const SizedBox(height: 22),
 
                           _infoTile(
+                            context,
                             Icons.schedule,
                             "Time",
                             "${_time(shift.startTime)} - ${_time(shift.endTime)}",
@@ -413,6 +418,7 @@ class ShiftBottomSheet extends StatelessWidget {
                           if (isLecture) ...[
 
                             _infoTile(
+                              context,
                               Icons.person_outline,
                               "Lecturer",
                               lecture?.teacherName ??
@@ -420,6 +426,7 @@ class ShiftBottomSheet extends StatelessWidget {
                             ),
 
                             _infoTile(
+                              context,
                               Icons.location_on_outlined,
                               "Location",
                               lecture?.labName ??
@@ -427,6 +434,7 @@ class ShiftBottomSheet extends StatelessWidget {
                             ),
 
                             _infoTile(
+                              context,
                               Icons.school_outlined,
                               "Class",
                               "${lecture?.specialization}\nYear ${lecture?.year} • Branch ${lecture?.branch}",
@@ -435,6 +443,7 @@ class ShiftBottomSheet extends StatelessWidget {
                           ] else ...[
 
                             _infoTile(
+                              context,
                               Icons.home_work_outlined,
                               "Dormitory",
                               housing?.dormitoryName ??
@@ -496,6 +505,7 @@ class ShiftBottomSheet extends StatelessWidget {
     );
   }
   Widget _infoTile(
+      BuildContext context,
       IconData icon,
       String title,
       String value,
@@ -504,7 +514,7 @@ class ShiftBottomSheet extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: background,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -530,7 +540,7 @@ class ShiftBottomSheet extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                     fontWeight: FontWeight.w500,
                     fontSize: 13,
                   ),
@@ -645,7 +655,7 @@ class ShiftLegend extends StatelessWidget {
         vertical: 14,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(

@@ -100,7 +100,7 @@ class _WarningDetailsViewState
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -237,6 +237,9 @@ class _WarningDetailsViewState
                 _infoCard(
 
 
+                  context: context,
+
+
                   icon:
                   Icons.description_outlined,
 
@@ -260,6 +263,9 @@ class _WarningDetailsViewState
                 _infoCard(
 
 
+                  context: context,
+
+
                   icon:
                   Icons.calendar_month,
 
@@ -281,6 +287,9 @@ class _WarningDetailsViewState
 
 
                 _infoCard(
+
+
+                  context: context,
 
 
                   icon:
@@ -354,16 +363,22 @@ class _WarningDetailsViewState
 
 
 
-
                     style:
 
+
                     ElevatedButton.styleFrom(
+
 
 
                       backgroundColor:
 
                       AppColors.primary,
 
+
+
+                      foregroundColor:
+
+                      Colors.white,
 
 
                       padding:
@@ -664,6 +679,9 @@ class _WarningDetailsViewState
   Widget _infoCard({
 
 
+    required BuildContext context,
+
+
     required IconData icon,
 
 
@@ -699,7 +717,7 @@ class _WarningDetailsViewState
 
 
         color:
-        Colors.white,
+        Theme.of(context).cardColor,
 
 
 
@@ -917,7 +935,7 @@ class _WarningDetailsViewState
 
                     style:
 
-                    const TextStyle(
+                    TextStyle(
 
 
 
@@ -925,7 +943,7 @@ class _WarningDetailsViewState
 
 
                       color:
-                      Colors.black87,
+                      Theme.of(context).textTheme.bodyMedium?.color,
 
 
 

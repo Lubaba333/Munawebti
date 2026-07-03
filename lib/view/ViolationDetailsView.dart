@@ -34,7 +34,7 @@ class ViolationDetailsView
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -152,6 +152,8 @@ class ViolationDetailsView
 
               _infoCard(
 
+                context: context,
+
                 icon:
                 Icons.description_outlined,
 
@@ -167,6 +169,8 @@ class ViolationDetailsView
 
 
               _infoCard(
+
+                context: context,
 
                 icon:
                 Icons.category_outlined,
@@ -185,6 +189,8 @@ class ViolationDetailsView
 
               _infoCard(
 
+                context: context,
+
                 icon:
                 Icons.warning_amber_outlined,
 
@@ -202,6 +208,8 @@ class ViolationDetailsView
 
 
               _infoCard(
+
+                context: context,
 
                 icon:
                 Icons.date_range,
@@ -267,16 +275,22 @@ class ViolationDetailsView
 
 
 
-
                   style:
 
+
                   ElevatedButton.styleFrom(
+
 
 
                     backgroundColor:
 
                     AppColors.primary,
 
+
+
+                    foregroundColor:
+
+                    Colors.white,
 
 
                     padding:
@@ -482,6 +496,8 @@ class ViolationDetailsView
 
   Widget _infoCard({
 
+    required BuildContext context,
+
     required IconData icon,
 
     required String title,
@@ -512,7 +528,7 @@ class ViolationDetailsView
 
         color:
 
-        Colors.white,
+        Theme.of(context).cardColor,
 
 
 
@@ -687,13 +703,13 @@ class ViolationDetailsView
 
                     style:
 
-                    const TextStyle(
+                    TextStyle(
 
                       fontSize:15,
 
                       color:
 
-                      Colors.black87,
+                      Theme.of(context).textTheme.bodyMedium?.color,
 
                     ),
 

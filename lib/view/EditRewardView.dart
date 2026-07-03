@@ -131,7 +131,7 @@ class _EditRewardViewState
 
 
       backgroundColor:
-      Colors.grey[100],
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -549,7 +549,7 @@ class _EditRewardViewState
 
           fillColor:
 
-          Colors.white,
+          Theme.of(context).cardColor,
 
 
 

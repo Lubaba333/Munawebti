@@ -119,7 +119,7 @@ class _EditViolationViewState
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
       appBar: AppBar(
@@ -341,7 +341,7 @@ class _EditViolationViewState
             filled:true,
 
             fillColor:
-            Colors.white,
+            Theme.of(context).cardColor,
 
 
             border:

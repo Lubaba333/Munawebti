@@ -33,7 +33,7 @@ class RewardsPage extends StatelessWidget {
           final reward = controller.rewards[index];
 
           return Card(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             elevation: 3,
             shadowColor: AppColors.light,
             shape: RoundedRectangleBorder(
@@ -44,8 +44,8 @@ class RewardsPage extends StatelessWidget {
                 dividerColor: Colors.transparent,
               ),
               child: ExpansionTile(
-                collapsedBackgroundColor: Colors.white,
-                backgroundColor: AppColors.background,
+                collapsedBackgroundColor: Theme.of(context).cardColor,
+                backgroundColor: Theme.of(context).cardColor,
                 collapsedIconColor: AppColors.primary,
                 iconColor: AppColors.primary,
                 leading: const Icon(
@@ -63,8 +63,8 @@ class RewardsPage extends StatelessWidget {
                   reward["description"] ?? "",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.black87,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 children: [
@@ -74,6 +74,7 @@ class RewardsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildInfoRow(
+                          context,
                           Icons.description,
                           "Description",
                           reward["description"] ?? "",
@@ -90,7 +91,8 @@ class RewardsPage extends StatelessWidget {
     });
   }
 
-  Widget _buildInfoRow(IconData icon, String title, String value) {
+  Widget _buildInfoRow(
+      BuildContext context, IconData icon, String title, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,8 +105,8 @@ class RewardsPage extends StatelessWidget {
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 14,
               ),
               children: [

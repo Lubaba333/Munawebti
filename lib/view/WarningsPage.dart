@@ -11,7 +11,6 @@ class WarningsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    //  backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text("Warnings"),
         backgroundColor: AppColors.primary,
@@ -25,7 +24,7 @@ class WarningsPage extends StatelessWidget {
               final warning = controller.warnings[index];
 
               return Card(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 elevation: 3,
                 shadowColor: AppColors.light,
                 shape: RoundedRectangleBorder(
@@ -36,8 +35,8 @@ class WarningsPage extends StatelessWidget {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    collapsedBackgroundColor: Colors.white,
-                    backgroundColor: AppColors.background,
+                    collapsedBackgroundColor: Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
                     collapsedIconColor: Colors.orange,
                     iconColor: Colors.orange,
                     leading: const Icon(
@@ -63,6 +62,7 @@ class WarningsPage extends StatelessWidget {
                           children: [
 
                             _buildInfoRow(
+                              context,
                               Icons.description,
                               "Description",
                               warning["description"] ?? "",
@@ -71,6 +71,7 @@ class WarningsPage extends StatelessWidget {
                             const SizedBox(height: 10),
 
                             _buildInfoRow(
+                              context,
                               Icons.calendar_today,
                               "Warning Date",
                                 warning["warning_date"]?.toString().split("T").first ?? ""
@@ -79,6 +80,7 @@ class WarningsPage extends StatelessWidget {
                             const SizedBox(height: 10),
 
                             _buildInfoRow(
+                              context,
                               Icons.gavel,
                               "Possible Penalty",
                               warning["possible_penalty"] ?? "",
@@ -98,7 +100,7 @@ class WarningsPage extends StatelessWidget {
   }
 
   Widget _buildInfoRow(
-      IconData icon, String title, String value) {
+      BuildContext context, IconData icon, String title, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -111,8 +113,8 @@ class WarningsPage extends StatelessWidget {
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 14,
               ),
               children: [

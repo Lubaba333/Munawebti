@@ -32,6 +32,8 @@ class StudentInfoTab extends StatelessWidget {
           
           _infoRow(
 
+            context: context,
+
             icon:Icons.badge,
 
             title:"الرقم الجامعي",
@@ -43,6 +45,8 @@ class StudentInfoTab extends StatelessWidget {
 
 
           _infoRow(
+
+            context: context,
 
             icon:Icons.school,
 
@@ -56,6 +60,8 @@ class StudentInfoTab extends StatelessWidget {
 
           _infoRow(
 
+            context: context,
+
             icon:Icons.email,
 
             title:"البريد",
@@ -67,6 +73,8 @@ class StudentInfoTab extends StatelessWidget {
 
 
           _infoRow(
+
+            context: context,
 
             icon:Icons.phone,
 
@@ -80,6 +88,8 @@ class StudentInfoTab extends StatelessWidget {
 
           _infoRow(
 
+            context: context,
+
             icon:Icons.layers,
 
             title:"السنة",
@@ -91,6 +101,8 @@ class StudentInfoTab extends StatelessWidget {
 
 
           _infoRow(
+
+            context: context,
 
             icon:Icons.home,
 
@@ -116,6 +128,8 @@ class StudentInfoTab extends StatelessWidget {
 
   Widget _infoRow({
 
+    required BuildContext context,
+
     required IconData icon,
 
     required String title,
@@ -139,7 +153,7 @@ class StudentInfoTab extends StatelessWidget {
 
           bottom: BorderSide(
 
-            color:Colors.grey.shade200,
+            color:Theme.of(context).dividerColor,
 
           ),
 
@@ -204,7 +218,7 @@ class StudentInfoTab extends StatelessWidget {
 
                   style:TextStyle(
 
-                    color:Colors.grey.shade600,
+                    color:Theme.of(context).textTheme.bodySmall?.color,
 
                     fontSize:13,
 

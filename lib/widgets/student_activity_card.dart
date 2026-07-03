@@ -95,7 +95,7 @@ class StudentActivityCard extends StatelessWidget {
                       style:
                       TextStyle(
                         color:
-                        Colors.grey[700],
+                        Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                   ],
@@ -105,7 +105,7 @@ class StudentActivityCard extends StatelessWidget {
               Text(
                 date,
                 style: TextStyle(
-                  color: Colors.grey[600],
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                   fontSize: 12,
                 ),
               ),

@@ -36,20 +36,20 @@ class StudentsView extends GetView<StudentsController> {
 
               const SizedBox(height: 16),
 
-              /// Filters
-              SizedBox(
-                height: 40,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _chip('الكل', 'all'),
-                    _chip('مقيم', 'resident'),
-                    _chip('غير مقيم', 'non_resident'),
-                  ],
-                ),
-              ),
+              // /// Filters
+              // SizedBox(
+              //   height: 40,
+              //   child: ListView(
+              //     scrollDirection: Axis.horizontal,
+              //     children: [
+              //       _chip(context, 'الكل', 'all'),
+              //       _chip(context, 'مقيم', 'resident'),
+              //       _chip(context, 'غير مقيم', 'non_resident'),
+              //     ],
+              //   ),
+              // ),
 
-              const SizedBox(height: 18),
+              // const SizedBox(height: 18),
 
               /// LIST
               Expanded(
@@ -96,7 +96,7 @@ class StudentsView extends GetView<StudentsController> {
   }
 
   /// CHIP FILTER
-  Widget _chip(String title, String value) {
+  Widget _chip(BuildContext context, String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Obx(() {
@@ -107,7 +107,9 @@ class StudentsView extends GetView<StudentsController> {
           selected: selected,
           selectedColor: AppColors.primary,
           labelStyle: TextStyle(
-            color: selected ? Colors.white : Colors.black,
+            color: selected
+                ? Colors.white
+                : Theme.of(context).textTheme.bodyLarge?.color,
           ),
           onSelected: (_) => controller.changeFilter(value),
         );
@@ -185,7 +187,7 @@ class _StudentCardState extends State<StudentCard> {
 
           ? AppColors.primary.withOpacity(0.12)
 
-          : Colors.white,
+          : Theme.of(context).cardColor,
 
 
 
@@ -340,7 +342,7 @@ class _StudentCardState extends State<StudentCard> {
 
                         fontSize:13,
 
-                        color:Colors.grey.shade600,
+                        color:Theme.of(context).textTheme.bodySmall?.color,
 
                       ),
 
@@ -375,7 +377,7 @@ class _StudentCardState extends State<StudentCard> {
 
                 size:15,
 
-                color:Colors.grey.shade500,
+                color:Theme.of(context).textTheme.bodySmall?.color,
 
               )
 
@@ -502,7 +504,7 @@ return TextField(
     hintText: 'ابحث عن طالب...',
     prefixIcon: const Icon(Icons.search),
     filled: true,
-    fillColor: AppColors.white,
+    fillColor: Theme.of(context).cardColor,
        contentPadding: const EdgeInsets.symmetric(vertical: 16),
          border: OutlineInputBorder(
          borderRadius: BorderRadius.circular(18),

@@ -121,15 +121,11 @@ class _EditWarningViewState
 
 
       backgroundColor:
-      Colors.grey[100],
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
       appBar: AppBar(
-
-
-        automaticallyImplyLeading:false,
-
 
         title:
         const Text(
@@ -390,7 +386,7 @@ class _EditWarningViewState
 
 
             fillColor:
-            Colors.white,
+            Theme.of(context).cardColor,
 
 
             border:

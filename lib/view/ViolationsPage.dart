@@ -24,7 +24,7 @@ class ViolationsPage extends StatelessWidget {
               final violation = controller.violations[index];
 
               return Card(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 elevation: 3,
                 shadowColor: AppColors.light,
                 shape: RoundedRectangleBorder(
@@ -35,8 +35,8 @@ class ViolationsPage extends StatelessWidget {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    collapsedBackgroundColor: Colors.white,
-                    backgroundColor: AppColors.background,
+                    collapsedBackgroundColor: Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
                     collapsedIconColor: Colors.red,
                     iconColor: Colors.red,
                     leading: const Icon(
@@ -54,8 +54,8 @@ class ViolationsPage extends StatelessWidget {
                       violation["description"] ?? "",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.black87,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
                     ),
                     children: [
@@ -64,6 +64,7 @@ class ViolationsPage extends StatelessWidget {
                         child: Column(
                           children: [
                             _buildInfoRow(
+                              context,
                               Icons.description,
                               "Description",
                               violation["description"] ?? "",
@@ -72,6 +73,7 @@ class ViolationsPage extends StatelessWidget {
                             const SizedBox(height: 10),
 
                             _buildInfoRow(
+                              context,
                               Icons.calendar_today,
                               "Violation Date",
                               violation["violation_date"] ?.toString().split("T").first ?? ""
@@ -80,6 +82,7 @@ class ViolationsPage extends StatelessWidget {
                             const SizedBox(height: 10),
 
                             _buildInfoRow(
+                              context,
                               Icons.gavel,
                               "Penalty",
                               violation["penalty"] ?? "",
@@ -88,6 +91,7 @@ class ViolationsPage extends StatelessWidget {
                             const SizedBox(height: 10),
 
                             _buildInfoRow(
+                              context,
                               Icons.category,
                               "Category",
                               violation["category"] ?? "",
@@ -107,7 +111,7 @@ class ViolationsPage extends StatelessWidget {
   }
 
   Widget _buildInfoRow(
-      IconData icon, String title, String value) {
+      BuildContext context, IconData icon, String title, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,8 +124,8 @@ class ViolationsPage extends StatelessWidget {
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 14,
               ),
               children: [

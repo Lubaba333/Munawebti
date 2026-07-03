@@ -56,17 +56,17 @@ class StudentActionsSheet
 
       decoration:
 
-      const BoxDecoration(
+      BoxDecoration(
 
         borderRadius:
 
-        BorderRadius.vertical(
+        const BorderRadius.vertical(
 
           top: Radius.circular(25),
 
         ),
 
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
 
       ),
 

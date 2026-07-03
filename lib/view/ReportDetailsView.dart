@@ -29,7 +29,7 @@ class ReportDetailsView extends StatelessWidget {
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -248,6 +248,8 @@ class ReportDetailsView extends StatelessWidget {
 
               _infoCard(
 
+                context: context,
+
                 icon:
                 Icons.notes,
 
@@ -436,6 +438,9 @@ class ReportDetailsView extends StatelessWidget {
   Widget _infoCard({
 
 
+    required BuildContext context,
+
+
     required IconData icon,
 
 
@@ -472,7 +477,7 @@ class ReportDetailsView extends StatelessWidget {
 
 
         color:
-        Colors.white,
+        Theme.of(context).cardColor,
 
 
 
@@ -652,7 +657,7 @@ class ReportDetailsView extends StatelessWidget {
             style:
 
 
-            const TextStyle(
+            TextStyle(
 
 
               fontSize:16,
@@ -663,7 +668,7 @@ class ReportDetailsView extends StatelessWidget {
 
               color:
 
-              Colors.black87,
+              Theme.of(context).textTheme.bodyMedium?.color,
 
 
             ),

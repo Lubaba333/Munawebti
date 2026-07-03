@@ -21,7 +21,7 @@ class InfoTile extends StatelessWidget {
       margin: const EdgeInsets.only(
         bottom: 12,
       ),
-      color: Colors.white,
+      color: Theme.of(context).cardColor,
 
       shape: RoundedRectangleBorder(
         borderRadius:
@@ -69,9 +69,9 @@ class InfoTile extends StatelessWidget {
 
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
                     ),
                   ),
 

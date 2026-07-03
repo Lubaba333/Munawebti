@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/controller/supervisor_shift_controller.dart';
-import 'package:supervisors/widgets/%20%20schedule_calendar.dart';
+import 'package:supervisors/widgets/schedule_calendar.dart';
 
 
 class ScheduleView extends StatelessWidget {
@@ -21,7 +21,7 @@ class ScheduleView extends StatelessWidget {
 
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         centerTitle: true,
         title: const Text(
           "My Schedule",
@@ -41,14 +41,14 @@ class ScheduleView extends StatelessWidget {
 
           const ShiftLegend(),
 
-          _typeSelector(),
+          _typeSelector(context),
 
         ],
       ),
     );
   }
 
-  Widget _typeSelector() {
+  Widget _typeSelector(BuildContext context) {
     return Obx(() {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
@@ -71,7 +71,7 @@ class ScheduleView extends StatelessWidget {
                   controller.selectedType.value ==
                       ShiftType.lecture
                       ? Colors.white
-                      : Colors.black87,
+                      : Theme.of(context).textTheme.bodyLarge?.color,
                   fontWeight: FontWeight.bold,
                 ),
 
@@ -101,7 +101,7 @@ class ScheduleView extends StatelessWidget {
                   controller.selectedType.value ==
                       ShiftType.housing
                       ? Colors.white
-                      : Colors.black87,
+                      : Theme.of(context).textTheme.bodyLarge?.color,
                   fontWeight: FontWeight.bold,
                 ),
 

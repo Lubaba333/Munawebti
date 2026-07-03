@@ -95,7 +95,7 @@ class _EditReportViewState
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -383,7 +383,7 @@ class _EditReportViewState
 
 
         fillColor:
-        Colors.white,
+        Theme.of(context).cardColor,
 
 
 

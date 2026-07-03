@@ -32,7 +32,7 @@ class RewardDetailsView extends StatelessWidget {
 
 
       backgroundColor:
-      AppColors.background,
+      Theme.of(context).scaffoldBackgroundColor,
 
 
 
@@ -303,6 +303,10 @@ class RewardDetailsView extends StatelessWidget {
 
 
 
+                context: context,
+
+
+
                 icon:
 
                 Icons.title,
@@ -326,6 +330,9 @@ class RewardDetailsView extends StatelessWidget {
 
 
               _infoCard(
+
+
+                context: context,
 
 
                 icon:
@@ -352,6 +359,9 @@ class RewardDetailsView extends StatelessWidget {
 
 
               _infoCard(
+
+
+                context: context,
 
 
                 icon:
@@ -577,6 +587,9 @@ class RewardDetailsView extends StatelessWidget {
   Widget _infoCard({
 
 
+    required BuildContext context,
+
+
     required IconData icon,
 
 
@@ -627,7 +640,7 @@ class RewardDetailsView extends StatelessWidget {
 
         color:
 
-        Colors.white,
+        Theme.of(context).cardColor,
 
 
 
@@ -815,7 +828,7 @@ class RewardDetailsView extends StatelessWidget {
 
             style:
 
-            const TextStyle(
+            TextStyle(
 
 
 
@@ -827,7 +840,7 @@ class RewardDetailsView extends StatelessWidget {
 
               color:
 
-              Colors.black87,
+              Theme.of(context).textTheme.bodyMedium?.color,
 
 
             ),

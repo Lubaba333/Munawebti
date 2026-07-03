@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controller/SettingsController.dart';
 
-
 class SettingsView extends StatelessWidget {
   SettingsView({super.key});
 
@@ -11,6 +10,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // ما في داعي لتحديد لون هون، AppBarTheme بالثيم بيتكفل فيه
       appBar: AppBar(title: const Text("Settings")),
 
       body: Obx(() => Column(
@@ -18,7 +18,10 @@ class SettingsView extends StatelessWidget {
 
           /// ================= DARK MODE =================
           SwitchListTile(
-            title: const Text("Dark Mode"),
+            title: Text(
+              "Dark Mode",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             value: controller.isDarkMode.value,
             onChanged: (_) => controller.toggleTheme(),
           ),
@@ -27,18 +30,27 @@ class SettingsView extends StatelessWidget {
 
           /// ================= LANGUAGE =================
           ListTile(
-            title: const Text("Language"),
+            title: Text(
+              "Language",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
 
           RadioListTile(
-            title: const Text("English"),
+            title: Text(
+              "English",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             value: 'en',
             groupValue: controller.locale.value.languageCode,
             onChanged: (value) => controller.changeLanguage('en'),
           ),
 
           RadioListTile(
-            title: const Text("العربية"),
+            title: Text(
+              "العربية",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             value: 'ar',
             groupValue: controller.locale.value.languageCode,
             onChanged: (value) => controller.changeLanguage('ar'),

@@ -62,6 +62,8 @@ class StudentHistoryTab extends StatelessWidget {
 
                     _historyCard(
 
+                      context: context,
+
                       icon:Icons.warning,
 
                       color:Colors.orange,
@@ -137,6 +139,8 @@ class StudentHistoryTab extends StatelessWidget {
                     (violation)=>
 
                     _historyCard(
+
+                      context: context,
 
                       icon:
                       Icons.block,
@@ -234,6 +238,9 @@ class StudentHistoryTab extends StatelessWidget {
 
 
                     _historyCard(
+
+
+                      context: context,
 
 
                       icon:
@@ -339,6 +346,9 @@ class StudentHistoryTab extends StatelessWidget {
 
 
           _historyCard(
+
+
+          context: context,
 
 
           icon:
@@ -461,6 +471,7 @@ class StudentHistoryTab extends StatelessWidget {
     );
   }
   Widget _historyCard({
+    required BuildContext context,
     required IconData icon,
     required Color color,
     required String title,
@@ -488,7 +499,7 @@ class StudentHistoryTab extends StatelessWidget {
 
         decoration: BoxDecoration(
 
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
 
           borderRadius:
           BorderRadius.circular(20),
@@ -568,7 +579,7 @@ class StudentHistoryTab extends StatelessWidget {
                     date,
                     style:
                     TextStyle(
-                      color:Colors.grey[500],
+                      color:Theme.of(context).textTheme.bodySmall?.color,
                       fontSize:12,
                     ),
                   ),

@@ -94,7 +94,7 @@ class StudentDetailsView extends StatelessWidget {
             true,
 
             backgroundColor:
-            Colors.white,
+            Theme.of(context).cardColor,
           );
         },
       ),
