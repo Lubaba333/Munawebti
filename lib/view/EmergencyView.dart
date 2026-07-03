@@ -192,7 +192,7 @@ class _EmergencyViewState extends State<EmergencyView>{
 
 
                       color:
-                      Colors.white,
+                      Theme.of(context).cardColor,
 
 
                       borderRadius:
@@ -317,7 +317,7 @@ class _EmergencyViewState extends State<EmergencyView>{
                         TextStyle(
 
                             color:
-                            Colors.grey[700],
+                            Theme.of(context).textTheme.bodyMedium?.color,
 
                             fontSize:14
 
@@ -373,7 +373,7 @@ class _EmergencyViewState extends State<EmergencyView>{
                                   fontSize:12,
 
                                   color:
-                                  Colors.grey[600]
+                                  Theme.of(context).textTheme.bodySmall?.color
 
                               ),
 
@@ -553,9 +553,9 @@ class _EmergencyViewState extends State<EmergencyView>{
           ),
           child: Container(
             padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -591,22 +591,33 @@ class _EmergencyViewState extends State<EmergencyView>{
                     );
                   }
 
-                  return DropdownButtonFormField<StudentModel>(
+                  return DropdownButtonFormField<int>(
                     isExpanded: true,
-                    value: controller.selectedStudent.value,
+                    value: controller.students.any(
+                            (s) => s.id == controller.selectedStudent.value?.id)
+                        ? controller.selectedStudent.value?.id
+                        : null,
                     decoration: buildInputDecoration("Select Student"),
                     items: controller.students.map((student) {
-                      return DropdownMenuItem<StudentModel>(
-                        value: student,
+                      return DropdownMenuItem<int>(
+                        value: student.id,
                         child: Text(
                           "${student.fullName} - ${student.studentIdentifier}",
                           overflow: TextOverflow.ellipsis,
                         ),
                       );
                     }).toList(),
-                    onChanged: (value) {
-                      controller.selectedStudent.value = value;
-                      print("Selected ${value!.fullName}");
+                    onChanged: (id) {
+                      final match = controller.students
+                          .where((s) => s.id == id);
+
+                      controller.selectedStudent.value =
+                      match.isNotEmpty ? match.first : null;
+
+                      if (controller.selectedStudent.value != null) {
+                        print(
+                            "Selected ${controller.selectedStudent.value!.fullName}");
+                      }
                     },
                   );
                 }),
@@ -618,6 +629,7 @@ class _EmergencyViewState extends State<EmergencyView>{
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                     ),
                     onPressed: () {
                       controller.createCase();

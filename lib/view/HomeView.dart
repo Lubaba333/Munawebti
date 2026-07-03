@@ -64,7 +64,7 @@ class HomeView extends StatelessWidget {
                   "Welcome 👋",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
 
@@ -129,6 +129,8 @@ class HomeView extends StatelessWidget {
 
                     _actionCard(
 
+                      context: context,
+
                       icon:Icons.emergency,
 
                       title:"Emergency",
@@ -146,6 +148,8 @@ class HomeView extends StatelessWidget {
 
 
                     _actionCard(
+
+                      context: context,
 
                       icon:Icons.report_problem,
 
@@ -166,6 +170,8 @@ class HomeView extends StatelessWidget {
 
                     _actionCard(
 
+                      context: context,
+
                       icon:Icons.assignment,
 
                       title:"Requests",
@@ -184,6 +190,8 @@ class HomeView extends StatelessWidget {
 
 
                     _actionCard(
+
+                      context: context,
 
                       icon:Icons.check_circle,
 
@@ -622,6 +630,8 @@ class HomeView extends StatelessWidget {
 
   Widget _actionCard({
 
+    required BuildContext context,
+
     required IconData icon,
 
     required String title,
@@ -644,9 +654,7 @@ class HomeView extends StatelessWidget {
 
         decoration:BoxDecoration(
 
-          color:Get.isDarkMode
-              ? Colors.grey.shade900
-              : Colors.white,
+          color:Theme.of(context).cardColor,
 
 
           borderRadius:

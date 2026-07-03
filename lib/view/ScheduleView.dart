@@ -23,10 +23,10 @@ class ScheduleView extends StatelessWidget {
         elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "My Schedule",
           style: TextStyle(
-            color: Color(0xFFA467A7),
+            color: Theme.of(context).appBarTheme.foregroundColor,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),

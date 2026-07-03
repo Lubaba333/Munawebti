@@ -99,7 +99,7 @@ class _ComplaintTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
         ),
 
@@ -133,7 +133,7 @@ class _ComplaintTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 height: 1.3,
               ),
             ),
@@ -166,7 +166,7 @@ class _ComplaintTile extends StatelessWidget {
                   item.createdAt.substring(0, 10),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ),
               ],
@@ -252,7 +252,7 @@ class AddComplaintView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF6F7FB),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
         title: const Text("New Complaint"),
@@ -266,10 +266,8 @@ class AddComplaintView extends StatelessWidget {
           children: [
 
             _field("Title", title),
-            const SizedBox(height: 12),
 
             _field("Type", type),
-            const SizedBox(height: 12),
 
             _field("Description", desc, max: 4),
 
@@ -280,6 +278,7 @@ class AddComplaintView extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.all(14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -304,16 +303,16 @@ class AddComplaintView extends StatelessWidget {
 
   Widget _field(String label, TextEditingController c,
       {int max = 1}) {
-    return TextField(
-      controller: c,
-      maxLines: max,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextField(
+        controller: c,
+        maxLines: max,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );

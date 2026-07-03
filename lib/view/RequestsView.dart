@@ -141,7 +141,7 @@ class _RequestsViewState extends State<RequestsView> {
 
                   decoration: BoxDecoration(
 
-                    color: Colors.white,
+                    color: Theme.of(context).cardColor,
 
 
                     borderRadius:
@@ -306,7 +306,7 @@ class _RequestsViewState extends State<RequestsView> {
 
 
                           color:
-                          Colors.grey.shade700,
+                          Theme.of(context).textTheme.bodyMedium?.color,
 
                           height:1.4,
 
@@ -409,7 +409,7 @@ class _RequestsViewState extends State<RequestsView> {
 
 
                             color:
-                            Colors.grey.shade400,
+                            Theme.of(context).textTheme.bodySmall?.color,
 
                           )
 
@@ -486,11 +486,12 @@ class _RequestsViewState extends State<RequestsView> {
           ),
           SizedBox(height: 6),
           Text("Create your first request",
-              style: TextStyle(color: Colors.grey)),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
           SizedBox(height: 20),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
             ),
             onPressed: () {
               Get.to(() => CreateRequestView());
@@ -659,6 +660,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.all(14),
                 ),
                 onPressed: () async {

@@ -86,7 +86,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
 
                 const SizedBox(height: 30),
 
-                Divider(color: Colors.grey.shade300),
+                Divider(color: Theme.of(context).dividerColor),
 
                 const SizedBox(height: 20),
 
@@ -99,13 +99,13 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.8,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
 
                 const SizedBox(height: 20),
 
-                Divider(color: Colors.grey.shade300),
+                Divider(color: Theme.of(context).dividerColor),
 
                   const SizedBox(height: 20),
 
@@ -113,6 +113,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
 
                   ...request.metadata.entries.map(
                         (entry) => _infoRow(
+                      context,
                       Icons.info_outline,
                       entry.key,
                       entry.value.toString(),
@@ -123,7 +124,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
                     request.adminResponseReason!.isNotEmpty) ...[
                   const SizedBox(height: 30),
 
-                  Divider(color: Colors.grey.shade300),
+                  Divider(color: Theme.of(context).dividerColor),
 
                   const SizedBox(height: 25),
 
@@ -134,7 +135,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.8,
-                      color: Colors.grey.shade800,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
                 ],
@@ -175,6 +176,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
   }
 
   Widget _infoRow(
+      BuildContext context,
       IconData icon,
       String title,
       String value,
@@ -200,7 +202,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView>
                   title,
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ),
                 const SizedBox(height: 4),

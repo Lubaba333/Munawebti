@@ -99,7 +99,7 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
                             c.title,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -215,7 +215,7 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
             style: TextStyle(
               fontSize: 15,
               height: 1.5,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
             ),
           ),
         ),

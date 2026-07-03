@@ -48,20 +48,20 @@ class ChatView extends StatelessWidget {
                   itemCount: controller.messages.length,
                   itemBuilder: (context, index) {
                     final msg = controller.messages[index];
-                    return _messageBubble(msg);
+                    return _messageBubble(context, msg);
                   },
                 )),
           ),
 
           /// ✏️ Input
-          _inputArea(),
+          _inputArea(context),
         ],
       ),
     );
   }
 
   /// 💬 Bubble
-  Widget _messageBubble(Map msg) {
+  Widget _messageBubble(BuildContext context, Map msg) {
     final isMe = msg['isMe'];
 
     return Align(
@@ -72,7 +72,7 @@ class ChatView extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         constraints: const BoxConstraints(maxWidth: 250),
         decoration: BoxDecoration(
-          color: isMe ? AppColors.primary : Colors.white,
+          color: isMe ? AppColors.primary : Theme.of(context).cardColor,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(15),
             topRight: const Radius.circular(15),
@@ -91,7 +91,9 @@ class ChatView extends StatelessWidget {
         child: Text(
           msg['text'],
           style: TextStyle(
-            color: isMe ? Colors.white : Colors.black87,
+            color: isMe
+                ? Colors.white
+                : Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
       ),
@@ -99,12 +101,12 @@ class ChatView extends StatelessWidget {
   }
 
   /// ✏️ Input Area
-  Widget _inputArea() {
+  Widget _inputArea(BuildContext context) {
     return Container(
       padding:
           const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -120,7 +122,7 @@ class ChatView extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(25),
               ),
               child: TextField(

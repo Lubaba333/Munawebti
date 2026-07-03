@@ -56,6 +56,8 @@ class EmergencyDetailsView extends StatelessWidget {
 
             _section(
 
+              context: context,
+
               title:"Student Information",
 
               icon:Icons.person,
@@ -64,12 +66,14 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Name",
                   emergency.student.fullName,
                 ),
 
 
                 _item(
+                  context,
                   "Student ID",
                   emergency.student.id.toString(),
                 ),
@@ -77,6 +81,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Email",
                   emergency.student.email.isNotEmpty
                       ? emergency.student.email
@@ -86,6 +91,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Phone",
                   emergency.student.phoneNumber.isNotEmpty
                       ? emergency.student.phoneNumber
@@ -95,6 +101,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Specialization",
                   emergency.student.specialization.isNotEmpty
                       ? emergency.student.specialization
@@ -104,6 +111,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Year",
                   emergency.student.year.toString(),
                 ),
@@ -111,6 +119,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Resident",
                   emergency.student.isResident
                       ? "Yes"
@@ -132,6 +141,8 @@ class EmergencyDetailsView extends StatelessWidget {
 
             _section(
 
+              context: context,
+
               title:"Emergency Status",
 
               icon:Icons.timeline,
@@ -142,6 +153,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
                 _item(
+                  context,
                   "Status",
                   emergency.status,
                 ),
@@ -333,6 +345,8 @@ class EmergencyDetailsView extends StatelessWidget {
 
   Widget _section({
 
+    required BuildContext context,
+
     required String title,
 
     required IconData icon,
@@ -351,7 +365,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
       decoration:BoxDecoration(
 
-        color:Colors.white,
+        color:Theme.of(context).cardColor,
 
         borderRadius:BorderRadius.circular(20),
 
@@ -430,7 +444,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
 
-  Widget _item(String title,String value){
+  Widget _item(BuildContext context, String title,String value){
 
 
     return Padding(
@@ -456,7 +470,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
               style:TextStyle(
 
-                color:Colors.grey.shade600,
+                color:Theme.of(context).textTheme.bodySmall?.color,
 
               ),
 
