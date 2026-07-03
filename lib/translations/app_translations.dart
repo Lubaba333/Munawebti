@@ -60,20 +60,24 @@ class AppTranslations extends Translations {
   'welcome': 'مرحباً بك',
   'welcome_back': 'أهلاً بعودتك',
   'login': 'تسجيل الدخول',
+  'Sign in': 'تسجيل الدخول',
   'register': 'إنشاء حساب',
+  'Sign up': 'إنشاء حساب',
   'logout': 'تسجيل الخروج',
   'email': 'البريد الإلكتروني',
   'password': 'كلمة المرور',
   'confirm_password': 'تأكيد كلمة المرور',
-  'full_name': 'الاسم الكامل',
-  'phone': 'رقم الهاتف',
+  'user_name': 'الاسم الكامل',
+  'phone_number': 'رقم الهاتف',
+  'year': 'السنة الدراسية',
+  'specialization': 'التخصص',
   'student_number': 'الرقم الجامعي',
   'forgot_password': 'نسيت كلمة المرور؟',
   'remember_me': 'تذكرني',
   'dont_have_account': 'ليس لديك حساب؟',
   'already_have_account': 'لديك حساب بالفعل؟',
-  'sign_in': 'تسجيل الدخول',
-  'sign_up': 'إنشاء حساب',
+  'Sign in': 'تسجيل الدخول',
+  'Sign up': 'إنشاء حساب',
   'verify': 'تحقق',
   'verification_code': 'رمز التحقق',
   'resend_code': 'إعادة إرسال الرمز',
@@ -87,12 +91,13 @@ class AppTranslations extends Translations {
   'passwords_not_match': 'كلمتا المرور غير متطابقتين',
   'invalid_email': 'البريد الإلكتروني غير صالح',
   'required_field': 'هذا الحقل مطلوب',
+  'create_account': 'إنشاء حساب',
 
   // ================= Welcome =================
-  'welcome_title': 'Welcome to Studants App',
-  'welcome_description':
-      'منصة مصممة للطلاب للوصول إلى خدماتهم بسهولة.',
-
+  'Welcome to Studants App': 'مرحباً بك في تطبيق الطالبات',
+  
+'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.':
+'منصة مصممة لمساعدة الطلاب على الوصول إلى خدماتهم بسهولة.\nابقَ على اطلاع، وأدر طلباتك، واجعل تجربتك الأكاديمية أكثر سهولة.\nكل ما تحتاجه، في مكان واحد.',
   // ================= Profile =================
   'profile': 'الملف الشخصي',
   'edit_profile': 'تعديل الملف الشخصي',
@@ -121,7 +126,6 @@ class AppTranslations extends Translations {
   'version': 'الإصدار',
   'privacy_policy': 'سياسة الخصوصية',
   'terms': 'الشروط والأحكام',
-    'requests': 'طلباتي',
   'request': 'طلب',
   'request_type': 'نوع الطلب',
   'request_details': 'تفاصيل الطلب',
@@ -130,9 +134,9 @@ class AppTranslations extends Translations {
   'request_date': 'تاريخ الطلب',
   'send_request': 'إرسال الطلب',
   'cancel_request': 'إلغاء الطلب',
-
+  'incoming': 'واردة',
   'no_requests': 'لا توجد طلبات حالياً',
-
+'student_id': 'الرقم الجامعي',
   'pending': 'قيد الانتظار',
   'approved': 'مقبول',
   'rejected': 'مرفوض',
@@ -289,7 +293,7 @@ class AppTranslations extends Translations {
 
 'my_lectures':'محاضراتي',
 
-'my_requests':'طلباتي',
+'my_requests': 'طلباتي',
 
 'services':'الخدمات',
 
@@ -405,8 +409,62 @@ class AppTranslations extends Translations {
 
 'building':'المبنى',
 'number': 'الرقم',
-
-
+// ar
+'inside_dormitory': 'داخل السكن',
+'outside_dormitory': 'خارج السكن',
+'dormitory_attendance_details': 'تفاصيل حضور السكن',
+'view_attendance_record_details': 'عرض سجل الحضور بالتفصيل',
+// ar
+'dormitory_attendance': 'حضور السكن',
+'dormitory_attendance_subtitle': 'سجل دخولك وخروجك من السكن',
+'no_dormitory_attendance_records': 'لا توجد سجلات حضور سكن',
+// ar
+'emergency_create_subtitle': 'يرجى وصف الحالة بدقة ليتم التعامل معها بسرعة',
+'emergency_notice': 'سيتم إشعار الإدارة فوراً. في الحالات الحرجة يرجى التواصل مباشرة مع المشرفة.',
+// ar
+'created_at': 'تاريخ الإنشاء',
+'report_status': 'حالة البلاغ',
+'emergency_details_subtitle': 'عرض معلومات بلاغ الطوارئ',
+'emergency_under_review_note': 'بلاغك قيد المراجعة من قبل الإدارة. سيتم التواصل معك فور توفر تحديث.',
+// ar
+'emergency_cases': 'حالات الطوارئ',
+'emergency_cases_subtitle': 'تابعي البلاغات وحالة المعالجة',
+'no_emergency_reports': 'لا توجد بلاغات طوارئ سابقة',
+'emergency_reports_hint': 'عند إرسال بلاغ جديد سيظهر هنا',
+// ar
+'complaint_details_subtitle': 'عرض معلومات الشكوى كاملة',
+'official_housing_complaint': 'شكوى سكن رسمية',
+'complaint_under_review_note': 'سيتم معالجة شكواك قريباً من قبل الإدارة',
+// ar
+'new_housing_complaint': 'إضافة شكوى جديدة',
+'housing_complaint_create_subtitle': 'اكتبي تفاصيل الشكوى بوضوح ليتم التعامل معها بشكل أسرع',
+'fill_title_and_description': 'يرجى تعبئة العنوان والوصف',
+'housing_complaint_notice': 'سيتم إرسال الشكوى للإدارة، ويمكنك متابعة حالتها من صفحة شكاوى السكن.',
+// ar
+'housing_complaints': 'شكاوى السكن',
+'housing_complaint': 'شكوى السكن',
+'housing_complaints_subtitle': 'تابعي الشكاوى وحالة معالجتها',
+'no_housing_complaints': 'لا يوجد شكاوى بعد',
+'housing_complaints_empty_hint': 'عند إضافة شكوى جديدة ستظهر هنا',
+// ar
+'no_incoming_requests': 'لا توجد طلبات واردة',
+'incoming_exchange_request': 'طلب تبديل وارد',
+'waiting_for_your_response': 'بانتظار ردك',
+'reject_exchange_request': 'رفض طلب التبديل',
+'rejection_reason': 'سبب الرفض',
+'you_approved_request_waiting_admin': 'وافقتِ على الطلب بانتظار موافقة الإدارة',
+'you_rejected_request_cancelled': 'تم رفض الطلب وإلغاؤه',
+'admin_approved': 'وافقت الإدارة',
+'admin_rejected': 'رفضت الإدارة',
+"new_request":"طلب جديد",
+'  lecture_attendance _record': 'سجل حضور المحاضرات',
+  '  dormitory_attendance  _record': 'سجل حضور السكن',
+  'day/time': 'اليوم/الوقت',
+  'my_lectures_schedule': 'جدول المحاضرات',
+  'type':'نوع المحاضرة',
+  'group':' الفئة',
+   'title_type':' عنوان الطلب ',
+   'target_student_room':'الغرفة البديلة'
     },
 
     'en': {
@@ -497,6 +555,8 @@ class AppTranslations extends Translations {
   'welcome_title': 'Welcome to Studants App',
   'welcome_description':
       'A platform designed for students to access their services easily.',
+    'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.':
+'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.',
 
   // ================= Profile =================
   'profile': 'Profile',
@@ -541,7 +601,7 @@ class AppTranslations extends Translations {
   'pending': 'Pending',
   'approved': 'Approved',
   'rejected': 'Rejected',
-
+'student_id': 'Student ID',
   'current_room': 'Current Room',
   'current_room_loading': 'Current room has not been loaded yet',
 
@@ -814,8 +874,67 @@ class AppTranslations extends Translations {
 'building':'Building',
 
 
-
+// en
+'lecture_attendance _record': 'Lecture Attendance Record',
+  'dormitory_attendance  _record': 'Dormitory Attendance Record',
+'dormitory_attendance': 'Dormitory Attendance',
+'dormitory_attendance_subtitle': 'Your dormitory check-in and check-out record',
+'no_dormitory_attendance_records': 'No dormitory attendance records',
 'number':'Number',
+// en
+'inside_dormitory': 'Inside Dormitory',
+'outside_dormitory': 'Outside Dormitory',
+'dormitory_attendance_details': 'Dormitory Attendance Details',
+'view_attendance_record_details': 'View attendance record details',
+// en
+'emergency_cases': 'Emergency Cases',
+'emergency_cases_subtitle': 'Track your reports and their status',
+'no_emergency_reports': 'No emergency reports yet',
+'emergency_reports_hint': 'New reports will appear here',
+
+// en
+'created_at': 'Created At',
+'report_status': 'Report Status',
+'emergency_details_subtitle': 'View emergency report information',
+'emergency_under_review_note': 'Your report is under review by the administration. You will be contacted once an update is available.',
+// en
+'emergency_create_subtitle': 'Please describe the situation accurately so it can be handled quickly',
+'emergency_notice': 'The administration will be notified immediately. In critical cases, please contact the supervisor directly.',
+// en
+'complaint_details_subtitle': 'View full complaint information',
+'official_housing_complaint': 'Official Housing Complaint',
+'complaint_under_review_note': 'Your complaint will be handled soon by the administration',
+// en
+'housing_complaints': 'Housing Complaints',
+'housing_complaint': 'Housing Complaint',
+'housing_complaints_subtitle': 'Track complaints and their processing status',
+'no_housing_complaints': 'No complaints yet',
+'housing_complaints_empty_hint': 'New complaints will appear here',
+// en
+'no_incoming_requests': 'No Incoming Requests',
+'incoming_exchange_request': 'Incoming Exchange Request',
+'waiting_for_your_response': 'Waiting for Your Response',
+'reject_exchange_request': 'Reject Exchange Request',
+'rejection_reason': 'Rejection Reason',
+'you_approved_request_waiting_admin': 'You approved the request. Waiting for admin approval.',
+'you_rejected_request_cancelled': 'You rejected the request. It has been cancelled.',
+'admin_approved': 'Approved by Admin',
+'admin_rejected': 'Rejected by Admin',
+'sign in': 'Sign in',
+ 'create_account': 'Create Account',
+  'sign up': 'Sign up',
+    'user_name': 'User Name',
+  'phone_number': 'Phone Number',
+  'year': 'Year',
+  'specialization': 'Specialization',
+  'lecture_attendance_record': 'Lecture_Attendance_Record',
+  'dormitory_attendance_record': 'Dormitory_Attendance_Record',
+  'day/time':'Day/Time',
+  'my_lectures_schedule': 'My_Lecture_Schedule',
+  'type':'Type',
+  'group':'Group ',
+  'target_student_room':'Target_Student_Room',
+  'title_type':'Title_Type',
     },
   };
 }

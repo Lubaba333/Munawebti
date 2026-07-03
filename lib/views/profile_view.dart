@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:studants/widgets/custom_textfield.dart';
-import 'package:studants/widgets/gradient_button.dart';
 import '../controllers/profile_controller.dart';
 import '../../../utlis/app_colors.dart';
 
@@ -46,65 +44,63 @@ class ProfileView extends StatelessWidget {
 
                     _readonlyInfo(
                       icon: Icons.badge,
-                      label: "Student ID",
+                      label: "student_id".tr,
                       value: controller.studentId,
                     ),
                     _readonlyInfo(
                       icon: Icons.phone,
-                      label: "Phone",
+                      label: "phone".tr,
                       value: controller.phone.value,
                     ),
                     _readonlyInfo(
                       icon: Icons.school,
-                      label: "Year",
+                      label: "year".tr,
                       value: controller.year.value,
                     ),
                     _readonlyInfo(
                       icon: Icons.menu_book,
-                      label: "Specialization",
+                      label: "specialization".tr,
                       value: controller.specialization.value,
                     ),
                     _readonlyInfo(
                       icon: Icons.percent,
-                      label: "Annual Average",
+                      label: "annual_average".tr,
                       value: controller.annualAverage.value.isEmpty
-                          ? "غير محدد"
+                          ? "not_specified".tr
                           : controller.annualAverage.value,
                     ),
                     _readonlyInfo(
                       icon: Icons.home_work,
-                      label: "Dormitory Status",
+                      label: "dormitory_status".tr,
                       value: controller.isResident.value
-                          ? "مقيمة بالسكن"
-                          : "غير مقيمة بالسكن",
+                          ? "resident_in_dormitory".tr
+                          : "not_resident".tr,
                     ),
                     _readonlyInfo(
                       icon: Icons.meeting_room,
-                      label: "Room",
+                      label: "room".tr,
                       value: controller.room,
                     ),
                     if (controller.roomUnit.isNotEmpty)
                       _readonlyInfo(
                         icon: Icons.apartment,
-                        label: "Dormitory Unit",
+                        label: "dormitory_unit".tr,
                         value: controller.roomUnit,
                       ),
 
                     const SizedBox(height: 10),
 
-_readonlyInfo(
-  icon: Icons.person,
-  label: "Name",
-  value: controller.name.value,
-),
+                    _readonlyInfo(
+                      icon: Icons.person,
+                      label: "name".tr,
+                      value: controller.name.value,
+                    ),
 
-_readonlyInfo(
-  icon: Icons.email,
-  label: "Email",
-  value: controller.email.value,
-),
-
-                   
+                    _readonlyInfo(
+                      icon: Icons.email,
+                      label: "email".tr,
+                      value: controller.email.value,
+                    ),
                   ],
                 ),
               );
@@ -123,12 +119,11 @@ _readonlyInfo(
           icon: const Icon(Icons.arrow_back, color: AppColors.darkPurple),
         ),
         const Spacer(),
-        const Text(
-          "Profile",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        Text(
+          "profile".tr,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const Spacer(),
-       
       ],
     );
   }
@@ -239,7 +234,7 @@ _readonlyInfo(
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text("Camera"),
+              title: Text("camera".tr),
               onTap: () {
                 controller.pickImage(ImageSource.camera);
                 Get.back();
@@ -247,7 +242,7 @@ _readonlyInfo(
             ),
             ListTile(
               leading: const Icon(Icons.photo),
-              title: const Text("Gallery"),
+              title: Text("gallery".tr),
               onTap: () {
                 controller.pickImage(ImageSource.gallery);
                 Get.back();
@@ -279,7 +274,7 @@ _readonlyInfo(
               const SizedBox(height: 20),
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text("تعديل الصورة"),
+                title: Text("edit_image".tr),
                 onTap: () {
                   Get.back();
                   _showPickImageSheet();
@@ -287,7 +282,7 @@ _readonlyInfo(
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text("حذف الصورة"),
+                title: Text("delete_image".tr),
                 onTap: () {
                   controller.profileImage.value = null;
                   Get.back();
@@ -330,6 +325,4 @@ _readonlyInfo(
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
-
- 
 }

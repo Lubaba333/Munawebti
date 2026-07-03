@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:studants/controllers/auth_controller.dart';
 import 'package:studants/controllers/profile_controller.dart';
@@ -14,6 +15,13 @@ import 'package:studants/views/welcome_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await GetStorage.init();
+
+  final box = GetStorage();
+  if (box.read('language') == null) {
+    await box.write('language', 'en');
+  }
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -52,13 +60,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
       translations: AppTranslations(),
-      locale: const Locale('ar'),
+      locale: Locale(box.read('language') ?? 'en'),
       fallbackLocale: const Locale('en'),
-
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -75,7 +83,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
@@ -94,7 +101,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-
       themeMode: ThemeMode.system,
       home: const WelcomeView(),
     );

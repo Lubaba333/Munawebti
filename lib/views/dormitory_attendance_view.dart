@@ -102,22 +102,22 @@ class DormitoryAttendanceView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "حضور السكن",
-                  style: TextStyle(
+                  "dormitory_attendance".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "سجل دخولك وخروجك من السكن",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  "dormitory_attendance_subtitle".tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -130,7 +130,8 @@ class DormitoryAttendanceView extends StatelessWidget {
   Widget _card(dynamic item) {
     final isPresent = item.status == 'present';
     final statusColor = isPresent ? Colors.green : Colors.red;
-    final statusText = isPresent ? "داخل السكن" : "خارج السكن";
+    final statusText =
+        isPresent ? "inside_dormitory".tr : "outside_dormitory".tr;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -193,7 +194,7 @@ class DormitoryAttendanceView extends StatelessWidget {
               await controller.fetchAttendanceDetails(item.id);
               Get.to(() => const DormitoryAttendanceDetailView());
             },
-            child: const Text("تفاصيل"),
+            child: Text("details".tr),
           ),
         ],
       ),
@@ -203,7 +204,7 @@ class DormitoryAttendanceView extends StatelessWidget {
   Widget _emptyState() {
     return Center(
       child: Text(
-        "لا توجد سجلات حضور سكن",
+        "no_dormitory_attendance_records".tr,
         style: TextStyle(
           color: Colors.grey.shade600,
           fontWeight: FontWeight.bold,

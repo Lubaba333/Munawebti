@@ -10,8 +10,8 @@ class HousingComplaintDetailView extends StatelessWidget {
   static const complaintColor = AppColors.mauve;
 
   String _text(dynamic value) {
-    if (value == null) return "غير محدد";
-    if (value.toString().isEmpty) return "غير محدد";
+    if (value == null) return "not_specified".tr;
+    if (value.toString().isEmpty) return "not_specified".tr;
     return value.toString();
   }
 
@@ -22,9 +22,7 @@ class HousingComplaintDetailView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.softLavender,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -78,27 +76,29 @@ class HousingComplaintDetailView extends StatelessWidget {
                             const SizedBox(height: 22),
                             _certificateItem(
                               icon: Icons.description_outlined,
-                              title: "الوصف",
+                              title: "description".tr,
                               value: _text(item.description),
                             ),
                             _certificateItem(
                               icon: Icons.calendar_month_rounded,
-                              title: "تاريخ الإنشاء",
+                              title: "created_at".tr,
                               value: formattedDate,
                             ),
                             _certificateItem(
                               icon: isResolved
                                   ? Icons.check_circle_rounded
                                   : Icons.hourglass_bottom_rounded,
-                              title: "حالة الشكوى",
-                              value: isResolved ? "تم حل الشكوى" : "قيد المعالجة",
+                              title: "complaint_status".tr,
+                              value: isResolved
+                                  ? "complaint_resolved".tr
+                                  : "complaint_processing".tr,
                               showDivider: !isResolved,
                             ),
                             if (!isResolved)
                               _certificateItem(
                                 icon: Icons.info_outline_rounded,
-                                title: "ملاحظة",
-                                value: "سيتم معالجة شكواك قريباً من قبل الإدارة",
+                                title: "note".tr,
+                                value: "complaint_under_review_note".tr,
                                 showDivider: false,
                               ),
                           ],
@@ -152,25 +152,22 @@ class HousingComplaintDetailView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل الشكوى",
-                  style: TextStyle(
+                  "complaint_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض معلومات الشكوى كاملة",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                  ),
+                  "complaint_details_subtitle".tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -203,9 +200,9 @@ class HousingComplaintDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "شكوى سكن رسمية",
-          style: TextStyle(
+        Text(
+          "official_housing_complaint".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -230,7 +227,7 @@ class HousingComplaintDetailView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            isResolved ? "تم الحل" : "قيد المعالجة",
+            isResolved ? "resolved".tr : "processing".tr,
             style: TextStyle(
               color: statusColor,
               fontSize: 12,
@@ -261,11 +258,7 @@ class HousingComplaintDetailView extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                color: complaintColor,
-                size: 23,
-              ),
+              Icon(icon, color: complaintColor, size: 23),
               const SizedBox(width: 12),
               SizedBox(
                 width: 120,
@@ -292,10 +285,7 @@ class HousingComplaintDetailView extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          Divider(
-            height: 1,
-            color: Colors.grey.shade200,
-          ),
+          Divider(height: 1, color: Colors.grey.shade200),
       ],
     );
   }

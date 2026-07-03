@@ -51,47 +51,47 @@ class LectureAttendanceDetailView extends StatelessWidget {
                           const SizedBox(height: 22),
                           _certificateItem(
                             icon: Icons.fact_check_rounded,
-                            title: "الحالة",
+                            title: "status".tr,
                             value: _statusText(item.status),
                           ),
                           _certificateItem(
                             icon: Icons.calendar_month_rounded,
-                            title: "تاريخ الحضور",
+                            title: "attendance_date".tr,
                             value: item.attendanceDate,
                           ),
                           _certificateItem(
                             icon: Icons.person_rounded,
-                            title: "الدكتور",
+                            title: "doctor".tr,
                             value: item.teacherName,
                           ),
                           _certificateItem(
                             icon: Icons.access_time_rounded,
-                            title: "الوقت",
+                            title: "time".tr,
                             value: "${item.fromHour} - ${item.toHour}",
                           ),
                           _certificateItem(
                             icon: Icons.today_rounded,
-                            title: "اليوم",
+                            title: "day".tr,
                             value: item.day,
                           ),
                           _certificateItem(
                             icon: Icons.location_on_rounded,
-                            title: "المكان",
+                            title: "location".tr,
                             value: item.labName,
                           ),
                           _certificateItem(
                             icon: Icons.groups_rounded,
-                            title: "الفئة",
+                            title: "group".tr,
                             value: item.groupNumber,
                           ),
                           _certificateItem(
                             icon: Icons.account_tree_rounded,
-                            title: "الشعبة",
+                            title: "section".tr,
                             value: item.branch,
                           ),
                           _certificateItem(
                             icon: Icons.menu_book_rounded,
-                            title: "نوع المحاضرة",
+                            title: "lecture_type".tr,
                             value: item.type,
                             showDivider: false,
                           ),
@@ -145,22 +145,22 @@ class LectureAttendanceDetailView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل الحضور",
-                  style: TextStyle(
+                  "attendance_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض سجل حضور المحاضرة",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  "view_lecture_attendance_record".tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -193,9 +193,9 @@ class LectureAttendanceDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "سجل حضور محاضرة",
-          style: TextStyle(
+        Text(
+          "lecture_attendance_record_single".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -266,7 +266,7 @@ class LectureAttendanceDetailView extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  value.isEmpty ? "غير محدد" : value,
+                  value.isEmpty ? "not_specified".tr : value,
                   style: TextStyle(
                     color: Colors.grey.shade700,
                     fontSize: 14,
@@ -298,9 +298,9 @@ class LectureAttendanceDetailView extends StatelessWidget {
   }
 
   String _statusText(String status) {
-    if (status == 'present') return "حاضر";
-    if (status == 'absent') return "غائب";
-    if (status == 'excused') return "معذور";
+    if (status == 'present') return "present".tr;
+    if (status == 'absent') return "absent".tr;
+    if (status == 'excused') return "excused".tr;
     return status;
   }
 }

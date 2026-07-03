@@ -11,8 +11,8 @@ class RewardDetailsView extends StatelessWidget {
   static const rewardGold = Color(0xFFFFB300);
 
   String _text(dynamic value) {
-    if (value == null) return "غير محدد";
-    if (value.toString().isEmpty) return "غير محدد";
+    if (value == null) return "not_specified".tr;
+    if (value.toString().isEmpty) return "not_specified".tr;
     return value.toString();
   }
 
@@ -55,8 +55,8 @@ class RewardDetailsView extends StatelessWidget {
                     final r = controller.reward;
 
                     if (r.isEmpty) {
-                      return const Center(
-                        child: Text("لا توجد تفاصيل"),
+                      return Center(
+                        child: Text("no_details".tr),
                       );
                     }
 
@@ -69,20 +69,20 @@ class RewardDetailsView extends StatelessWidget {
                           const SizedBox(height: 22),
                           _certificateItem(
                             icon: Icons.description_outlined,
-                            title: "الوصف",
+                            title: "description".tr,
                             value: _text(r['description']),
                           ),
                           _certificateItem(
                             icon: Icons.calendar_month_rounded,
-                            title: "تاريخ المكافأة",
+                            title: "reward_date".tr,
                             value: _text(r['created_at']),
                           ),
                           _certificateItem(
                             icon: Icons.person_rounded,
-                            title: "المشرف",
+                            title: "supervisor".tr,
                             value: creator is Map
                                 ? _text(creator['full_name'])
-                                : "غير محدد",
+                                : "not_specified".tr,
                             showDivider: false,
                           ),
                         ],
@@ -135,22 +135,22 @@ class RewardDetailsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل المكافأة",
-                  style: TextStyle(
+                  "reward_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض معلومات المكافأة كاملة",
-                  style: TextStyle(
+                  "view_full_reward_info".tr,
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
                   ),
@@ -184,9 +184,9 @@ class RewardDetailsView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "مكافأة رسمية",
-          style: TextStyle(
+        Text(
+          "official_reward".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,

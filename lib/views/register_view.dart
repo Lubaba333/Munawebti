@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:studants/views/login.dart';
 import 'package:studants/views/otp.dart';
 
-
 import '../controllers/auth_controller.dart';
 import '../utlis/app_colors.dart';
 import '../widgets/custom_textfield.dart';
@@ -79,12 +78,12 @@ class RegisterView extends StatelessWidget {
       padding: const EdgeInsets.all(30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Icon(Icons.person_add, color: Colors.white, size: 35),
-          SizedBox(height: 10),
+        children: [
+          const Icon(Icons.person_add, color: Colors.white, size: 35),
+          const SizedBox(height: 10),
           Text(
-            "Create Account",
-            style: TextStyle(color: Colors.white, fontSize: 28),
+            "create_account".tr,
+            style: const TextStyle(color: Colors.white, fontSize: 28),
           ),
         ],
       ),
@@ -103,111 +102,114 @@ class RegisterView extends StatelessWidget {
           children: [
             CustomTextField(
               controller: nameController,
-              hint: "User Name",
+              hint: "user_name".tr,
               icon: Icons.badge,
             ),
             CustomTextField(
               controller: studentIdController,
-              hint: "Student ID",
+              hint: "student_id".tr,
               icon: Icons.numbers,
             ),
             CustomTextField(
               controller: emailController,
-              hint: "Email",
+              hint: "email".tr,
               icon: Icons.email,
             ),
             CustomTextField(
               controller: passwordController,
-              hint: "Password",
+              hint: "password".tr,
               icon: Icons.lock,
               isPassword: true,
             ),
             CustomTextField(
               controller: confirmPasswordController,
-              hint: "Confirm Password",
+              hint: "confirm_password".tr,
               icon: Icons.lock,
               isPassword: true,
             ),
             CustomTextField(
               controller: phoneController,
-              hint: "Phone Number",
+              hint: "phone_number".tr,
               icon: Icons.phone,
             ),
             CustomTextField(
               controller: yearController,
-              hint: "Year",
+              hint: "year".tr,
               icon: Icons.school,
             ),
             CustomTextField(
               controller: specializationController,
-              hint: "Specialization",
+              hint: "specialization".tr,
               icon: Icons.computer,
             ),
             const SizedBox(height: 20),
 
-            Obx(() => GradientButton(
-              text: controller.isLoading.value ? "Loading..." : "Register",
-              onTap: () async {
-                if (nameController.text.isEmpty ||
-                    studentIdController.text.isEmpty ||
-                    emailController.text.isEmpty ||
-                    passwordController.text.isEmpty ||
-                    phoneController.text.isEmpty ||
-                    specializationController.text.isEmpty) {
-                  Get.snackbar(
-                    "Error",
-                    "Please fill all fields",
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                  );
-                  return;
-                }
-                
-                if (passwordController.text != confirmPasswordController.text) {
-                  Get.snackbar(
-                    "Error",
-                    "Passwords do not match",
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                  );
-                  return;
-                }
-                
-                final success = await controller.sendRegistrationOTP(
-                  email: emailController.text,
-                );
-                
-               // في RegisterView، تأكد من أنك تمرر المعاملات بشكل صحيح:
+            Obx(
+              () => GradientButton(
+                text: controller.isLoading.value
+                    ? "loading".tr
+                    : "register".tr,
+                onTap: () async {
+                  if (nameController.text.isEmpty ||
+                      studentIdController.text.isEmpty ||
+                      emailController.text.isEmpty ||
+                      passwordController.text.isEmpty ||
+                      phoneController.text.isEmpty ||
+                      specializationController.text.isEmpty) {
+                    Get.snackbar(
+                      "error".tr,
+                      "fill_all_fields".tr,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
 
-if (success) {
-  Get.to(() => const OtpVerificationView(), arguments: {
-    'email': emailController.text,
-    'from': 'register',
-    'name': nameController.text,
-    'studentId': studentIdController.text,
-    'password': passwordController.text,
-    'confirmPassword': confirmPasswordController.text,
-    'phone': phoneController.text,
-    'year': yearController.text,
-    'specialization': specializationController.text,
-  });
-}
-              },
-            )),
+                  if (passwordController.text !=
+                      confirmPasswordController.text) {
+                    Get.snackbar(
+                      "error".tr,
+                      "passwords_not_match".tr,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  final success = await controller.sendRegistrationOTP(
+                    email: emailController.text,
+                  );
+
+                  if (success) {
+                    Get.to(() => const OtpVerificationView(), arguments: {
+                      'email': emailController.text,
+                      'from': 'register',
+                      'name': nameController.text,
+                      'studentId': studentIdController.text,
+                      'password': passwordController.text,
+                      'confirmPassword': confirmPasswordController.text,
+                      'phone': phoneController.text,
+                      'year': yearController.text,
+                      'specialization': specializationController.text,
+                    });
+                  }
+                },
+              ),
+            ),
 
             const SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have account? "),
+                Text("already_have_account".tr),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => LoginView());
                   },
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
+                  child: Text(
+                    "login".tr,
+                    style: const TextStyle(
                       color: AppColors.darkPurple,
                       fontWeight: FontWeight.bold,
                     ),

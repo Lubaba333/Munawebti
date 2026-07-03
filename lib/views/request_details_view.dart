@@ -35,8 +35,8 @@ class RequestDetailsView extends StatelessWidget {
                     }
 
                     if (request == null) {
-                      return const Center(
-                        child: Text("لا توجد تفاصيل لهذا الطلب"),
+                      return Center(
+                        child: Text("no_request_details".tr),
                       );
                     }
 
@@ -47,18 +47,17 @@ class RequestDetailsView extends StatelessWidget {
                     final items = <_DetailItem>[
                       _DetailItem(
                         icon: _typeIcon(request),
-                        title: "نوع الطلب",
+                        title: "request_type".tr,
                         value: _typeText(request),
                       ),
                       _DetailItem(
                         icon: Icons.title_rounded,
-                        title: "العنوان",
+                        title: "title_type".tr,
                         value: request['title'],
                       ),
-                      
                       _DetailItem(
                         icon: Icons.calendar_month_rounded,
-                        title: "تاريخ الإنشاء",
+                        title: "created_at".tr,
                         value: _formatDate(request['created_at']),
                       ),
                       ..._sortedMetadata(metadata).map(
@@ -75,7 +74,7 @@ class RequestDetailsView extends StatelessWidget {
                       if (request['admin_response_reason'] != null)
                         _DetailItem(
                           icon: Icons.admin_panel_settings_outlined,
-                          title: "رد الإدارة",
+                          title: "admin_response".tr,
                           value: request['admin_response_reason'],
                         ),
                     ].where((e) {
@@ -89,9 +88,9 @@ class RequestDetailsView extends StatelessWidget {
                         children: [
                           _statusHeader(request['status']),
                           const SizedBox(height: 26),
-                          const Text(
-                            "تفاصيل الطلب",
-                            style: TextStyle(
+                          Text(
+                            "request_details".tr,
+                            style: const TextStyle(
                               color: AppColors.darkPurple,
                               fontSize: 19,
                               fontWeight: FontWeight.bold,
@@ -131,10 +130,10 @@ class RequestDetailsView extends StatelessWidget {
             onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              "تفاصيل الطلب",
-              style: TextStyle(
+              "request_details".tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 27,
                 fontWeight: FontWeight.bold,
@@ -189,9 +188,9 @@ class RequestDetailsView extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "حالة الطلب",
-                style: TextStyle(
+              Text(
+                "request_status".tr,
+                style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -320,23 +319,23 @@ class RequestDetailsView extends StatelessWidget {
         final unitRaw =
             room['dormitory_unit']?['name'] ?? room['dormitory_unit_name'];
 
-        return "الغرفة $number - ${_unitArabicName(unitRaw?.toString())}";
+        return "${"room".tr} $number - ${_unitArabicName(unitRaw?.toString())}";
       }
     }
 
-    return "غرفة غير معروفة";
+    return "unknown_room".tr;
   }
 
   String _unitArabicName(String? name) {
     switch (name) {
       case "Building A":
-        return "مبنى الطالبات الأول";
+        return "building_1".tr;
       case "Building B":
-        return "مبنى الطالبات الثاني";
+        return "building_2".tr;
       case "Building C":
-        return "مبنى الطالبات الثالث";
+        return "building_3".tr;
       default:
-        return name ?? "غير محدد";
+        return name ?? "not_specified".tr;
     }
   }
 
@@ -366,11 +365,11 @@ class RequestDetailsView extends StatelessWidget {
   String _statusText(dynamic status) {
     switch (status?.toString()) {
       case 'approved':
-        return 'مقبول';
+        return 'approved'.tr;
       case 'rejected':
-        return 'مرفوض';
+        return 'rejected'.tr;
       default:
-        return 'قيد الانتظار';
+        return 'pending'.tr;
     }
   }
 
@@ -378,12 +377,12 @@ class RequestDetailsView extends StatelessWidget {
     final type = request['request_type']?.toString();
     final changeType = request['room_change_type']?.toString();
 
-    if (type == 'student_exit_permission') return 'سماح خروج من السكن';
-    if (changeType == 'specific_room') return 'تبديل غرفة بدون بديلة';
-    if (changeType == 'exchange') return 'تبديل غرفة مع طالبة';
-    if (changeType == 'any_available') return 'نقل لأي غرفة متاحة';
+    if (type == 'student_exit_permission') return 'exit_permission'.tr;
+    if (changeType == 'specific_room') return 'room_change_without_alternative'.tr;
+    if (changeType == 'exchange') return 'room_exchange_with_student'.tr;
+    if (changeType == 'any_available') return 'transfer_to_any_available_room'.tr;
 
-    return type ?? 'طلب';
+    return type ?? 'request'.tr;
   }
 
   String _metadataLabel(dynamic key, Map<String, dynamic> request) {
@@ -392,28 +391,28 @@ class RequestDetailsView extends StatelessWidget {
 
     switch (key.toString()) {
       case 'exit_date':
-        return 'تاريخ الخروج';
+        return 'exit_date'.tr;
       case 'from_hour':
-        return 'من الساعة';
+        return 'from_hour'.tr;
       case 'to_hour':
-        return 'إلى الساعة';
+        return 'to_hour'.tr;
       case 'reason':
-        if (type == 'student_exit_permission') return 'سبب الخروج';
-        if (changeType == 'any_available') return 'سبب النقل';
-        return 'سبب التبديل';
+        if (type == 'student_exit_permission') return 'exit_reason'.tr;
+        if (changeType == 'any_available') return 'transfer_reason'.tr;
+        return 'exchange_reason'.tr;
       case 'current_room_id':
-        return 'الغرفة الحالية';
+        return 'current_room'.tr;
       case 'requested_room_id':
-        return 'الغرفة المطلوبة';
+        return 'requested_room'.tr;
       case 'target_room_id':
-        return 'غرفة الطالبة البديلة';
+        return 'target_student_room'.tr;
       case 'admin_response':
       case 'approval_reason':
       case 'admin_notes':
       case 'notes':
-        return 'ملاحظات الإدارة';
+        return 'admin_notes'.tr;
       case 'rejection_reason':
-        return 'سبب الرفض';
+        return 'rejection_reason'.tr;
       default:
         return key.toString();
     }

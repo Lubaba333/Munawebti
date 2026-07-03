@@ -38,13 +38,13 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
   String _unitArabicName(String? name) {
     switch (name) {
       case "Building A":
-        return "مبنى الطالبات الأول";
+        return "building_1".tr;
       case "Building B":
-        return "مبنى الطالبات الثاني";
+        return "building_2".tr;
       case "Building C":
-        return "مبنى الطالبات الثالث";
+        return "building_3".tr;
       default:
-        return name ?? "غير محدد";
+        return name ?? "not_specified".tr;
     }
   }
 
@@ -74,7 +74,7 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
 
   String _roomTitle(dynamic room) {
     final number = room['room_number'] ?? room['number'] ?? '-';
-    return "غرفة $number";
+    return "${"room".tr} $number";
   }
 
   List<Map<String, dynamic>> _unitsFromRooms() {
@@ -101,7 +101,6 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
       final unitId = _unitIdFromRoom(room);
 
       if (roomId == currentId) return false;
-
       if (selectedUnitId.value == null) return false;
 
       return unitId == selectedUnitId.value;
@@ -134,10 +133,10 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
             onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              "تبديل غرفة بدون بديلة",
-              style: TextStyle(
+              "specific_room_change".tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
@@ -165,20 +164,20 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
         final currentRoom = controller.currentRoom.value;
 
         if (currentRoom == null) {
-          return const Center(
+          return Center(
             child: Text(
-              "لم يتم تحميل الغرفة الحالية بعد، تأكدي أن الحساب مقيم بالسكن",
+              "current_room_not_loaded_resident".tr,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
 
         if (controller.rooms.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
-              "لا توجد غرف متاحة حالياً",
-              style: TextStyle(color: Colors.grey),
+              "no_rooms".tr,
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
@@ -192,10 +191,10 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
                 size: 72,
               ),
               const SizedBox(height: 12),
-              const Text(
-                "اختاري الوحدة السكنية أولاً، ثم اختاري الغرفة المطلوبة واكتبي السبب.",
+              Text(
+                "specific_room_change_desc".tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 22),
               _currentRoomCard(currentRoom),
@@ -206,30 +205,32 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
               const SizedBox(height: 14),
               CustomTextField(
                 controller: reasonController,
-                hint: "سبب تبديل الغرفة",
+                hint: "specific_room_reason".tr,
                 icon: Icons.edit_note,
               ),
               const SizedBox(height: 24),
-              Obx(() => GradientButton(
-                    text: "إرسال الطلب",
-                    isLoading: controller.isSubmitting.value,
-                    onTap: () {
-                      if (selectedUnitId.value == null) {
-                        Get.snackbar("تنبيه", "اختاري الوحدة السكنية");
-                        return;
-                      }
+              Obx(
+                () => GradientButton(
+                  text: "send_room_change".tr,
+                  isLoading: controller.isSubmitting.value,
+                  onTap: () {
+                    if (selectedUnitId.value == null) {
+                      Get.snackbar("warning".tr, "choose_unit".tr);
+                      return;
+                    }
 
-                      if (requestedRoomId.value == null) {
-                        Get.snackbar("تنبيه", "اختاري الغرفة المطلوبة");
-                        return;
-                      }
+                    if (requestedRoomId.value == null) {
+                      Get.snackbar("warning".tr, "choose_room".tr);
+                      return;
+                    }
 
-                      controller.createSpecificRoomRequest(
-                        requestedRoomId: requestedRoomId.value!,
-                        reason: reasonController.text,
-                      );
-                    },
-                  )),
+                    controller.createSpecificRoomRequest(
+                      requestedRoomId: requestedRoomId.value!,
+                      reason: reasonController.text,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         );
@@ -257,7 +258,7 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              "غرفتك الحالية: ${room['room_number']}  |  الوحدة: $unitName",
+              "${"current_room".tr}: ${room['room_number']}  |  ${"unit".tr}: $unitName",
               style: const TextStyle(
                 color: AppColors.black,
                 fontSize: 15,
@@ -278,7 +279,7 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
         value: selectedUnitId.value,
         isExpanded: true,
         decoration: InputDecoration(
-          labelText: "الوحدة السكنية",
+          labelText: "choose_unit".tr,
           labelStyle: const TextStyle(color: AppColors.darkPurple),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -308,20 +309,20 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
   Widget _roomDropdown() {
     return Obx(() {
       if (selectedUnitId.value == null) {
-        return _disabledBox("اختاري الوحدة أولاً لعرض الغرف");
+        return _disabledBox("choose_building_first".tr);
       }
 
       final rooms = _filteredRooms();
 
       if (rooms.isEmpty) {
-        return _disabledBox("لا توجد غرف متاحة في هذه الوحدة");
+        return _disabledBox("no_rooms_in_building".tr);
       }
 
       return DropdownButtonFormField<int>(
         value: requestedRoomId.value,
         isExpanded: true,
         decoration: InputDecoration(
-          labelText: "الغرفة المطلوبة",
+          labelText: "choose_room".tr,
           labelStyle: const TextStyle(color: AppColors.darkPurple),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -331,18 +332,21 @@ class _SpecificRoomChangeViewState extends State<SpecificRoomChangeView> {
             borderSide: const BorderSide(color: AppColors.mauve),
           ),
         ),
-        items: rooms.map((room) {
-          final id = int.tryParse(room['id'].toString());
-          if (id == null) return null;
+        items: rooms
+            .map((room) {
+              final id = int.tryParse(room['id'].toString());
+              if (id == null) return null;
 
-          return DropdownMenuItem<int>(
-            value: id,
-            child: Text(
-              _roomTitle(room),
-              overflow: TextOverflow.ellipsis,
-            ),
-          );
-        }).whereType<DropdownMenuItem<int>>().toList(),
+              return DropdownMenuItem<int>(
+                value: id,
+                child: Text(
+                  _roomTitle(room),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              );
+            })
+            .whereType<DropdownMenuItem<int>>()
+            .toList(),
         onChanged: (value) {
           requestedRoomId.value = value;
         },

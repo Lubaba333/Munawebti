@@ -39,13 +39,13 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
   String _unitArabicName(String? name) {
     switch (name) {
       case "Building A":
-        return "مبنى الطالبات الأول";
+        return "building_1".tr;
       case "Building B":
-        return "مبنى الطالبات الثاني";
+        return "building_2".tr;
       case "Building C":
-        return "مبنى الطالبات الثالث";
+        return "building_3".tr;
       default:
-        return name ?? "غير محدد";
+        return name ?? "not_specified".tr;
     }
   }
 
@@ -104,11 +104,11 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
 
   String _roomTitle(dynamic room) {
     final number = room['room_number'] ?? room['number'] ?? '-';
-    return "الغرفة: $number";
+    return "${"room".tr}: $number";
   }
 
   String _studentTitle(dynamic student) {
-    final name = student['full_name'] ?? student['name'] ?? 'طالبة';
+    final name = student['full_name'] ?? student['name'] ?? "student".tr;
     final identifier = student['student_identifier'];
     if (identifier != null) {
       return "$name • $identifier";
@@ -142,10 +142,10 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
             onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              "تبديل غرفة مع طالبة",
-              style: TextStyle(
+              "room_exchange_with_student".tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
@@ -173,11 +173,11 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
         final currentRoom = controller.currentRoom.value;
 
         if (currentRoom == null) {
-          return const Center(
+          return Center(
             child: Text(
-              "لم يتم تحميل غرفتك الحالية بعد",
+              "current_room_loading".tr,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
@@ -191,10 +191,10 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
                 size: 76,
               ),
               const SizedBox(height: 12),
-              const Text(
-                "غرفتك الحالية ثابتة من حسابك. اختاري الوحدة السكنية، ثم الغرفة، ثم اسم الطالبة واكتبي السبب.",
+              Text(
+                "room_exchange_desc".tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 22),
               _currentRoomCard(currentRoom),
@@ -207,37 +207,38 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
               const SizedBox(height: 14),
               CustomTextField(
                 controller: reasonController,
-                hint: "سبب التبديل",
+                hint: "exchange_reason".tr,
                 icon: Icons.edit_note,
               ),
               const SizedBox(height: 24),
-              Obx(() => GradientButton(
-                    text: "إرسال طلب التبديل",
-                    isLoading: controller.isSubmitting.value,
-                    onTap: () {
-                      if (selectedUnitId.value == null) {
-                        Get.snackbar("تنبيه", "اختاري الوحدة السكنية");
-                        return;
-                      }
+              Obx(
+                () => GradientButton(
+                  text: "send_exchange_request".tr,
+                  isLoading: controller.isSubmitting.value,
+                  onTap: () {
+                    if (selectedUnitId.value == null) {
+                      Get.snackbar("warning".tr, "choose_unit".tr);
+                      return;
+                    }
 
-                      if (targetRoomId.value == null) {
-                        Get.snackbar(
-                            "تنبيه", "اختاري الغرفة المراد التبديل معها");
-                        return;
-                      }
+                    if (targetRoomId.value == null) {
+                      Get.snackbar("warning".tr, "choose_exchange_room".tr);
+                      return;
+                    }
 
-                      if (targetStudentId.value == null) {
-                        Get.snackbar("تنبيه", "اختاري الطالبة البديلة");
-                        return;
-                      }
+                    if (targetStudentId.value == null) {
+                      Get.snackbar("warning".tr, "choose_exchange_student".tr);
+                      return;
+                    }
 
-                      controller.createExchangeRoomRequest(
-                        targetRoomId: targetRoomId.value!,
-                        targetStudentId: targetStudentId.value!,
-                        reason: reasonController.text,
-                      );
-                    },
-                  )),
+                    controller.createExchangeRoomRequest(
+                      targetRoomId: targetRoomId.value!,
+                      targetStudentId: targetStudentId.value!,
+                      reason: reasonController.text,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         );
@@ -267,16 +268,16 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "غرفتك الحالية",
-                  style: TextStyle(
+                Text(
+                  "current_room".tr,
+                  style: const TextStyle(
                     color: AppColors.darkPurple,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "الغرفة: ${room['room_number']}  |  الوحدة: $unitName",
+                  "${"room".tr}: ${room['room_number']}  |  ${"unit".tr}: $unitName",
                   style: const TextStyle(
                     color: AppColors.black,
                     fontSize: 15,
@@ -299,7 +300,7 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
         value: selectedUnitId.value,
         isExpanded: true,
         decoration: InputDecoration(
-          labelText: "الوحدة السكنية",
+          labelText: "unit".tr,
           labelStyle: const TextStyle(color: AppColors.darkPurple),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -331,20 +332,20 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
   Widget _roomDropdown() {
     return Obx(() {
       if (selectedUnitId.value == null) {
-        return _disabledBox("اختاري الوحدة أولاً لعرض الغرف");
+        return _disabledBox("choose_building_first".tr);
       }
 
       final availableRooms = _filteredRooms();
 
       if (availableRooms.isEmpty) {
-        return _disabledBox("لا توجد غرف في هذه الوحدة");
+        return _disabledBox("no_rooms_in_building".tr);
       }
 
       return DropdownButtonFormField<int>(
         value: targetRoomId.value,
         isExpanded: true,
         decoration: InputDecoration(
-          labelText: "الغرفة المراد التبديل معها",
+          labelText: "exchange_room".tr,
           labelStyle: const TextStyle(color: AppColors.darkPurple),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -385,7 +386,7 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
   Widget _studentDropdown() {
     return Obx(() {
       if (targetRoomId.value == null) {
-        return _disabledBox("اختاري الغرفة أولاً لعرض الطالبات");
+        return _disabledBox("choose_room_first_for_students".tr);
       }
 
       if (controller.isLoadingRoomStudents.value) {
@@ -396,14 +397,14 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
       }
 
       if (controller.roomStudents.isEmpty) {
-        return _disabledBox("لا توجد طالبات في هذه الغرفة");
+        return _disabledBox("no_students_in_room".tr);
       }
 
       return DropdownButtonFormField<int>(
         value: targetStudentId.value,
         isExpanded: true,
         decoration: InputDecoration(
-          labelText: "الطالبة البديلة",
+          labelText: "exchange_student".tr,
           labelStyle: const TextStyle(color: AppColors.darkPurple),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),

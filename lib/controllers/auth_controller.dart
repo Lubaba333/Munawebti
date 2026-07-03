@@ -26,14 +26,14 @@ class AuthController extends GetxController {
         authRequired: false,
       );
       
-      print("✅ Registration OTP Sent: $response");
+      print("✅ Registration OTP Sent: }$response");
       
       verifiedEmail.value = email;
       isEmailVerified.value = false;
       
-      Get.snackbar(
-        "OTP Sent",
-        "Verification code sent to $email",
+    Get.snackbar(
+  "otp_sent".tr,
+  "${"verification_code_sent".tr} $email",
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -49,7 +49,7 @@ class AuthController extends GetxController {
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Failed to Send OTP",
+        "Failed to Send OTP".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -77,8 +77,8 @@ class AuthController extends GetxController {
       isEmailVerified.value = true;
       
       Get.snackbar(
-        "Success",
-        "Email verified! You can now complete registration.",
+        "Success".tr,
+        "Email verified! You can now complete registration.".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -93,7 +93,7 @@ class AuthController extends GetxController {
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Verification Failed",
+        "Verification Failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -118,8 +118,8 @@ class AuthController extends GetxController {
   }) async {
     if (password != confirmPassword) {
       Get.snackbar(
-        "Error",
-        "Passwords do not match",
+        "Error".tr,
+        "Passwords do not match".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -129,8 +129,8 @@ class AuthController extends GetxController {
 
     if (!isEmailVerified.value || email != verifiedEmail.value) {
       Get.snackbar(
-        "Email Not Verified",
-        "Please verify your email first by entering the OTP code",
+        "Email Not Verified".tr,
+        "Please verify your email first by entering the OTP code".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -171,8 +171,8 @@ await Get.find<ProfileController>().getProfile();
       verifiedEmail.value = '';
 
       Get.snackbar(
-        "Success",
-        "Account created successfully!",
+        "Success".tr,
+        "Account created successfully!".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -187,7 +187,7 @@ await Get.find<ProfileController>().getProfile();
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Registration Failed",
+        "Registration Failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -228,8 +228,8 @@ await Get.find<ProfileController>().getProfile();
       }
 
       Get.snackbar(
-        "Success",
-        "Welcome back!",
+        "Success".tr,
+        "Welcome back!".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -244,7 +244,7 @@ await Get.find<ProfileController>().getProfile();
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Login Failed",
+        "Login Failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,

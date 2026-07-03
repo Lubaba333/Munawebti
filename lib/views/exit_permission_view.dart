@@ -48,8 +48,8 @@ class ExitPermissionView extends StatelessWidget {
             onPressed: () => Get.back(),
           ),
           const SizedBox(width: 10),
-          const Text(
-            "Exit Permission",
+          Text(
+            "Exit Permission".tr,
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -75,19 +75,19 @@ class ExitPermissionView extends StatelessWidget {
             
             CustomTextField(
               controller: titleCtrl,
-              hint: "Request Title",
+              hint: "Request Title".tr,
               icon: Icons.title,
             ),
             
             CustomTextField(
               controller: descCtrl,
-              hint: "Description",
+              hint: "Description".tr,
               icon: Icons.description,
             ),
             
             CustomTextField(
               controller: dateCtrl,
-              hint: "Exit Date (YYYY-MM-DD)",
+              hint: "Exit Date (YYYY-MM-DD)".tr,
               icon: Icons.calendar_today,
             ),
             
@@ -96,7 +96,7 @@ class ExitPermissionView extends StatelessWidget {
                 Expanded(
                   child: CustomTextField(
                     controller: fromCtrl,
-                    hint: "From (HH:MM)",
+                    hint: "From (HH:MM)".tr,
                     icon: Icons.access_time,
                   ),
                 ),
@@ -104,7 +104,7 @@ class ExitPermissionView extends StatelessWidget {
                 Expanded(
                   child: CustomTextField(
                     controller: toCtrl,
-                    hint: "To (HH:MM)",
+                    hint: "To (HH:MM)".tr,
                     icon: Icons.access_time,
                   ),
                 ),
@@ -113,7 +113,7 @@ class ExitPermissionView extends StatelessWidget {
             
             CustomTextField(
   controller: reasonCtrl,
-  hint: "Reason for exit",
+  hint: "Reason for exit".tr,
   icon: Icons.info_outline,  // ✅ موجود
   // أو استخدم Icons.description
 ),
@@ -121,7 +121,7 @@ class ExitPermissionView extends StatelessWidget {
             const SizedBox(height: 30),
             
             Obx(() => GradientButton(
-              text: controller.isLoading.value ? "Submitting..." : "Submit Request",
+              text: controller.isLoading.value ? "Submitting...".tr : "Submit Request".tr,
               onTap: () {
                 if (_validateForm()) {
                   final request = ExitPermissionRequest(
@@ -144,12 +144,12 @@ class ExitPermissionView extends StatelessWidget {
 
   bool _validateForm() {
     if (titleCtrl.text.isEmpty) {
-      Get.snackbar("Error", "Please enter title",
+      Get.snackbar("Error".tr, "Please enter title".tr,
         backgroundColor: Colors.red, colorText: Colors.white);
       return false;
     }
     if (dateCtrl.text.isEmpty) {
-      Get.snackbar("Error", "Please enter exit date",
+      Get.snackbar("Error".tr, "Please enter exit date".tr,
         backgroundColor: Colors.red, colorText: Colors.white);
       return false;
     }

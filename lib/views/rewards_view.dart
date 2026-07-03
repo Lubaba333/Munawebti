@@ -161,22 +161,22 @@ class _RewardsViewState extends State<RewardsView>
               ),
             ),
             const SizedBox(width: 14),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "مكافآتي",
-                    style: TextStyle(
+                    "my_rewards".tr,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 27,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
-                    "إنجازاتك الذهبية في مكان واحد",
-                    style: TextStyle(
+                    "golden_achievements".tr,
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,
                     ),
@@ -217,7 +217,7 @@ class _RewardsViewState extends State<RewardsView>
             ),
             const SizedBox(height: 18),
             Text(
-              "لا توجد مكافآت بعد",
+              "no_rewards_yet".tr,
               style: TextStyle(
                 color: Colors.grey.shade700,
                 fontSize: 17,
@@ -226,7 +226,7 @@ class _RewardsViewState extends State<RewardsView>
             ),
             const SizedBox(height: 6),
             Text(
-              "عند حصولك على مكافأة ستظهر هنا ✨",
+              "reward_will_appear_here".tr,
               style: TextStyle(
                 color: Colors.grey.shade500,
                 fontSize: 13,
@@ -238,163 +238,158 @@ class _RewardsViewState extends State<RewardsView>
     );
   }
 
- Widget _buildRewardCard(dynamic r, int index) {
-  return Container(
-    margin: const EdgeInsets.only(bottom: 18),
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          const Color(0xFFFFF8E1),
-          Colors.amber.shade100,
-          Colors.white,
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(28),
-      border: Border.all(
-        color: Colors.amber.withOpacity(.45),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.amber.withOpacity(.22),
-          blurRadius: 20,
-          offset: const Offset(0, 10),
-        ),
-      ],
-    ),
-    child: Stack(
-      children: [
-        Positioned(
-          right: -18,
-          top: -18,
-          child: Icon(
-            Icons.star_rounded,
-            size: 95,
-            color: Colors.amber.withOpacity(.15),
-          ),
-        ),
-        Row(
-          children: [
-            Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.amber.shade500,
-                    Colors.orange.shade300,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.amber.withOpacity(.35),
-                    blurRadius: 16,
-                    offset: const Offset(0, 7),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.emoji_events_rounded,
-                color: Colors.white,
-                size: 38,
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Row(
-  children: [
-    Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 5,
-      ),
+  Widget _buildRewardCard(dynamic r, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 18),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(.22),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Text(
-        "REWARD",
-        style: TextStyle(
-          color: Color(0xFF9A6A00),
-          fontSize: 10.5,
-          fontWeight: FontWeight.bold,
-          letterSpacing: .8,
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFFFFF8E1),
+            Colors.amber.shade100,
+            Colors.white,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: Colors.amber.withOpacity(.45),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.amber.withOpacity(.22),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-    ),
-
-    const Spacer(),
-
-    TextButton.icon(
-      onPressed: () {
-        Get.to(() => RewardDetailsView(id: r.id));
-      },
-      icon: const Icon(
-        Icons.visibility_outlined,
-        size: 16,
-      ),
-      label: const Text("تفاصيل"),
-      style: TextButton.styleFrom(
-        foregroundColor: AppColors.darkPurple,
-        minimumSize: Size.zero,
-        padding: EdgeInsets.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-    ),
-  ],
-),
-
-const SizedBox(height: 8),
-
-Text(
-  r.title,
-  maxLines: 2,
-  overflow: TextOverflow.ellipsis,
-  style: const TextStyle(
-    color: AppColors.darkPurple,
-    fontSize: 17,
-    fontWeight: FontWeight.bold,
-    height: 1.25,
-  ),
-),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month_rounded,
-                        color: Colors.grey.shade600,
-                        size: 15,
-                      ),
-                      const SizedBox(width: 5),
-                      Expanded(
-                        child: Text(
-                          r.date,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -18,
+            top: -18,
+            child: Icon(
+              Icons.star_rounded,
+              size: 95,
+              color: Colors.amber.withOpacity(.15),
+            ),
+          ),
+          Row(
+            children: [
+              Container(
+                width: 68,
+                height: 68,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.amber.shade500,
+                      Colors.orange.shade300,
                     ],
                   ),
-                  const SizedBox(height: 10),
-              
-                ],
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.amber.withOpacity(.35),
+                      blurRadius: 16,
+                      offset: const Offset(0, 7),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.emoji_events_rounded,
+                  color: Colors.white,
+                  size: 38,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(.22),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "reward".tr.toUpperCase(),
+                            style: const TextStyle(
+                              color: Color(0xFF9A6A00),
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: .8,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton.icon(
+                          onPressed: () {
+                            Get.to(() => RewardDetailsView(id: r.id));
+                          },
+                          icon: const Icon(
+                            Icons.visibility_outlined,
+                            size: 16,
+                          ),
+                          label: Text("details".tr),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.darkPurple,
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      r.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.darkPurple,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        height: 1.25,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_month_rounded,
+                          color: Colors.grey.shade600,
+                          size: 15,
+                        ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            r.date,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.grey.shade700,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

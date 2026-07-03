@@ -13,47 +13,45 @@ class SentRequestsTab extends StatelessWidget {
 
   String _text(dynamic value) => value?.toString() ?? '';
 
-@override
-Widget build(BuildContext context) {
-  return Obx(() {
-    if (controller.initialLoading.value) {
-  return const Center(
-    child: CircularProgressIndicator(),
-  );
-}
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.initialLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-    final myId = controller.currentStudentId.value;
+      final myId = controller.currentStudentId.value;
 
-    final sent = controller.requests.where((request) {
-      final requesterId = int.tryParse(_text(request['requester_id']));
-      final targetId = int.tryParse(_text(request['target_student_id']));
+      final sent = controller.requests.where((request) {
+        final requesterId = int.tryParse(_text(request['requester_id']));
+        final targetId = int.tryParse(_text(request['target_student_id']));
 
-      if (myId == null) return true;
+        if (myId == null) return true;
 
-      return requesterId == myId || targetId == null;
-    }).toList();
+        return requesterId == myId || targetId == null;
+      }).toList();
 
-    if (sent.isEmpty) {
-      return const Center(
-        child: Text(
-          "لا توجد طلبات حالياً",
-          style: TextStyle(color: Colors.grey),
+      if (sent.isEmpty) {
+        return Center(
+          child: Text(
+            "no_requests".tr,
+            style: const TextStyle(color: Colors.grey),
+          ),
+        );
+      }
+
+      return RefreshIndicator(
+        onRefresh: controller.getMyRequests,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(18),
+          itemCount: sent.length,
+          itemBuilder: (_, index) {
+            return _requestCard(sent[index]);
+          },
         ),
       );
-    }
-
-    return RefreshIndicator(
-      onRefresh: controller.getMyRequests,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(18),
-        itemCount: sent.length,
-        itemBuilder: (_, index) {
-          return _requestCard(sent[index]);
-        },
-      ),
-    );
-  });
-}
+    });
+  }
 
   Widget _requestCard(dynamic request) {
     final status =
@@ -107,7 +105,7 @@ Widget build(BuildContext context) {
           const SizedBox(height: 10),
           if (_requestReason(request).isNotEmpty)
             Text(
-              "السبب: ${_requestReason(request)}",
+              "${"reason".tr}: ${_requestReason(request)}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
@@ -123,7 +121,7 @@ Widget build(BuildContext context) {
                 ),
               ),
               const Spacer(),
-              TextButton(
+              TextButton.icon(
                 onPressed: () {
                   if (id != null) {
                     controller.showRequestDetails(
@@ -131,7 +129,11 @@ Widget build(BuildContext context) {
                     );
                   }
                 },
-                child: const Text("التفاصيل"),
+                icon: const Icon(Icons.visibility_outlined, size: 18),
+                label: Text("details".tr),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.darkPurple,
+                ),
               ),
               if (status == 'pending' && id != null)
                 TextButton(
@@ -140,9 +142,9 @@ Widget build(BuildContext context) {
                       int.parse(id.toString()),
                     );
                   },
-                  child: const Text(
-                    "إلغاء",
-                    style: TextStyle(color: Colors.red),
+                  child: Text(
+                    "cancel".tr,
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
             ],
@@ -159,19 +161,21 @@ Widget build(BuildContext context) {
       return metadata['reason'].toString();
     }
 
-    return "غير محدد";
+    return "not_specified".tr;
   }
 
   String _requestTypeName(dynamic request) {
     final type = _text(request['request_type']);
     final changeType = _text(request['room_change_type']);
 
-    if (type == 'student_exit_permission') return "سماح خروج";
-    if (changeType == 'exchange') return "تبديل غرفة مع طالبة";
-    if (changeType == 'specific_room') return "تبديل لغرفة محددة";
-    if (changeType == 'any_available') return "نقل لأي غرفة متاحة";
+    if (type == 'student_exit_permission') return "exit_permission".tr;
+    if (changeType == 'exchange') return "room_exchange_with_student".tr;
+    if (changeType == 'specific_room') return "specific_room_change".tr;
+    if (changeType == 'any_available') {
+      return "transfer_to_any_available_room".tr;
+    }
 
-    return "طلب";
+    return "request".tr;
   }
 
   IconData _requestIcon(dynamic request) {
@@ -216,9 +220,9 @@ Widget build(BuildContext context) {
   }
 
   String _statusText(String status) {
-    if (status == 'approved') return 'مقبول';
-    if (status == 'rejected') return 'مرفوض';
-    return 'قيد الانتظار';
+    if (status == 'approved') return 'approved'.tr;
+    if (status == 'rejected') return 'rejected'.tr;
+    return 'pending'.tr;
   }
 
   String _formatDate(String? date) {

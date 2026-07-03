@@ -35,18 +35,15 @@ class NewPasswordView extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const Text(
-                    "New Password",
-                    style: TextStyle(
+                  Text(
+                    "new_password".tr,
+                    style: const TextStyle(
                       fontSize: 26,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  
                   const SizedBox(height: 30),
-
-                  /// 💎 Glass Card
                   Container(
                     padding: const EdgeInsets.all(25),
                     decoration: BoxDecoration(
@@ -57,39 +54,40 @@ class NewPasswordView extends StatelessWidget {
                       children: [
                         CustomTextField(
                           controller: passwordController,
-                          hint: "New Password",
+                          hint: "new_password".tr,
                           icon: Icons.lock,
                           isPassword: true,
                         ),
-
                         const SizedBox(height: 15),
-
                         CustomTextField(
                           controller: confirmController,
-                          hint: "Confirm Password",
+                          hint: "confirm_password".tr,
                           icon: Icons.lock_outline,
                           isPassword: true,
                         ),
-
                         const SizedBox(height: 30),
+                        Obx(
+                          () => GradientButton(
+                            text: controller.isLoading.value
+                                ? "updating".tr
+                                : "update_password".tr,
+                            onTap: () {
+                              if (passwordController.text !=
+                                  confirmController.text) {
+                                Get.snackbar(
+                                  "error".tr,
+                                  "passwords_not_match".tr,
+                                );
+                                return;
+                              }
 
-                        Obx(() => GradientButton(
-                              text: controller.isLoading.value
-                                  ? "Updating..."
-                                  : "Update Password",
-                              onTap: () {
-                                if (passwordController.text !=
-                                    confirmController.text) {
-                                  Get.snackbar("Error", "Passwords do not match");
-                                  return;
-                                }
-
-controller.resetPassword(
-  passwordController.text,
-  confirmController.text,
-);
-                              },
-                            )),
+                              controller.resetPassword(
+                                passwordController.text,
+                                confirmController.text,
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),

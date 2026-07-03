@@ -98,12 +98,12 @@ class WarningsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تنبيهاتي",
+                  "تنبيهاتي".tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -112,7 +112,7 @@ class WarningsView extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "راجعي التنبيهات الموجهة إليك",
+                  "راجعي التنبيهات الموجهة إليك".tr,
                   style: TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
@@ -143,7 +143,7 @@ class WarningsView extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Text(
-            "لا توجد تنبيهات",
+            "لا توجد تنبيهات".tr,
             style: TextStyle(
               color: Colors.grey.shade700,
               fontSize: 16,
@@ -152,7 +152,7 @@ class WarningsView extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            "لا يوجد أي تنبيه مسجل حالياً",
+            "لا يوجد أي تنبيه مسجل حالياً".tr,
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -237,7 +237,7 @@ class WarningsView extends StatelessWidget {
               Get.to(() => WarningDetailsView(id: warning.id));
             },
             icon: const Icon(Icons.visibility_outlined, size: 18),
-            label: const Text("تفاصيل"),
+            label:  Text("تفاصيل".tr),
             style: TextButton.styleFrom(
               foregroundColor: AppColors.darkPurple,
               padding: const EdgeInsets.symmetric(horizontal: 8),

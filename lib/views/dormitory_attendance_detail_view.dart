@@ -55,12 +55,14 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                             icon: isPresent
                                 ? Icons.home_rounded
                                 : Icons.logout_rounded,
-                            title: "الحالة",
-                            value: isPresent ? "داخل السكن" : "خارج السكن",
+                            title: "status".tr,
+                            value: isPresent
+                                ? "inside_dormitory".tr
+                                : "outside_dormitory".tr,
                           ),
                           _certificateItem(
                             icon: Icons.access_time_rounded,
-                            title: "التاريخ",
+                            title: "date".tr,
                             value: item.createdAt,
                             showDivider: false,
                           ),
@@ -114,22 +116,22 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل حضور السكن",
-                  style: TextStyle(
+                  "dormitory_attendance_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض سجل الحضور بالتفصيل",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  "view_attendance_record_details".tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -162,9 +164,9 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "سجل حضور السكن",
-          style: TextStyle(
+        Text(
+          "dormitory_attendance_record".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -172,7 +174,7 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          isPresent ? "داخل السكن" : "خارج السكن",
+          isPresent ? "inside_dormitory".tr : "outside_dormitory".tr,
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.darkPurple,
@@ -189,7 +191,11 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            status,
+            status == 'present'
+                ? "present".tr
+                : status == 'absent'
+                    ? "absent".tr
+                    : status,
             style: TextStyle(
               color: color,
               fontSize: 12,
@@ -235,7 +241,7 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  value.isEmpty ? "غير محدد" : value,
+                  value.isEmpty ? "not_specified".tr : value,
                   style: TextStyle(
                     color: Colors.grey.shade700,
                     fontSize: 14,
@@ -246,8 +252,7 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
             ],
           ),
         ),
-        if (showDivider)
-          Divider(height: 1, color: Colors.grey.shade200),
+        if (showDivider) Divider(height: 1, color: Colors.grey.shade200),
       ],
     );
   }

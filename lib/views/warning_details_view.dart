@@ -14,8 +14,8 @@ class WarningDetailsView extends StatelessWidget {
   static const warningOrange = Color(0xFFF59E0B);
 
   String _text(dynamic value) {
-    if (value == null) return "غير محدد";
-    if (value.toString().isEmpty) return "غير محدد";
+    if (value == null) return "not_specified".tr;
+    if (value.toString().isEmpty) return "not_specified".tr;
     return value.toString();
   }
 
@@ -53,8 +53,8 @@ class WarningDetailsView extends StatelessWidget {
                     final warning = controller.warning;
 
                     if (warning.isEmpty) {
-                      return const Center(
-                        child: Text("لا توجد تفاصيل"),
+                      return Center(
+                        child: Text("no_details".tr),
                       );
                     }
 
@@ -67,25 +67,25 @@ class WarningDetailsView extends StatelessWidget {
                           const SizedBox(height: 22),
                           _certificateItem(
                             icon: Icons.description_rounded,
-                            title: "الوصف",
+                            title: "description".tr,
                             value: _text(warning['description']),
                           ),
                           _certificateItem(
                             icon: Icons.calendar_month_rounded,
-                            title: "تاريخ التنبيه",
+                            title: "warning_date".tr,
                             value: _text(warning['warning_date']),
                           ),
                           _certificateItem(
                             icon: Icons.gavel_rounded,
-                            title: "العقوبة المحتملة",
+                            title: "possible_penalty".tr,
                             value: _text(warning['possible_penalty']),
                           ),
                           _certificateItem(
                             icon: Icons.person_rounded,
-                            title: "المشرف",
+                            title: "supervisor".tr,
                             value: creator is Map
                                 ? _text(creator['full_name'])
-                                : "غير محدد",
+                                : "not_specified".tr,
                             showDivider: false,
                           ),
                         ],
@@ -138,22 +138,22 @@ class WarningDetailsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل التنبيه",
-                  style: TextStyle(
+                  "warning_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض معلومات التنبيه كاملة",
-                  style: TextStyle(
+                  "warning_details_subtitle".tr,
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
                   ),
@@ -187,9 +187,9 @@ class WarningDetailsView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "تنبيه رسمي",
-          style: TextStyle(
+        Text(
+          "official_warning".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,

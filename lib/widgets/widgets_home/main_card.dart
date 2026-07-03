@@ -45,8 +45,8 @@ class MainCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "المحاضرة القادمة",
+                   Text(
+                      "المحاضرة القادمة".tr,
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
@@ -120,7 +120,7 @@ class MainCard extends StatelessWidget {
                             Obx(
                               () => Text(
                                 controller.location.value.isEmpty
-                                    ? "غير محدد"
+                                    ? "غير محدد".tr
                                     : controller.location.value,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

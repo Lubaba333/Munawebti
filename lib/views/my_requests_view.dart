@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:studants/controllers/request_controller.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/views/exit_permission_view.dart';
-import 'package:studants/views/home_view.dart';
 import 'package:studants/views/room_exchange_view.dart';
 import 'package:studants/views/room_transfer_view.dart';
 import 'package:studants/views/specific_room_change_view.dart';
@@ -48,88 +47,86 @@ class _MyRequestsViewState extends State<MyRequestsView>
     super.dispose();
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    floatingActionButton: GestureDetector(
-      onTap: _showNewRequestSheet,
-      child: Container(
-        height: 56,
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        decoration: BoxDecoration(
-          gradient: AppColors.mainGradient,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.darkPurple.withOpacity(.25),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.add_circle_outline,
-              color: Colors.white,
-            ),
-            SizedBox(width: 8),
-            Text(
-              "طلب جديد",
-              style: TextStyle(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: GestureDetector(
+        onTap: _showNewRequestSheet,
+        child: Container(
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          decoration: BoxDecoration(
+            gradient: AppColors.mainGradient,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.darkPurple.withOpacity(.25),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.add_circle_outline,
                 color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "new_request".tr,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _header(),
+              _tabs(),
+              Expanded(child: _body()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _header() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Row(
+        children: [
+          if (widget.showBackButton)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Get.back(),
+            ),
+          if (widget.showBackButton) const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              "my_requests".tr,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 27,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
               ),
             ),
-          ],
-        ),
-      ),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    body: Container(
-      decoration: const BoxDecoration(gradient: AppColors.mainGradient),
-      child: SafeArea(
-        child: Column(
-          children: [
-            _header(),
-            _tabs(),
-            Expanded(child: _body()),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
- Widget _header() {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-    child: Row(
-      children: [
-        if (widget.showBackButton)
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Get.back(),
           ),
-
-        if (widget.showBackButton) const SizedBox(width: 8),
-
-        const Expanded(
-          child: Text(
-            "طلباتي",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 27,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _tabs() {
     return Container(
@@ -149,9 +146,9 @@ Widget build(BuildContext context) {
         labelColor: AppColors.darkPurple,
         unselectedLabelColor: Colors.white,
         dividerColor: Colors.transparent,
-        tabs: const [
-          Tab(text: "طلباتي"),
-          Tab(text: "الواردة"),
+        tabs: [
+          Tab(text: "my_requests".tr),
+          Tab(text: "incoming".tr),
         ],
       ),
     );
@@ -173,8 +170,6 @@ Widget build(BuildContext context) {
     );
   }
 
-
-
   void _showNewRequestSheet() {
     Get.bottomSheet(
       Container(
@@ -195,28 +190,30 @@ Widget build(BuildContext context) {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "إنشاء طلب جديد",
-              style: TextStyle(
+            Text(
+              "create_new_request".tr,
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.darkPurple,
               ),
             ),
             const SizedBox(height: 20),
-            _sheetItem(Icons.exit_to_app, "سماح خروج من السكن", () {
+            _sheetItem(Icons.exit_to_app, "exit_from_dormitory_permission".tr,
+                () {
               Get.back();
               Get.to(() => ExitPermissionView());
             }),
-            _sheetItem(Icons.meeting_room, "تبديل غرفة بدون بديلة", () {
+            _sheetItem(Icons.meeting_room,
+                "room_change_without_alternative".tr, () {
               Get.back();
               Get.to(() => const SpecificRoomChangeView());
             }),
-            _sheetItem(Icons.swap_horiz, "تبديل غرفة مع طالبة", () {
+            _sheetItem(Icons.swap_horiz, "room_exchange_with_student".tr, () {
               Get.back();
               Get.to(() => const RoomExchangeView());
             }),
-            _sheetItem(Icons.move_up, "نقل لأي غرفة متاحة", () {
+            _sheetItem(Icons.move_up, "transfer_to_any_available_room".tr, () {
               Get.back();
               Get.to(() => const RoomTransferView());
             }),

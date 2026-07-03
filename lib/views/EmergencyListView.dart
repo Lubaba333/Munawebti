@@ -26,9 +26,12 @@ class EmergencyListView extends StatelessWidget {
         onPressed: () => Get.to(() => const EmergencyCreateView()),
         backgroundColor: emergencyRed,
         icon: const Icon(Icons.add_alert, color: Colors.white),
-        label: const Text(
-          'بلاغ جديد',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        label: Text(
+          'new_report'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Container(
@@ -85,77 +88,73 @@ class EmergencyListView extends StatelessWidget {
     );
   }
 
-Widget _header() {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
-    child: Row(
-      children: [
-        if (showBackButton)
+  Widget _header() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+      child: Row(
+        children: [
+          if (showBackButton)
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(.20),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+            ),
+          if (showBackButton) const SizedBox(width: 12),
           Container(
-            width: 45,
-            height: 45,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: IconButton(
-              onPressed: () => Get.back(),
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.white,
-                size: 18,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: Colors.white.withOpacity(.25),
               ),
             ),
-          ),
-
-        if (showBackButton) const SizedBox(width: 12),
-
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(.20),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: Colors.white.withOpacity(.25),
+            child: const Icon(
+              Icons.emergency_share_rounded,
+              color: Colors.white,
+              size: 29,
             ),
           ),
-          child: const Icon(
-            Icons.emergency_share_rounded,
-            color: Colors.white,
-            size: 29,
-          ),
-        ),
-
-        const SizedBox(width: 14),
-
-        const Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'حالات الطوارئ',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'emergency_cases'.tr,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'تابعي البلاغات وحالة المعالجة',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
+                const SizedBox(height: 4),
+                Text(
+                  'emergency_cases_subtitle'.tr,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _emptyState() {
     return Center(
@@ -177,7 +176,7 @@ Widget _header() {
           ),
           const SizedBox(height: 18),
           Text(
-            'لا توجد بلاغات طوارئ سابقة',
+            'no_emergency_reports'.tr,
             style: TextStyle(
               color: Colors.grey.shade700,
               fontSize: 16,
@@ -186,7 +185,7 @@ Widget _header() {
           ),
           const SizedBox(height: 6),
           Text(
-            'عند إرسال بلاغ جديد سيظهر هنا',
+            'emergency_reports_hint'.tr,
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: 13,
@@ -202,7 +201,7 @@ Widget _header() {
     final isResolved = item.status == 'resolved';
 
     final statusColor = isResolved ? Colors.green : Colors.orange;
-    final statusText = isResolved ? 'تم الحل' : 'قيد المعالجة';
+    final statusText = isResolved ? 'resolved'.tr : 'processing'.tr;
 
     final severityColor = isHigh ? emergencyRed : AppColors.mauve;
 
@@ -294,7 +293,7 @@ Widget _header() {
                     Get.to(() => const EmergencyDetailView());
                   },
                   icon: const Icon(Icons.visibility_outlined, size: 18),
-                  label: const Text('تفاصيل'),
+                  label: Text('details'.tr),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.darkPurple,
                     padding: const EdgeInsets.symmetric(

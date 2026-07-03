@@ -57,11 +57,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     _randomOffsets.clear();
 
     for (int i = 0; i < count; i++) {
-      final dx = (_random.nextBool() ? 1 : -1) *
-          (70 + _random.nextInt(110)).toDouble();
+      final dx =
+          (_random.nextBool() ? 1 : -1) * (70 + _random.nextInt(110)).toDouble();
 
-      final dy = (_random.nextBool() ? 1 : -1) *
-          (45 + _random.nextInt(120)).toDouble();
+      final dy =
+          (_random.nextBool() ? 1 : -1) * (45 + _random.nextInt(120)).toDouble();
 
       _randomOffsets.add(Offset(dx, dy));
     }
@@ -125,7 +125,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 5,
         child: ServiceItem(
           icon: Icons.warning_amber_rounded,
-          title: "تنبيهاتي",
+          title: "warnings".tr,
           onTap: () => Get.to(() => WarningsView()),
         ),
       ),
@@ -133,7 +133,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 6,
         child: ServiceItem(
           icon: Icons.emoji_events,
-          title: "مكافآتي",
+          title: "rewards".tr,
           onTap: () => Get.to(() => RewardsView()),
         ),
       ),
@@ -141,7 +141,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 7,
         child: ServiceItem(
           icon: Icons.report_problem,
-          title: "شكوى سكن",
+          title: "housing_complaint".tr,
           onTap: () => Get.to(() => HousingComplaintsView()),
         ),
       ),
@@ -149,7 +149,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 8,
         child: ServiceItem(
           icon: Icons.gavel,
-          title: "مخالفات",
+          title: "violations".tr,
           onTap: () => Get.to(() => ViolationsView()),
         ),
       ),
@@ -157,7 +157,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 9,
         child: ServiceItem(
           icon: Icons.menu_book,
-          title: "سجل دوام السكن",
+          title: "  dormitory_attendance  _record".tr,
           onTap: () => Get.to(() => DormitoryAttendanceView()),
         ),
       ),
@@ -165,7 +165,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         index: 10,
         child: ServiceItem(
           icon: Icons.menu_book,
-          title: "سجل دوام المحاضرات",
+          title: "  lecture_attendance _record".tr,
           onTap: () => Get.to(() => LectureAttendanceView()),
         ),
       ),
@@ -190,7 +190,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 () => Center(
                   child: Text(
                     profileController.name.value.isEmpty
-                        ? "طالبة"
+                        ? "student".tr
                         : profileController.name.value,
                     style: const TextStyle(
                       fontSize: 22,
@@ -208,9 +208,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             const SizedBox(height: 30),
             _randomEntry(
               index: 4,
-              child: const Text(
-                "الخدمات",
-                style: TextStyle(
+              child: Text(
+                "services".tr,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

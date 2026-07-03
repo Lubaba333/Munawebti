@@ -103,22 +103,22 @@ class LectureAttendanceView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "حضور المحاضرات",
-                  style: TextStyle(
+                  "lecture_attendance".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "سجل دوامك في المحاضرات",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  "lecture_attendance_subtitle".tr,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -208,7 +208,7 @@ class LectureAttendanceView extends StatelessWidget {
               await controller.fetchAttendanceDetails(item.id);
               Get.to(() => const LectureAttendanceDetailView());
             },
-            child: const Text("تفاصيل"),
+            child: Text("details".tr),
           ),
         ],
       ),
@@ -246,7 +246,7 @@ class LectureAttendanceView extends StatelessWidget {
   Widget _emptyState() {
     return Center(
       child: Text(
-        "لا توجد سجلات حضور محاضرات",
+        "no_lecture_attendance_records".tr,
         style: TextStyle(
           color: Colors.grey.shade600,
           fontWeight: FontWeight.bold,
@@ -270,9 +270,9 @@ class LectureAttendanceView extends StatelessWidget {
   }
 
   String _statusText(String status) {
-    if (status == 'present') return "حاضر";
-    if (status == 'absent') return "غائب";
-    if (status == 'excused') return "معذور";
+    if (status == 'present') return "present".tr;
+    if (status == 'absent') return "absent".tr;
+    if (status == 'excused') return "excused".tr;
     return status;
   }
 }

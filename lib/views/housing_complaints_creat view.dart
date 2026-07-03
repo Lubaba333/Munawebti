@@ -53,22 +53,18 @@ class HousingComplaintCreateView extends StatelessWidget {
                             size: 46,
                           ),
                         ),
-
                         const SizedBox(height: 18),
-
-                        const Text(
-                          "إضافة شكوى جديدة",
-                          style: TextStyle(
+                        Text(
+                          "new_housing_complaint".tr,
+                          style: const TextStyle(
                             color: AppColors.darkPurple,
                             fontSize: 23,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         const SizedBox(height: 8),
-
                         Text(
-                          "اكتبي تفاصيل الشكوى بوضوح ليتم التعامل معها بشكل أسرع",
+                          "housing_complaint_create_subtitle".tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.grey.shade600,
@@ -76,38 +72,32 @@ class HousingComplaintCreateView extends StatelessWidget {
                             height: 1.4,
                           ),
                         ),
-
                         const SizedBox(height: 28),
-
                         CustomTextField(
                           controller: titleController,
-                          hint: "عنوان الشكوى",
+                          hint: "complaint_title".tr,
                           icon: Icons.title,
                         ),
-
                         const SizedBox(height: 12),
-
                         CustomTextField(
                           controller: descController,
-                          hint: "وصف الشكوى",
+                          hint: "complaint_description".tr,
                           icon: Icons.description_outlined,
                           keyboardType: TextInputType.multiline,
                         ),
-
                         const SizedBox(height: 28),
-
                         Obx(
                           () => GradientButton(
                             text: controller.isLoading.value
-                                ? "جاري الإرسال..."
-                                : "إرسال الشكوى",
+                                ? "sending".tr
+                                : "submit_complaint".tr,
                             isLoading: controller.isLoading.value,
                             onTap: () {
                               if (titleController.text.trim().isEmpty ||
                                   descController.text.trim().isEmpty) {
                                 Get.snackbar(
-                                  "تنبيه",
-                                  "يرجى تعبئة العنوان والوصف",
+                                  "warning".tr,
+                                  "fill_title_and_description".tr,
                                   backgroundColor: Colors.orange,
                                   colorText: Colors.white,
                                   snackPosition: SnackPosition.BOTTOM,
@@ -122,9 +112,7 @@ class HousingComplaintCreateView extends StatelessWidget {
                             },
                           ),
                         ),
-
                         const SizedBox(height: 18),
-
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
@@ -140,7 +128,7 @@ class HousingComplaintCreateView extends StatelessWidget {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  "سيتم إرسال الشكوى للإدارة، ويمكنك متابعة حالتها من صفحة شكاوى السكن.",
+                                  "housing_complaint_notice".tr,
                                   style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontSize: 12.5,
@@ -185,10 +173,10 @@ class HousingComplaintCreateView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Text(
-              "إنشاء شكوى",
-              style: TextStyle(
+              "create_complaint".tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,

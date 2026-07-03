@@ -97,7 +97,6 @@ class _LoginViewState extends State<LoginView>
           child: Stack(
             children: [
               _background(),
-
               SafeArea(
                 child: Column(
                   children: [
@@ -163,16 +162,16 @@ class _LoginViewState extends State<LoginView>
   }
 
   Widget _header() {
-    return const Padding(
-      padding: EdgeInsets.all(30),
+    return Padding(
+      padding: const EdgeInsets.all(30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.login, color: Colors.white, size: 35),
-          SizedBox(height: 10),
+          const Icon(Icons.login, color: Colors.white, size: 35),
+          const SizedBox(height: 10),
           Text(
-            "Welcome Back",
-            style: TextStyle(color: Colors.white, fontSize: 28),
+            "welcome_back".tr,
+            style: const TextStyle(color: Colors.white, fontSize: 28),
           ),
         ],
       ),
@@ -191,32 +190,30 @@ class _LoginViewState extends State<LoginView>
           children: [
             CustomTextField(
               controller: emailController,
-              hint: "Email",
+              hint: "email".tr,
               icon: Icons.email,
             ),
             CustomTextField(
               controller: studantIdController,
-              hint: "Studant ID",
+              hint: "student_id".tr,
               icon: Icons.numbers,
             ),
             CustomTextField(
               controller: passwordController,
-              hint: "Password",
+              hint: "password".tr,
               icon: Icons.lock,
               isPassword: true,
             ),
-
             const SizedBox(height: 20),
-
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
                 onTap: () {
                   Get.to(() => ResetPasswordView());
                 },
-                child: const Text(
-                  "Forgot Password?",
-                  style: TextStyle(
+                child: Text(
+                  "forgot_password".tr,
+                  style: const TextStyle(
                     color: AppColors.deepPurple,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -224,12 +221,12 @@ class _LoginViewState extends State<LoginView>
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             Obx(
               () => GradientButton(
-                text: controller.isLoading.value ? "Loading..." : "Login",
+                text: controller.isLoading.value
+                    ? "loading".tr
+                    : "login".tr,
                 onTap: () {
                   controller.login(
                     email: emailController.text,
@@ -239,20 +236,18 @@ class _LoginViewState extends State<LoginView>
                 },
               ),
             ),
-
             const SizedBox(height: 20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have account? "),
+                Text("dont_have_account".tr),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => RegisterView());
                   },
-                  child: const Text(
-                    "Register",
-                    style: TextStyle(
+                  child: Text(
+                    "register".tr,
+                    style: const TextStyle(
                       color: AppColors.darkPurple,
                       fontWeight: FontWeight.bold,
                     ),

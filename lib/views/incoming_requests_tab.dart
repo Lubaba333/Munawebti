@@ -5,7 +5,11 @@ import 'package:studants/utlis/app_colors.dart';
 
 class IncomingRequestsTab extends StatelessWidget {
   final RequestController controller;
-  const IncomingRequestsTab({super.key, required this.controller});
+
+  const IncomingRequestsTab({
+    super.key,
+    required this.controller,
+  });
 
   String _text(dynamic value) => value?.toString() ?? '';
 
@@ -13,7 +17,9 @@ class IncomingRequestsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value && controller.requests.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       }
 
       final myId = controller.currentStudentId.value;
@@ -24,7 +30,9 @@ class IncomingRequestsTab extends StatelessWidget {
       }).toList();
 
       if (incoming.isEmpty) {
-        return const Center(child: Text("لا توجد طلبات واردة"));
+        return Center(
+          child: Text("no_incoming_requests".tr),
+        );
       }
 
       return RefreshIndicator(
@@ -40,7 +48,8 @@ class IncomingRequestsTab extends StatelessWidget {
 
   Widget _incomingCard(dynamic request) {
     final id = int.tryParse(_text(request['id']));
-    final status = _text(request['status']).isEmpty ? 'pending' : _text(request['status']);
+    final status =
+        _text(request['status']).isEmpty ? 'pending' : _text(request['status']);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -55,7 +64,9 @@ class IncomingRequestsTab extends StatelessWidget {
             offset: const Offset(0, 7),
           ),
         ],
-        border: Border.all(color: AppColors.mauve.withOpacity(.25)),
+        border: Border.all(
+          color: AppColors.mauve.withOpacity(.25),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,15 +75,21 @@ class IncomingRequestsTab extends StatelessWidget {
             children: [
               const CircleAvatar(
                 backgroundColor: AppColors.softLavender,
-                child: Icon(Icons.swap_horiz, color: AppColors.darkPurple),
+                child: Icon(
+                  Icons.swap_horiz,
+                  color: AppColors.darkPurple,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   _text(request['title']).isEmpty
-                      ? "طلب تبديل غرفة وارد"
+                      ? "incoming_exchange_request".tr
                       : _text(request['title']),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15.5),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.5,
+                  ),
                 ),
               ),
               _statusChip(request),
@@ -81,28 +98,42 @@ class IncomingRequestsTab extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             _text(request['description']),
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 12,
+            ),
           ),
           const SizedBox(height: 14),
           if (status == 'pending' &&
-    request['target_student_approved_at'] == null &&
-    request['target_student_rejection_reason'] == null &&
-    id != null)
+              request['target_student_approved_at'] == null &&
+              request['target_student_rejection_reason'] == null &&
+              id != null)
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => controller.approveExchangeRequest(id),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    child: const Text("قبول", style: TextStyle(color: Colors.white)),
+                    onPressed: () =>
+                        controller.approveExchangeRequest(id),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    child: Text(
+                      "accept".tr,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => _showRejectDialog(id),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text("رفض", style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: Text(
+                      "reject".tr,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ],
@@ -117,17 +148,17 @@ class IncomingRequestsTab extends StatelessWidget {
 
     Get.dialog(
       AlertDialog(
-        title: const Text("رفض طلب التبديل"),
+        title: Text("reject_exchange_request".tr),
         content: TextField(
           controller: reasonController,
-          decoration: const InputDecoration(
-            hintText: "سبب الرفض",
+          decoration: InputDecoration(
+            hintText: "rejection_reason".tr,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text("إلغاء"),
+            child: Text("cancel".tr),
           ),
           TextButton(
             onPressed: () {
@@ -137,46 +168,52 @@ class IncomingRequestsTab extends StatelessWidget {
                 reason: reasonController.text,
               );
             },
-            child: const Text("رفض", style: TextStyle(color: Colors.red)),
+            child: Text(
+              "reject".tr,
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
     );
   }
 
-Widget _statusChip(dynamic request) {
-  Color color = Colors.orange;
-  String text = "بانتظار ردك";
+  Widget _statusChip(dynamic request) {
+    Color color = Colors.orange;
+    String text = "waiting_for_your_response".tr;
 
-  if (request['target_student_approved_at'] != null &&
-      request['status'] == 'pending') {
-    color = Colors.blue;
-    text = "أنتِ وافقتِ وتم تحويل الطلب للإدارة";
-  } else if (request['target_student_rejection_reason'] != null) {
-    color = Colors.red;
-    text = "أنتِ رفضتِ الطلب وتم إلغاؤه";
-  } else if (request['status'] == 'approved') {
-    color = Colors.green;
-    text = "وافقت الإدارة";
-  } else if (request['status'] == 'rejected') {
-    color = Colors.red;
-    text = "رفضت الإدارة";
-  }
+    if (request['target_student_approved_at'] != null &&
+        request['status'] == 'pending') {
+      color = Colors.blue;
+      text = "you_approved_request_waiting_admin".tr;
+    } else if (request['target_student_rejection_reason'] != null) {
+      color = Colors.red;
+      text = "you_rejected_request_cancelled".tr;
+    } else if (request['status'] == 'approved') {
+      color = Colors.green;
+      text = "admin_approved".tr;
+    } else if (request['status'] == 'rejected') {
+      color = Colors.red;
+      text = "admin_rejected".tr;
+    }
 
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    decoration: BoxDecoration(
-      color: color.withOpacity(.12),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontSize: 11,
-        fontWeight: FontWeight.bold,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
       ),
-    ),
-  );
-}
+      decoration: BoxDecoration(
+        color: color.withOpacity(.12),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 }

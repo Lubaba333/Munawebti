@@ -13,12 +13,9 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-
-  // متغيرات للحالتين
   AuthController? authController;
   ResetPasswordController? resetController;
-  
-  // متغير لتحديد أي كونترولر نستخدم
+
   RxBool isLoading = false.obs;
   RxString email = ''.obs;
   bool isResetMode = false;
@@ -32,14 +29,12 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   @override
   void initState() {
     super.initState();
-    
+
     final args = Get.arguments;
-    
-    // تحديد نوع العملية من المعاملات
+
     if (args != null && args is Map && args.containsKey('from')) {
       isResetMode = args['from'] == 'reset';
     } else {
-      // محاولة اكتشاف تلقائي
       try {
         resetController = Get.find<ResetPasswordController>();
         if (resetController!.email.value.isNotEmpty) {
@@ -51,50 +46,47 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         isResetMode = false;
       }
     }
-    
+
     if (isResetMode) {
-      // وضع إعادة تعيين كلمة المرور
       try {
         resetController = Get.find<ResetPasswordController>();
         isLoading = resetController!.isLoading;
         email = resetController!.email;
-        
+
         if (email.value.isEmpty && args != null && args['email'] != null) {
           resetController!.email.value = args['email'];
           email.value = args['email'];
         }
-        
+
         print("✅ Reset Mode - Email: ${email.value}");
       } catch (e) {
         print("❌ Error finding ResetPasswordController: $e");
         Get.back();
       }
     } else {
-      // وضع التسجيل
       try {
         authController = Get.find<AuthController>();
         isLoading = authController!.isLoading;
-        
+
         if (args != null && args['email'] != null) {
           authController!.verifiedEmail.value = args['email'];
           email.value = args['email'];
         } else {
           email.value = authController!.verifiedEmail.value;
         }
-        
+
         print("✅ Register Mode - Email: ${email.value}");
       } catch (e) {
         print("❌ Error finding AuthController: $e");
         Get.back();
       }
     }
-    
-    // تحقق من وجود البريد الإلكتروني
+
     if (email.value.isEmpty) {
       Future.delayed(Duration.zero, () {
         Get.snackbar(
-          "Error",
-          "Email not found. Please try again.",
+          "error".tr,
+          "email_not_found".tr,
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
@@ -131,8 +123,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
     if (fullOtp.length != 6) {
       Get.snackbar(
-        "Error",
-        "Please enter the 6-digit code",
+        "error".tr,
+        "enter_6_digit_code".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -140,18 +132,14 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     }
 
     if (isResetMode && resetController != null) {
-      // وضع إعادة تعيين كلمة المرور
       bool success = await resetController!.verifyOtp(fullOtp);
-      if (success) {
-        // verifyOtp يقوم بالانتقال إلى NewPasswordView
-      }
+      if (success) {}
     } else if (authController != null) {
-      // وضع التسجيل
       bool success = await authController!.verifyRegistrationOTP(
         email: email.value,
         otp: fullOtp,
       );
-      
+
       if (success) {
         final args = Get.arguments;
         if (args != null && args is Map) {
@@ -192,9 +180,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Verification Code",
-                    style: TextStyle(
+                  Text(
+                    "verification_code".tr,
+                    style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -202,26 +190,29 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "We sent a 6-digit code to your email",
+                    "we_sent_6_digit_code".tr,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withOpacity(0.8),
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Obx(() => Text(
-                    email.value.isNotEmpty 
-                        ? email.value 
-                        : "your email",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Obx(
+                    () => Text(
+                      email.value.isNotEmpty ? email.value : "your_email".tr,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  )),
+                  ),
                   const SizedBox(height: 35),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 30,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(28),
@@ -231,36 +222,40 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                     child: Column(
                       children: [
-                       Row(
-  children: List.generate(6, (index) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: _buildOtpBox(index),
-      ),
-    );
-  }),
-),
+                        Row(
+                          children: List.generate(6, (index) {
+                            return Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 3),
+                                child: _buildOtpBox(index),
+                              ),
+                            );
+                          }),
+                        ),
                         const SizedBox(height: 35),
-
-                        Obx(() => GradientButton(
-                          text: isLoading.value ? "VERIFYING..." : "Verify Code",
-                          onTap: _verifyOtp,
-                        )),
-
+                        Obx(
+                          () => GradientButton(
+                            text: isLoading.value
+                                ? "verifying".tr
+                                : "verify_code".tr,
+                            onTap: _verifyOtp,
+                          ),
+                        ),
                         const SizedBox(height: 20),
-
-                        Obx(() => TextButton(
-                          onPressed: isLoading.value ? null : _resendOtp,
-                          child: const Text(
-                            "Didn't receive code? Resend",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                              decoration: TextDecoration.underline,
+                        Obx(
+                          () => TextButton(
+                            onPressed: isLoading.value ? null : _resendOtp,
+                            child: Text(
+                              "resend_code_question".tr,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                        )),
+                        ),
                       ],
                     ),
                   ),
@@ -275,7 +270,6 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   Widget _buildOtpBox(int index) {
     return Container(
-      
       height: 56,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.85),

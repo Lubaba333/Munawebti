@@ -34,13 +34,13 @@ class _RoomTransferViewState extends State<RoomTransferView> {
   String _unitArabicName(String? name) {
     switch (name) {
       case "Building A":
-        return "مبنى الطالبات الأول";
+        return "building_1".tr;
       case "Building B":
-        return "مبنى الطالبات الثاني";
+        return "building_2".tr;
       case "Building C":
-        return "مبنى الطالبات الثالث";
+        return "building_3".tr;
       default:
-        return name ?? "غير محدد";
+        return name ?? "not_specified".tr;
     }
   }
 
@@ -79,10 +79,10 @@ class _RoomTransferViewState extends State<RoomTransferView> {
             onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              "نقل بدون بديلة",
-              style: TextStyle(
+              "room_transfer".tr,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
@@ -109,11 +109,11 @@ class _RoomTransferViewState extends State<RoomTransferView> {
         final currentRoom = controller.currentRoom.value;
 
         if (currentRoom == null) {
-          return const Center(
+          return Center(
             child: Text(
-              "لم يتم تحميل الغرفة الحالية بعد، تأكدي أن الحساب مسكّن بغرفة",
+              "current_room_not_loaded_resident".tr,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
@@ -127,29 +127,31 @@ class _RoomTransferViewState extends State<RoomTransferView> {
                 size: 76,
               ),
               const SizedBox(height: 12),
-              const Text(
-                "سيتم إرسال طلب نقل للإدارة، والإدارة تحدد الغرفة المناسبة حسب الشواغر.",
+              Text(
+                "room_transfer_desc".tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 22),
               _currentRoomCard(currentRoom),
               const SizedBox(height: 20),
               CustomTextField(
                 controller: reasonController,
-                hint: "سبب طلب النقل",
+                hint: "room_transfer_reason".tr,
                 icon: Icons.edit_note,
               ),
               const SizedBox(height: 24),
-              Obx(() => GradientButton(
-                    text: "إرسال طلب النقل",
-                    isLoading: controller.isSubmitting.value,
-                    onTap: () {
-                      controller.createAnyAvailableRoomRequest(
-                        reason: reasonController.text,
-                      );
-                    },
-                  )),
+              Obx(
+                () => GradientButton(
+                  text: "send_room_transfer".tr,
+                  isLoading: controller.isSubmitting.value,
+                  onTap: () {
+                    controller.createAnyAvailableRoomRequest(
+                      reason: reasonController.text,
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         );
@@ -179,16 +181,16 @@ class _RoomTransferViewState extends State<RoomTransferView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "غرفتك الحالية",
-                  style: TextStyle(
+                Text(
+                  "current_room".tr,
+                  style: const TextStyle(
                     color: AppColors.darkPurple,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "الغرفة: ${room['room_number']}  |  الوحدة: $unitName",
+                  "${"room".tr}: ${room['room_number']}  |  ${"unit".tr}: $unitName",
                   style: const TextStyle(
                     color: AppColors.black,
                     fontSize: 15,

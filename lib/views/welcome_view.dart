@@ -132,8 +132,8 @@ class _WelcomeViewState extends State<WelcomeView>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      "Welcome to Studants App",
+                                    Text(
+                                      "Welcome to Studants App".tr,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 21,
@@ -142,7 +142,7 @@ class _WelcomeViewState extends State<WelcomeView>
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      "A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.",
+                                      "A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.".tr,
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.8),
                                         fontSize: 15,
@@ -170,7 +170,7 @@ class _WelcomeViewState extends State<WelcomeView>
                             children: [
                               Expanded(
                                 child: _GlassActionButton(
-                                  text: 'Sign up',
+                                  text: 'Sign up'.tr,
                                   icon: Icons.person_add_alt_1,
                                   onTap: () {
                                     Get.to(() => RegisterView());
@@ -180,7 +180,7 @@ class _WelcomeViewState extends State<WelcomeView>
                               const SizedBox(width: 14),
                               Expanded(
                                 child: _GlassActionButton(
-                                  text: 'Sign in',
+                                  text: 'Sign in'.tr,
                                   icon: Icons.login_rounded,
                                   onTap: () {
                                     Get.to(() => LoginView());

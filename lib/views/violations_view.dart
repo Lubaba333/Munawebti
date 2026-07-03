@@ -100,22 +100,22 @@ class ViolationsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "مخالفاتي",
-                  style: TextStyle(
+                  "violations".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "راجعي المخالفات المسجلة لديك",
-                  style: TextStyle(
+                  "violations_subtitle".tr,
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
                   ),
@@ -148,7 +148,7 @@ class ViolationsView extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Text(
-            "لا توجد مخالفات",
+            "no_violations".tr,
             style: TextStyle(
               color: Colors.grey.shade700,
               fontSize: 16,
@@ -157,7 +157,7 @@ class ViolationsView extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            "حسابك لا يحتوي على أي مخالفات حالياً",
+            "no_violation_message".tr,
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: 13,
@@ -247,7 +247,7 @@ class ViolationsView extends StatelessWidget {
               Get.to(() => ViolationDetailsView(id: v.id));
             },
             icon: const Icon(Icons.visibility_outlined, size: 18),
-            label: const Text("تفاصيل"),
+            label: Text("details".tr),
             style: TextButton.styleFrom(
               foregroundColor: AppColors.darkPurple,
               padding: const EdgeInsets.symmetric(horizontal: 8),

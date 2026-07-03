@@ -11,8 +11,8 @@ class ViolationDetailsView extends StatelessWidget {
   static const violationRed = Color(0xFFD84A4A);
 
   String _text(dynamic value) {
-    if (value == null) return "غير محدد";
-    if (value.toString().isEmpty) return "غير محدد";
+    if (value == null) return "not_specified".tr;
+    if (value.toString().isEmpty) return "not_specified".tr;
     return value.toString();
   }
 
@@ -55,8 +55,8 @@ class ViolationDetailsView extends StatelessWidget {
                     final v = controller.violation;
 
                     if (v.isEmpty) {
-                      return const Center(
-                        child: Text("لا توجد تفاصيل"),
+                      return Center(
+                        child: Text("no_details".tr),
                       );
                     }
 
@@ -69,30 +69,30 @@ class ViolationDetailsView extends StatelessWidget {
                           const SizedBox(height: 22),
                           _certificateItem(
                             icon: Icons.description_outlined,
-                            title: "الوصف",
+                            title: "description".tr,
                             value: _text(v['description']),
                           ),
                           _certificateItem(
                             icon: Icons.category_rounded,
-                            title: "التصنيف",
+                            title: "violation_category".tr,
                             value: _text(v['category']),
                           ),
                           _certificateItem(
                             icon: Icons.calendar_month_rounded,
-                            title: "تاريخ المخالفة",
+                            title: "violation_date".tr,
                             value: _text(v['violation_date']),
                           ),
                           _certificateItem(
                             icon: Icons.gavel_rounded,
-                            title: "العقوبة",
+                            title: "penalty".tr,
                             value: _text(v['penalty']),
                           ),
                           _certificateItem(
                             icon: Icons.person_rounded,
-                            title: "المشرف",
+                            title: "supervisor".tr,
                             value: creator is Map
                                 ? _text(creator['full_name'])
-                                : "غير محدد",
+                                : "not_specified".tr,
                             showDivider: false,
                           ),
                         ],
@@ -145,22 +145,22 @@ class ViolationDetailsView extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تفاصيل المخالفة",
-                  style: TextStyle(
+                  "violation_details".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  "عرض معلومات المخالفة كاملة",
-                  style: TextStyle(
+                  "violation_details_subtitle".tr,
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
                   ),
@@ -194,9 +194,9 @@ class ViolationDetailsView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          "مخالفة رسمية",
-          style: TextStyle(
+        Text(
+          "official_violation".tr,
+          style: const TextStyle(
             color: AppColors.darkPurple,
             fontSize: 16,
             fontWeight: FontWeight.w600,
