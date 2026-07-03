@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/controllers/settings_drawer_controller.dart';
 import 'package:studants/utlis/app_colors.dart';
+import 'package:studants/utlis/theme_helper.dart';
 
 class SettingsDrawer extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -19,7 +20,7 @@ class SettingsDrawer extends StatefulWidget {
 class _SettingsDrawerState extends State<SettingsDrawer>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
-  late RxBool _isDarkMode;
+ late ThemeController themeController;
   late SettingsDrawerController controller;
 
   @override
@@ -32,13 +33,13 @@ class _SettingsDrawerState extends State<SettingsDrawer>
     )..repeat(reverse: true);
 
     controller = Get.put(SettingsDrawerController());
-    _isDarkMode = Get.isDarkMode.obs;
+ 
   }
 
   @override
   void dispose() {
     _animController.dispose();
-    _isDarkMode.close();
+themeController = Get.find<ThemeController>();
     super.dispose();
   }
 
@@ -329,103 +330,93 @@ Widget _languagePopupItem() {
     );
   }
 
-  Widget _themeToggleItem() {
-    return Obx(() {
-      final isDark = _isDarkMode.value;
+Widget _themeToggleItem() {
+  return Obx(() {
+    final isDark = themeController.isDarkMode.value;
 
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.2)),
-        ),
-        child: Stack(
-          children: [
-            AnimatedAlign(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-              alignment: isDark ? Alignment.centerRight : Alignment.centerLeft,
-              child: Container(
-                width: (MediaQuery.sizeOf(context).width * 0.75 - 32) * 0.5,
-                height: 44,
-                margin: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.25),
-                  borderRadius: BorderRadius.circular(14),
-                ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: Stack(
+        children: [
+          AnimatedAlign(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            alignment: isDark ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              width: (MediaQuery.sizeOf(context).width * 0.75 - 32) * 0.5,
+              height: 44,
+              margin: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.25),
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _setTheme(false),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.light_mode,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => themeController.setTheme(false),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.light_mode,
+                          color: !isDark ? Colors.amber : Colors.white70,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          "light".tr,
+                          style: TextStyle(
                             color: !isDark ? Colors.amber : Colors.white70,
-                            size: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            "light".tr,
-                            style: TextStyle(
-                              color: !isDark ? Colors.amber : Colors.white70,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _setTheme(true),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.dark_mode,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => themeController.setTheme(true),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.dark_mode,
+                          color: isDark ? Colors.blueAccent : Colors.white70,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          "dark".tr,
+                          style: TextStyle(
                             color: isDark ? Colors.blueAccent : Colors.white70,
-                            size: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            "dark".tr,
-                            style: TextStyle(
-                              color:
-                                  isDark ? Colors.blueAccent : Colors.white70,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-
-
-  void _setTheme(bool isDark) {
-    if (_isDarkMode.value == isDark) return;
-
-    _isDarkMode.value = isDark;
-    Get.changeThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
-  }
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  });
+}
 
   Widget _buildFooter() {
     return Container(

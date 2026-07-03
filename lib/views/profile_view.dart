@@ -58,6 +58,11 @@ class ProfileView extends StatelessWidget {
                       value: controller.year.value,
                     ),
                     _readonlyInfo(
+  icon: Icons.groups,
+  label: "group".tr,
+  value: controller.group,
+),
+                    _readonlyInfo(
                       icon: Icons.menu_book,
                       label: "specialization".tr,
                       value: controller.specialization.value,

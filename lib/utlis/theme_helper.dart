@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-class ThemeHelper {
-  // ✅ خلفية مناسبة للوضعين
-  static Color scaffoldBg(BuildContext context) => 
-      Theme.of(context).scaffoldBackgroundColor;
+class ThemeController extends GetxController {
+  final GetStorage box = GetStorage();
 
-  // ✅ لون بطاقة متوازن
-  static Color cardBg(BuildContext context) => 
-      Theme.of(context).cardColor;
+  final RxBool isDarkMode = false.obs;
 
-  // ✅ نص رئيسي واضح
-  static TextStyle mainText(BuildContext context) => 
-      Theme.of(context).textTheme.bodyLarge!;
+  @override
+  void onInit() {
+    super.onInit();
 
-  // ✅ نص ثانوي مقروء
-  static TextStyle subText(BuildContext context) => 
-      Theme.of(context).textTheme.bodyMedium!;
+    isDarkMode.value = box.read('isDarkMode') ?? false;
 
-  // ✅ تدرج ذكي للخلفيات (يخفف حدة الألوان في الدارك)
-  static List<Color> smartGradient(Color start, Color end) {
-    return Get.isDarkMode 
-        ? [start.withOpacity(0.75), end.withOpacity(0.6)]
-        : [start, end];
+    Get.changeThemeMode(
+      isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
+    );
+  }
+
+  ThemeMode get themeMode {
+    return isDarkMode.value ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  void setTheme(bool isDark) {
+    isDarkMode.value = isDark;
+
+    box.write('isDarkMode', isDark);
+
+    Get.changeThemeMode(
+      isDark ? ThemeMode.dark : ThemeMode.light,
+    );
   }
 }

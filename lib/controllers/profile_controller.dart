@@ -14,7 +14,9 @@ class ProfileController extends GetxController {
   var specialization = ''.obs;
   var isResident = false.obs;
   var annualAverage = ''.obs;
+final _group = ''.obs;
 
+String get group => _group.value;
   final _studentId = ''.obs;
   final _room = ''.obs;
   final _roomUnit = ''.obs;
@@ -84,6 +86,13 @@ class ProfileController extends GetxController {
         _room.value = isResident.value ? 'غير مخصصة بعد' : 'غير مقيمة بالسكن';
         _roomUnit.value = '';
       }
+      final latestGroup = student['latest_group'];
+
+if (latestGroup != null && latestGroup is Map) {
+  _group.value = latestGroup['group_number']?.toString() ?? 'غير محددة';
+} else {
+  _group.value = 'غير محددة';
+}
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('name', name.value);
@@ -156,6 +165,7 @@ class ProfileController extends GetxController {
   }
 
   void clearProfile() {
+    _group.value = '';
     name.value = '';
     email.value = '';
     phone.value = '';
