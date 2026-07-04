@@ -32,7 +32,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       key: _scaffoldKey,
       drawer: SettingsDrawer(),
       body: IndexedStack(

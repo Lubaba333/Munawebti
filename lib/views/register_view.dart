@@ -1,4 +1,3 @@
-// lib/views/register_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/views/login.dart';
@@ -25,19 +24,22 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
+        decoration: BoxDecoration(
+          gradient: AppColors.currentGradient,
         ),
         child: Stack(
           children: [
-            _background(),
+            _background(isDark),
             SafeArea(
               child: Column(
                 children: [
                   _header(),
-                  Expanded(child: _form()),
+                  Expanded(child: _form(context)),
                 ],
               ),
             ),
@@ -47,13 +49,28 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  Widget _background() {
+  Widget _background(bool isDark) {
     return Stack(
       children: [
-        _circle(80, 40, 30, AppColors.lightPink),
-        _circle(60, 100, 300, Colors.white.withOpacity(0.2)),
-        _circle(100, 600, -20, AppColors.deepPurple),
-        _circle(90, -20, 300, AppColors.mauve),
+        _circle(
+          80,
+          40,
+          30,
+          isDark ? AppColors.mauve.withOpacity(.20) : AppColors.lightPink,
+        ),
+        _circle(60, 100, 300, Colors.white.withOpacity(0.16)),
+        _circle(
+          100,
+          600,
+          -20,
+          isDark ? Colors.black.withOpacity(.18) : AppColors.deepPurple,
+        ),
+        _circle(
+          90,
+          -20,
+          300,
+          isDark ? AppColors.mauve.withOpacity(.22) : AppColors.mauve,
+        ),
       ],
     );
   }
@@ -90,12 +107,23 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  Widget _form() {
+  Widget _form(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       padding: const EdgeInsets.all(25),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(.25)
+                : AppColors.deepPurple.withOpacity(.08),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -143,12 +171,11 @@ class RegisterView extends StatelessWidget {
               icon: Icons.computer,
             ),
             const SizedBox(height: 20),
-
             Obx(
               () => GradientButton(
-                text: controller.isLoading.value
-                    ? "loading".tr
-                    : "register".tr,
+                text:
+                    controller.isLoading.value ? "loading".tr : "register".tr,
+                isLoading: controller.isLoading.value,
                 onTap: () async {
                   if (nameController.text.isEmpty ||
                       studentIdController.text.isEmpty ||
@@ -159,7 +186,8 @@ class RegisterView extends StatelessWidget {
                     Get.snackbar(
                       "error".tr,
                       "fill_all_fields".tr,
-                      backgroundColor: Colors.red,
+                      backgroundColor:
+                          isDark ? const Color(0xFF8B1E2D) : Colors.red,
                       colorText: Colors.white,
                     );
                     return;
@@ -170,7 +198,8 @@ class RegisterView extends StatelessWidget {
                     Get.snackbar(
                       "error".tr,
                       "passwords_not_match".tr,
-                      backgroundColor: Colors.red,
+                      backgroundColor:
+                          isDark ? const Color(0xFF8B1E2D) : Colors.red,
                       colorText: Colors.white,
                     );
                     return;
@@ -181,36 +210,42 @@ class RegisterView extends StatelessWidget {
                   );
 
                   if (success) {
-                    Get.to(() => const OtpVerificationView(), arguments: {
-                      'email': emailController.text,
-                      'from': 'register',
-                      'name': nameController.text,
-                      'studentId': studentIdController.text,
-                      'password': passwordController.text,
-                      'confirmPassword': confirmPasswordController.text,
-                      'phone': phoneController.text,
-                      'year': yearController.text,
-                      'specialization': specializationController.text,
-                    });
+                    Get.to(
+                      () => const OtpVerificationView(),
+                      arguments: {
+                        'email': emailController.text,
+                        'from': 'register',
+                        'name': nameController.text,
+                        'studentId': studentIdController.text,
+                        'password': passwordController.text,
+                        'confirmPassword': confirmPasswordController.text,
+                        'phone': phoneController.text,
+                        'year': yearController.text,
+                        'specialization': specializationController.text,
+                      },
+                    );
                   }
                 },
               ),
             ),
-
             const SizedBox(height: 20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("already_have_account".tr),
+                Text(
+                  "already_have_account".tr,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => LoginView());
                   },
                   child: Text(
                     "login".tr,
-                    style: const TextStyle(
-                      color: AppColors.darkPurple,
+                    style: TextStyle(
+                      color: isDark ? AppColors.mauve : AppColors.darkPurple,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

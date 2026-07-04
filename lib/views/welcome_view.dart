@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/utlis/app_colors.dart';
+import 'package:studants/utlis/theme_helper.dart';
 import 'package:studants/views/login.dart';
 import 'package:studants/views/register_view.dart';
 
@@ -15,11 +16,6 @@ class WelcomeView extends StatefulWidget {
 class _WelcomeViewState extends State<WelcomeView>
     with TickerProviderStateMixin {
   late AnimationController _controller;
-
-  late Animation<Offset> _textSlide;
-  late Animation<double> _fade;
-  late Animation<Offset> _buttonsSlide;
-
   late List<Animation<Offset>> _sphereAnimations;
 
   final List<Offset> _finalPositions = [
@@ -41,26 +37,16 @@ class _WelcomeViewState extends State<WelcomeView>
       duration: const Duration(milliseconds: 1800),
     );
 
-    _fade = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-
-    _textSlide = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    _buttonsSlide = Tween<Offset>(
-      begin: const Offset(0, 0.4),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
-
     _sphereAnimations = _finalPositions.map((pos) {
       return Tween<Offset>(
         begin: Offset.zero,
         end: pos,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ));
+      ).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Curves.easeOutCubic,
+        ),
+      );
     }).toList();
 
     _controller.forward();
@@ -72,144 +58,168 @@ class _WelcomeViewState extends State<WelcomeView>
     super.dispose();
   }
 
+  LinearGradient _welcomeGradient(bool isDark) {
+    return isDark
+        ? const LinearGradient(
+            colors: [
+              Color(0xFF2A1230),
+              Color(0xFF3A1B42),
+              Color(0xFF121212),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )
+        : LinearGradient(
+            colors: [
+              const Color.fromARGB(255, 236, 223, 234).withOpacity(0.95),
+              const Color.fromARGB(255, 210, 170, 206),
+              AppColors.deepPurple,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      body: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          return Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      const Color.fromARGB(255, 236, 223, 234)
-                          .withOpacity(0.95),
-                      const Color.fromARGB(255, 210, 170, 206),
-                      AppColors.deepPurple,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+    return Obx(() {
+      final isDark = themeController.isDarkMode.value;
+
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            return Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: _welcomeGradient(isDark),
                   ),
                 ),
-              ),
-
-              ..._buildWaves(),
-              ..._buildSpheres(w, h),
-
-              SafeArea(
-                child: Column(
-                  children: [
-                    const Spacer(),
-
-                    Opacity(
-                      opacity: _controller.value,
-                      child: Transform.translate(
-                        offset:
-                            Offset(0, 40 * (1 - _controller.value) + 45),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 50,
-                                sigmaY: 100,
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.2),
-                                  ),
+                ..._buildWaves(isDark),
+                ..._buildSpheres(w, h, isDark),
+                SafeArea(
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      Opacity(
+                        opacity: _controller.value,
+                        child: Transform.translate(
+                          offset: Offset(
+                            0,
+                            40 * (1 - _controller.value) + 45,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 50,
+                                  sigmaY: 100,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Welcome to Studants App".tr,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.bold,
+                                child: Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(
+                                      isDark ? 0.07 : 0.08,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(
+                                        isDark ? 0.14 : 0.20,
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      "A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.".tr,
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.8),
-                                        fontSize: 15,
-                                        height: 1.5,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Welcome to Studants App".tr,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        "A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place."
+                                            .tr,
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(0.8),
+                                          fontSize: 15,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-
-                    const Spacer(),
-
-                    Opacity(
-                      opacity: _controller.value,
-                      child: Transform.translate(
-                        offset: Offset(0, 60 * (1 - _controller.value)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: _GlassActionButton(
-                                  text: 'Sign up'.tr,
-                                  icon: Icons.person_add_alt_1,
-                                  onTap: () {
-                                    Get.to(() => RegisterView());
-                                  },
+                      const Spacer(),
+                      Opacity(
+                        opacity: _controller.value,
+                        child: Transform.translate(
+                          offset: Offset(0, 60 * (1 - _controller.value)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _GlassActionButton(
+                                    text: 'Sign up'.tr,
+                                    icon: Icons.person_add_alt_1,
+                                    isDark: isDark,
+                                    onTap: () {
+                                      Get.to(() => RegisterView());
+                                    },
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: _GlassActionButton(
-                                  text: 'Sign in'.tr,
-                                  icon: Icons.login_rounded,
-                                  onTap: () {
-                                    Get.to(() => LoginView());
-                                  },
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: _GlassActionButton(
+                                    text: 'Sign in'.tr,
+                                    icon: Icons.login_rounded,
+                                    isDark: isDark,
+                                    onTap: () {
+                                      Get.to(() => LoginView());
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+              ],
+            );
+          },
+        ),
+      );
+    });
   }
 
-  List<Widget> _buildWaves() {
+  List<Widget> _buildWaves(bool isDark) {
     return [
       Positioned(
         top: -120,
         right: -120,
         child: _blurCircle(
-          const Color.fromARGB(255, 255, 229, 250),
-          0.50,
+          isDark ? AppColors.mauve : const Color.fromARGB(255, 255, 229, 250),
+          isDark ? 0.18 : 0.50,
           400,
         ),
       ),
@@ -217,8 +227,8 @@ class _WelcomeViewState extends State<WelcomeView>
         bottom: -160,
         left: -160,
         child: _blurCircle(
-          const Color.fromARGB(255, 255, 251, 255),
-          0.2,
+          isDark ? Colors.black : const Color.fromARGB(255, 255, 251, 255),
+          isDark ? 0.28 : 0.20,
           500,
         ),
       ),
@@ -241,7 +251,7 @@ class _WelcomeViewState extends State<WelcomeView>
     );
   }
 
-  List<Widget> _buildSpheres(double w, double h) {
+  List<Widget> _buildSpheres(double w, double h, bool isDark) {
     return List.generate(5, (i) {
       return AnimatedBuilder(
         animation: _sphereAnimations[i],
@@ -257,10 +267,12 @@ class _WelcomeViewState extends State<WelcomeView>
               height: _sphereSizes[i],
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: AppColors.allSphereGradients[i],
+                gradient: isDark
+                    ? AppColors.darkMainGradient
+                    : AppColors.allSphereGradients[i],
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black.withOpacity(isDark ? 0.35 : 0.25),
                     blurRadius: 25,
                     spreadRadius: 6,
                   ),
@@ -278,11 +290,13 @@ class _GlassActionButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onTap;
+  final bool isDark;
 
   const _GlassActionButton({
     required this.text,
     required this.icon,
     required this.onTap,
+    required this.isDark,
   });
 
   @override
@@ -299,19 +313,26 @@ class _GlassActionButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
               gradient: LinearGradient(
-                colors: [
-                  Colors.white.withOpacity(0.48),
-                  AppColors.deepPurple.withOpacity(0.58),
-                ],
+                colors: isDark
+                    ? [
+                        Colors.white.withOpacity(0.12),
+                        AppColors.mauve.withOpacity(0.32),
+                      ]
+                    : [
+                        Colors.white.withOpacity(0.48),
+                        AppColors.deepPurple.withOpacity(0.58),
+                      ],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               border: Border.all(
-                color: Colors.white.withOpacity(0.35),
+                color: Colors.white.withOpacity(isDark ? 0.18 : 0.35),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.deepPurple.withOpacity(0.28),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.25)
+                      : AppColors.deepPurple.withOpacity(0.28),
                   blurRadius: 22,
                   offset: const Offset(0, 10),
                 ),

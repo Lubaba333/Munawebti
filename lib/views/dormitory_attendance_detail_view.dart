@@ -13,9 +13,11 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
     final controller = Get.find<DormitoryAttendanceController>();
 
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+     body: Container(
+  decoration: BoxDecoration(
+    gradient: AppColors.currentGradient,
+  ),
         child: SafeArea(
           child: Column(
             children: [
@@ -24,9 +26,9 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
                   ),
@@ -47,11 +49,13 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                       child: Column(
                         children: [
                           _certificateHeader(
+                            context,
                             isPresent: isPresent,
                             status: item.status,
                           ),
                           const SizedBox(height: 22),
                           _certificateItem(
+                            context,
                             icon: isPresent
                                 ? Icons.home_rounded
                                 : Icons.logout_rounded,
@@ -61,6 +65,7 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                                 : "outside_dormitory".tr,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.access_time_rounded,
                             title: "date".tr,
                             value: item.createdAt,
@@ -141,7 +146,8 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
     );
   }
 
-  Widget _certificateHeader({
+  Widget _certificateHeader(
+    BuildContext context, {
     required bool isPresent,
     required String status,
   }) {
@@ -166,8 +172,8 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           "dormitory_attendance_record".tr,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -176,8 +182,8 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
         Text(
           isPresent ? "inside_dormitory".tr : "outside_dormitory".tr,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 23,
             fontWeight: FontWeight.bold,
             height: 1.35,
@@ -204,16 +210,16 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        Container(
+        Divider(
           height: 1,
-          width: double.infinity,
-          color: Colors.grey.shade200,
+          color: Theme.of(context).dividerColor.withOpacity(.35),
         ),
       ],
     );
   }
 
-  Widget _certificateItem({
+  Widget _certificateItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
@@ -232,8 +238,8 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                 width: 120,
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -243,7 +249,7 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
                 child: Text(
                   value.isEmpty ? "not_specified".tr : value,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 14,
                     height: 1.45,
                   ),
@@ -252,7 +258,11 @@ class DormitoryAttendanceDetailView extends StatelessWidget {
             ],
           ),
         ),
-        if (showDivider) Divider(height: 1, color: Colors.grey.shade200),
+        if (showDivider)
+          Divider(
+            height: 1,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
+          ),
       ],
     );
   }

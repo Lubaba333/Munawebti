@@ -13,12 +13,12 @@ class ViolationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -26,11 +26,20 @@ class ViolationsView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -42,7 +51,7 @@ class ViolationsView extends StatelessWidget {
                     }
 
                     if (controller.violations.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return ListView.builder(
@@ -50,7 +59,7 @@ class ViolationsView extends StatelessWidget {
                       itemCount: controller.violations.length,
                       itemBuilder: (context, index) {
                         final v = controller.violations[index];
-                        return _buildCard(v);
+                        return _buildCard(context, v);
                       },
                     );
                   }),
@@ -74,6 +83,7 @@ class ViolationsView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
             ),
             child: IconButton(
               onPressed: () => Get.back(),
@@ -128,7 +138,9 @@ class ViolationsView extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -137,12 +149,19 @@ class ViolationsView extends StatelessWidget {
             width: 96,
             height: 96,
             decoration: BoxDecoration(
-              color: AppColors.softLavender,
+              color: isDark
+                  ? Colors.white.withOpacity(.08)
+                  : AppColors.softLavender,
               borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.mauve.withOpacity(.20)
+                    : Colors.transparent,
+              ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.verified_user_outlined,
-              color: AppColors.darkPurple,
+              color: isDark ? AppColors.mauve : AppColors.darkPurple,
               size: 54,
             ),
           ),
@@ -150,7 +169,7 @@ class ViolationsView extends StatelessWidget {
           Text(
             "no_violations".tr,
             style: TextStyle(
-              color: Colors.grey.shade700,
+              color: Theme.of(context).textTheme.titleLarge?.color,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -159,7 +178,7 @@ class ViolationsView extends StatelessWidget {
           Text(
             "no_violation_message".tr,
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: 13,
             ),
           ),
@@ -168,19 +187,23 @@ class ViolationsView extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(v) {
+  Widget _buildCard(BuildContext context, dynamic v) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: violationRed.withOpacity(.22),
         ),
         boxShadow: [
           BoxShadow(
-            color: violationRed.withOpacity(.10),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : violationRed.withOpacity(.10),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -194,6 +217,11 @@ class ViolationsView extends StatelessWidget {
             decoration: BoxDecoration(
               color: violationRed.withOpacity(.10),
               borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isDark
+                    ? violationRed.withOpacity(.18)
+                    : Colors.transparent,
+              ),
             ),
             child: const Icon(
               Icons.gpp_bad_rounded,
@@ -210,8 +238,8 @@ class ViolationsView extends StatelessWidget {
                   v.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -222,7 +250,7 @@ class ViolationsView extends StatelessWidget {
                     Icon(
                       Icons.calendar_month_rounded,
                       size: 15,
-                      color: Colors.grey.shade500,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                     const SizedBox(width: 5),
                     Expanded(
@@ -231,7 +259,7 @@ class ViolationsView extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -249,7 +277,7 @@ class ViolationsView extends StatelessWidget {
             icon: const Icon(Icons.visibility_outlined, size: 18),
             label: Text("details".tr),
             style: TextButton.styleFrom(
-              foregroundColor: AppColors.darkPurple,
+              foregroundColor: isDark ? AppColors.mauve : AppColors.darkPurple,
               padding: const EdgeInsets.symmetric(horizontal: 8),
             ),
           ),

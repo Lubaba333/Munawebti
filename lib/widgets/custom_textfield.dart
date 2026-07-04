@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../utlis/app_colors.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -29,25 +30,29 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: widget.enabled
-            ? Colors.white.withOpacity(0.7)
-            : Colors.grey.shade200,
+            ? (isDark ? Colors.white.withOpacity(.06) : Colors.white.withOpacity(.7))
+            : (isDark ? Colors.white.withOpacity(.035) : Colors.grey.shade200),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: isFocused
               ? AppColors.mauve
-              : Colors.grey.shade200,
+              : isDark
+                  ? AppColors.mauve.withOpacity(.18)
+                  : Colors.grey.shade200,
         ),
         boxShadow: isFocused
             ? [
                 BoxShadow(
-                  color: AppColors.mauve.withOpacity(0.3),
+                  color: AppColors.mauve.withOpacity(isDark ? .18 : .30),
                   blurRadius: 12,
-                )
+                ),
               ]
             : [],
       ),
@@ -55,48 +60,43 @@ class _CustomTextFieldState extends State<CustomTextField> {
         onFocusChange: (val) {
           setState(() => isFocused = val);
         },
-       child: TextField(
-  controller: widget.controller,
-  enabled: widget.enabled,
-  obscureText: widget.isPassword ? obscure : false,
-  keyboardType: widget.keyboardType,
-  
-  // ✅ 1. تثبيت لون النص الرئيسي ليكون واضحاً على الخلفية الفاتحة
-  style: const TextStyle(
-    color: AppColors.darkPurple, // أو Colors.black87
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-  ),
-
-  decoration: InputDecoration(
-    hintText: widget.hint,
-    
-    // ✅ 2. تحسين لون النص التوضيحي (Hint) ليكون مرئياً
-    hintStyle: TextStyle(
-      color: Colors.grey.shade500,
-      fontSize: 15,
-    ),
-    
-    prefixIcon: widget.icon != null
-        ? Icon(widget.icon, color: AppColors.deepPurple)
-        : null,
-        
-    suffixIcon: widget.isPassword
-        ? IconButton(
-            icon: Icon(
-              obscure ? Icons.visibility : Icons.visibility_off,
-              color: AppColors.deepPurple,
+        child: TextField(
+          controller: widget.controller,
+          enabled: widget.enabled,
+          obscureText: widget.isPassword ? obscure : false,
+          keyboardType: widget.keyboardType,
+          style: TextStyle(
+            color: isDark ? Colors.white : AppColors.darkPurple,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            hintStyle: TextStyle(
+              color: isDark ? Colors.white54 : Colors.grey.shade500,
+              fontSize: 15,
             ),
-            onPressed: () => setState(() => obscure = !obscure),
-          )
-        : null,
-        
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15),
-      borderSide: BorderSide.none,
-    ),
-  ),
-),
+            prefixIcon: widget.icon != null
+                ? Icon(
+                    widget.icon,
+                    color: isDark ? AppColors.mauve : AppColors.deepPurple,
+                  )
+                : null,
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: Icon(
+                      obscure ? Icons.visibility : Icons.visibility_off,
+                      color: isDark ? AppColors.mauve : AppColors.deepPurple,
+                    ),
+                    onPressed: () => setState(() => obscure = !obscure),
+                  )
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
       ),
     );
   }

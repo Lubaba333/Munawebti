@@ -54,11 +54,13 @@ class _RewardsViewState extends State<RewardsView>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
+        decoration: BoxDecoration(
+          gradient: AppColors.currentGradient,
         ),
         child: SafeArea(
           child: Column(
@@ -67,11 +69,20 @@ class _RewardsViewState extends State<RewardsView>
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(38),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -83,7 +94,7 @@ class _RewardsViewState extends State<RewardsView>
                     }
 
                     if (controller.rewards.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return ListView.builder(
@@ -96,7 +107,7 @@ class _RewardsViewState extends State<RewardsView>
                           opacity: _fade,
                           child: SlideTransition(
                             position: _slide,
-                            child: _buildRewardCard(r, index),
+                            child: _buildRewardCard(context, r, index),
                           ),
                         );
                       },
@@ -124,6 +135,7 @@ class _RewardsViewState extends State<RewardsView>
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.20),
                 borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.white.withOpacity(.18)),
               ),
               child: IconButton(
                 onPressed: () => Get.back(),
@@ -190,7 +202,9 @@ class _RewardsViewState extends State<RewardsView>
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return FadeTransition(
       opacity: _fade,
       child: Center(
@@ -203,11 +217,20 @@ class _RewardsViewState extends State<RewardsView>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.amber.shade200,
-                    Colors.orange.shade200,
+                    Colors.amber.shade300,
+                    Colors.orange.shade300,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(34),
+                boxShadow: [
+                  BoxShadow(
+                    color: isDark
+                        ? Colors.black.withOpacity(.20)
+                        : Colors.amber.withOpacity(.20),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.card_giftcard_rounded,
@@ -219,7 +242,7 @@ class _RewardsViewState extends State<RewardsView>
             Text(
               "no_rewards_yet".tr,
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: Theme.of(context).textTheme.titleLarge?.color,
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -228,7 +251,7 @@ class _RewardsViewState extends State<RewardsView>
             Text(
               "reward_will_appear_here".tr,
               style: TextStyle(
-                color: Colors.grey.shade500,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 13,
               ),
             ),
@@ -238,27 +261,37 @@ class _RewardsViewState extends State<RewardsView>
     );
   }
 
-  Widget _buildRewardCard(dynamic r, int index) {
+  Widget _buildRewardCard(BuildContext context, dynamic r, int index) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            const Color(0xFFFFF8E1),
-            Colors.amber.shade100,
-            Colors.white,
-          ],
+          colors: isDark
+              ? [
+                  const Color(0xFF3A2A10),
+                  const Color(0xFF2A2114),
+                  Theme.of(context).cardColor,
+                ]
+              : [
+                  const Color(0xFFFFF8E1),
+                  Colors.amber.shade100,
+                  Colors.white,
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
         border: Border.all(
-          color: Colors.amber.withOpacity(.45),
+          color: Colors.amber.withOpacity(isDark ? .28 : .45),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.amber.withOpacity(.22),
+            color: isDark
+                ? Colors.black.withOpacity(.22)
+                : Colors.amber.withOpacity(.22),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -272,7 +305,7 @@ class _RewardsViewState extends State<RewardsView>
             child: Icon(
               Icons.star_rounded,
               size: 95,
-              color: Colors.amber.withOpacity(.15),
+              color: Colors.amber.withOpacity(isDark ? .10 : .15),
             ),
           ),
           Row(
@@ -290,7 +323,7 @@ class _RewardsViewState extends State<RewardsView>
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.amber.withOpacity(.35),
+                      color: Colors.amber.withOpacity(.30),
                       blurRadius: 16,
                       offset: const Offset(0, 7),
                     ),
@@ -315,13 +348,20 @@ class _RewardsViewState extends State<RewardsView>
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.amber.withOpacity(.22),
+                            color: Colors.amber.withOpacity(isDark ? .16 : .22),
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isDark
+                                  ? Colors.amber.withOpacity(.18)
+                                  : Colors.transparent,
+                            ),
                           ),
                           child: Text(
                             "reward".tr.toUpperCase(),
-                            style: const TextStyle(
-                              color: Color(0xFF9A6A00),
+                            style: TextStyle(
+                              color: isDark
+                                  ? Colors.amber.shade200
+                                  : const Color(0xFF9A6A00),
                               fontSize: 10.5,
                               fontWeight: FontWeight.bold,
                               letterSpacing: .8,
@@ -339,7 +379,9 @@ class _RewardsViewState extends State<RewardsView>
                           ),
                           label: Text("details".tr),
                           style: TextButton.styleFrom(
-                            foregroundColor: AppColors.darkPurple,
+                            foregroundColor: isDark
+                                ? Colors.amber.shade200
+                                : AppColors.darkPurple,
                             minimumSize: Size.zero,
                             padding: EdgeInsets.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -352,8 +394,10 @@ class _RewardsViewState extends State<RewardsView>
                       r.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.darkPurple,
+                      style: TextStyle(
+                        color: isDark
+                            ? Colors.amber.shade100
+                            : AppColors.darkPurple,
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
                         height: 1.25,
@@ -364,7 +408,7 @@ class _RewardsViewState extends State<RewardsView>
                       children: [
                         Icon(
                           Icons.calendar_month_rounded,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           size: 15,
                         ),
                         const SizedBox(width: 5),
@@ -374,7 +418,8 @@ class _RewardsViewState extends State<RewardsView>
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: Colors.grey.shade700,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),

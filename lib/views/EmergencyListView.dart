@@ -21,7 +21,7 @@ class EmergencyListView extends StatelessWidget {
     final controller = Get.put(EmergencyController());
 
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.to(() => const EmergencyCreateView()),
         backgroundColor: emergencyRed,
@@ -34,10 +34,10 @@ class EmergencyListView extends StatelessWidget {
           ),
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+     body: Container(
+  decoration: BoxDecoration(
+    gradient: AppColors.currentGradient,
+  ),
         child: SafeArea(
           child: Column(
             children: [
@@ -45,9 +45,9 @@ class EmergencyListView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
                   ),
@@ -62,7 +62,7 @@ class EmergencyListView extends StatelessWidget {
                     }
 
                     if (controller.emergencyCases.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return RefreshIndicator(
@@ -74,7 +74,7 @@ class EmergencyListView extends StatelessWidget {
                         separatorBuilder: (_, __) => const SizedBox(height: 14),
                         itemBuilder: (context, index) {
                           final item = controller.emergencyCases[index];
-                          return _buildCaseCard(item, controller);
+                          return _buildCaseCard(context, item, controller);
                         },
                       ),
                     );
@@ -156,7 +156,7 @@ class EmergencyListView extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -165,20 +165,22 @@ class EmergencyListView extends StatelessWidget {
             width: 92,
             height: 92,
             decoration: BoxDecoration(
-              color: AppColors.softLavender,
+              color: Get.isDarkMode
+                  ? Colors.white.withOpacity(.08)
+                  : AppColors.softLavender,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.shield_outlined,
               size: 52,
-              color: AppColors.darkPurple,
+              color: Theme.of(context).textTheme.titleLarge?.color,
             ),
           ),
           const SizedBox(height: 18),
           Text(
             'no_emergency_reports'.tr,
             style: TextStyle(
-              color: Colors.grey.shade700,
+              color: Theme.of(context).textTheme.titleLarge?.color,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -187,7 +189,7 @@ class EmergencyListView extends StatelessWidget {
           Text(
             'emergency_reports_hint'.tr,
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: 13,
             ),
           ),
@@ -196,7 +198,11 @@ class EmergencyListView extends StatelessWidget {
     );
   }
 
-  Widget _buildCaseCard(EmergencyCase item, EmergencyController controller) {
+  Widget _buildCaseCard(
+    BuildContext context,
+    EmergencyCase item,
+    EmergencyController controller,
+  ) {
     final isHigh = item.severity == 'high';
     final isResolved = item.status == 'resolved';
 
@@ -213,14 +219,16 @@ class EmergencyListView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: severityColor.withOpacity(.20),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.deepPurple.withOpacity(.08),
+              color: Get.isDarkMode
+                  ? Colors.black.withOpacity(.20)
+                  : AppColors.deepPurple.withOpacity(.08),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -236,7 +244,9 @@ class EmergencyListView extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isHigh
                         ? emergencyRed.withOpacity(.10)
-                        : AppColors.softLavender,
+                        : Get.isDarkMode
+                            ? Colors.white.withOpacity(.08)
+                            : AppColors.softLavender,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Icon(
@@ -256,10 +266,10 @@ class EmergencyListView extends StatelessWidget {
                         item.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: AppColors.darkPurple,
+                          color: Theme.of(context).textTheme.titleLarge?.color,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -268,7 +278,7 @@ class EmergencyListView extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           fontSize: 13,
                           height: 1.35,
                         ),
@@ -295,7 +305,8 @@ class EmergencyListView extends StatelessWidget {
                   icon: const Icon(Icons.visibility_outlined, size: 18),
                   label: Text('details'.tr),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.darkPurple,
+                    foregroundColor:
+                        Get.isDarkMode ? Colors.white : AppColors.darkPurple,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 6,

@@ -14,16 +14,27 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: isDark
+            ? Theme.of(context).cardColor.withOpacity(.92)
+            : Colors.white.withOpacity(0.75),
         borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.18)
+              : Colors.white.withOpacity(.35),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+            color: isDark
+                ? Colors.black.withOpacity(.30)
+                : Colors.black.withOpacity(0.05),
+            blurRadius: 14,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
@@ -32,10 +43,22 @@ class BottomNav extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: _buildNavItem(4, Icons.settings, "settings".tr, Colors.grey),
+              child: _buildNavItem(
+                context,
+                4,
+                Icons.settings,
+                "settings".tr,
+                Colors.grey,
+              ),
             ),
             Expanded(
-              child: _buildNavItem(0, Icons.calendar_month, "my_lectures".tr, Colors.grey),
+              child: _buildNavItem(
+                context,
+                0,
+                Icons.calendar_month,
+                "my_lectures".tr,
+                Colors.grey,
+              ),
             ),
             Expanded(
               child: GestureDetector(
@@ -44,11 +67,15 @@ class BottomNav extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    gradient: AppColors.mainGradient,
+                    gradient: isDark
+                        ? AppColors.darkMainGradient
+                        : AppColors.mainGradient,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.darkPurple.withOpacity(0.3),
+                        color: isDark
+                            ? Colors.black.withOpacity(.30)
+                            : AppColors.darkPurple.withOpacity(0.30),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -63,10 +90,22 @@ class BottomNav extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: _buildNavItem(2, Icons.request_page, "my_requests".tr, Colors.grey),
+              child: _buildNavItem(
+                context,
+                2,
+                Icons.request_page,
+                "my_requests".tr,
+                Colors.grey,
+              ),
             ),
             Expanded(
-              child: _buildNavItem(3, Icons.sos, "emergency".tr, Colors.red),
+              child: _buildNavItem(
+                context,
+                3,
+                Icons.sos,
+                "emergency".tr,
+                Colors.red,
+              ),
             ),
           ],
         ),
@@ -74,8 +113,20 @@ class BottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label, Color iconColor) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    IconData icon,
+    String label,
+    Color iconColor,
+  ) {
     final isSelected = currentIndex == index;
+    final isDark = Get.isDarkMode;
+
+    final selectedColor =
+        iconColor == Colors.red ? Colors.red : AppColors.mauve;
+
+    final unselectedColor = isDark ? Colors.white60 : iconColor;
 
     return GestureDetector(
       onTap: () => onTap(index),
@@ -84,18 +135,21 @@ class BottomNav extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.softLavender.withOpacity(0.6)
+              ? (isDark
+                  ? AppColors.mauve.withOpacity(.14)
+                  : AppColors.softLavender.withOpacity(0.60))
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
+          border: isSelected && isDark
+              ? Border.all(color: AppColors.mauve.withOpacity(.18))
+              : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              color: isSelected
-                  ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple)
-                  : iconColor,
+              color: isSelected ? selectedColor : unselectedColor,
               size: 23,
             ),
             const SizedBox(height: 4),
@@ -108,9 +162,7 @@ class BottomNav extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected
-                      ? (iconColor == Colors.red ? Colors.red : AppColors.darkPurple)
-                      : iconColor,
+                  color: isSelected ? selectedColor : unselectedColor,
                 ),
               ),
             ),

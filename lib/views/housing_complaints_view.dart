@@ -13,11 +13,13 @@ class HousingComplaintsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: SafeArea(
         child: Container(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           padding: const EdgeInsets.only(
             right: 16,
             left: 16,
@@ -41,7 +43,9 @@ class HousingComplaintsView extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(
+          gradient: AppColors.currentGradient,
+        ),
         child: SafeArea(
           child: Column(
             children: [
@@ -49,11 +53,20 @@ class HousingComplaintsView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -65,7 +78,7 @@ class HousingComplaintsView extends StatelessWidget {
                     }
 
                     if (controller.complaints.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return RefreshIndicator(
@@ -77,7 +90,7 @@ class HousingComplaintsView extends StatelessWidget {
                         itemCount: controller.complaints.length,
                         itemBuilder: (_, i) {
                           final item = controller.complaints[i];
-                          return _buildComplaintCard(item);
+                          return _buildComplaintCard(context, item);
                         },
                       ),
                     );
@@ -102,6 +115,7 @@ class HousingComplaintsView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
             ),
             child: IconButton(
               onPressed: () => Get.back(),
@@ -153,7 +167,9 @@ class HousingComplaintsView extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -162,20 +178,27 @@ class HousingComplaintsView extends StatelessWidget {
             width: 92,
             height: 92,
             decoration: BoxDecoration(
-              color: AppColors.softLavender,
+              color: isDark
+                  ? Colors.white.withOpacity(.08)
+                  : AppColors.softLavender,
               borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.mauve.withOpacity(.20)
+                    : Colors.transparent,
+              ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.campaign_outlined,
               size: 52,
-              color: AppColors.darkPurple,
+              color: isDark ? AppColors.mauve : AppColors.darkPurple,
             ),
           ),
           const SizedBox(height: 18),
           Text(
             "no_housing_complaints".tr,
             style: TextStyle(
-              color: Colors.grey.shade700,
+              color: Theme.of(context).textTheme.titleLarge?.color,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -183,14 +206,18 @@ class HousingComplaintsView extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             "housing_complaints_empty_hint".tr,
-            style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildComplaintCard(dynamic complaint) {
+  Widget _buildComplaintCard(BuildContext context, dynamic complaint) {
+    final isDark = Get.isDarkMode;
     final isResolved = complaint.status == 'resolved';
     final statusColor = isResolved ? Colors.green : Colors.orange;
     final statusText =
@@ -200,12 +227,14 @@ class HousingComplaintsView extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: statusColor.withOpacity(.20)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.deepPurple.withOpacity(.08),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : AppColors.deepPurple.withOpacity(.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -239,10 +268,10 @@ class HousingComplaintsView extends StatelessWidget {
                       complaint.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: AppColors.darkPurple,
+                        color: Theme.of(context).textTheme.titleLarge?.color,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -251,7 +280,7 @@ class HousingComplaintsView extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 13,
                         height: 1.35,
                       ),
@@ -262,81 +291,83 @@ class HousingComplaintsView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-
-          // ✅ التعديل فقط هنا لمنع Overflow عند التفاصيل والنصوص الطويلة
-       Row(
-  children: [
-    Expanded(
-      flex: 2,
-      child: _smallInfoChip(
-        text: "housing_complaint".tr,
-        icon: Icons.home_work_outlined,
-        color: AppColors.darkPurple,
-      ),
-    ),
-    const SizedBox(width: 8),
-    Expanded(
-      flex: 2,
-      child: _smallInfoChip(
-        text: statusText,
-        icon: Icons.circle,
-        color: statusColor,
-      ),
-    ),
-    const SizedBox(width: 6),
-    TextButton.icon(
-      onPressed: () async {
-        await controller.fetchComplaintDetails(complaint.id);
-        Get.to(() => const HousingComplaintDetailView());
-      },
-      icon: const Icon(Icons.visibility_outlined, size: 18),
-      label: Text("details".tr),
-      style: TextButton.styleFrom(
-        foregroundColor: AppColors.darkPurple,
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-      ),
-    ),
-  ],
-)
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: _smallInfoChip(
+                  text: "housing_complaint".tr,
+                  icon: Icons.home_work_outlined,
+                  color: isDark ? AppColors.mauve : AppColors.darkPurple,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 2,
+                child: _smallInfoChip(
+                  text: statusText,
+                  icon: Icons.circle,
+                  color: statusColor,
+                ),
+              ),
+              const SizedBox(width: 6),
+              TextButton.icon(
+                onPressed: () async {
+                  await controller.fetchComplaintDetails(complaint.id);
+                  Get.to(() => const HousingComplaintDetailView());
+                },
+                icon: const Icon(Icons.visibility_outlined, size: 18),
+                label: Text("details".tr),
+                style: TextButton.styleFrom(
+                  foregroundColor:
+                      isDark ? AppColors.mauve : AppColors.darkPurple,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-Widget _smallInfoChip({
-  required String text,
-  required IconData icon,
-  required Color color,
-}) {
-  return Container(
-    constraints: const BoxConstraints(
-      minWidth: 70,
-      maxWidth: 130, // كان صغير، الآن يكفي للنص الإنجليزي
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    decoration: BoxDecoration(
-      color: color.withOpacity(.10),
-      borderRadius: BorderRadius.circular(14),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 12, color: color),
-        const SizedBox(width: 5),
-        Expanded(
-          child: Text(
-            text,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: color,
-              fontSize: 11.5, // أكبر من السابق
-              fontWeight: FontWeight.w600,
+  Widget _smallInfoChip({
+    required String text,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      constraints: const BoxConstraints(
+        minWidth: 70,
+        maxWidth: 130,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(.10),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Get.isDarkMode ? color.withOpacity(.18) : Colors.transparent,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: color,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }

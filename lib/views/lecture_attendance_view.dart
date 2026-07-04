@@ -12,10 +12,12 @@ class LectureAttendanceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -23,11 +25,20 @@ class LectureAttendanceView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value &&
@@ -40,7 +51,7 @@ class LectureAttendanceView extends StatelessWidget {
                     }
 
                     if (controller.attendanceList.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return RefreshIndicator(
@@ -52,7 +63,7 @@ class LectureAttendanceView extends StatelessWidget {
                         itemCount: controller.attendanceList.length,
                         itemBuilder: (_, index) {
                           final item = controller.attendanceList[index];
-                          return _attendanceCard(item);
+                          return _attendanceCard(context, item);
                         },
                       ),
                     );
@@ -77,6 +88,7 @@ class LectureAttendanceView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
             ),
             child: IconButton(
               onPressed: () => Get.back(),
@@ -128,19 +140,22 @@ class LectureAttendanceView extends StatelessWidget {
     );
   }
 
-  Widget _attendanceCard(LectureAttendanceModel item) {
+  Widget _attendanceCard(BuildContext context, LectureAttendanceModel item) {
+    final isDark = Get.isDarkMode;
     final statusColor = _statusColor(item.status);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: statusColor.withOpacity(.22)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.deepPurple.withOpacity(.08),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : AppColors.deepPurple.withOpacity(.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -170,8 +185,8 @@ class LectureAttendanceView extends StatelessWidget {
                   item.subjectName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -180,22 +195,23 @@ class LectureAttendanceView extends StatelessWidget {
                 Text(
                   "${item.day} • ${item.fromHour} - ${item.toHour}",
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 12.5,
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
                   children: [
                     _smallChip(
                       text: _statusText(item.status),
                       color: statusColor,
                       icon: Icons.circle,
                     ),
-                    const SizedBox(width: 8),
                     _smallChip(
                       text: item.type,
-                      color: AppColors.darkPurple,
+                      color: isDark ? AppColors.mauve : AppColors.darkPurple,
                       icon: Icons.menu_book_rounded,
                     ),
                   ],
@@ -208,6 +224,9 @@ class LectureAttendanceView extends StatelessWidget {
               await controller.fetchAttendanceDetails(item.id);
               Get.to(() => const LectureAttendanceDetailView());
             },
+            style: TextButton.styleFrom(
+              foregroundColor: isDark ? AppColors.mauve : AppColors.darkPurple,
+            ),
             child: Text("details".tr),
           ),
         ],
@@ -225,8 +244,12 @@ class LectureAttendanceView extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(.10),
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Get.isDarkMode ? color.withOpacity(.18) : Colors.transparent,
+        ),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 11, color: color),
           const SizedBox(width: 5),
@@ -243,12 +266,12 @@ class LectureAttendanceView extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
     return Center(
       child: Text(
         "no_lecture_attendance_records".tr,
         style: TextStyle(
-          color: Colors.grey.shade600,
+          color: Theme.of(context).textTheme.bodyMedium?.color,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -259,7 +282,7 @@ class LectureAttendanceView extends StatelessWidget {
     if (status == 'present') return Colors.green;
     if (status == 'absent') return Colors.red;
     if (status == 'excused') return Colors.orange;
-    return AppColors.darkPurple;
+    return Get.isDarkMode ? AppColors.mauve : AppColors.darkPurple;
   }
 
   IconData _statusIcon(String status) {

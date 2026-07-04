@@ -12,9 +12,11 @@ class DormitoryAttendanceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+     body: Container(
+  decoration: BoxDecoration(
+    gradient: AppColors.currentGradient,
+  ),
         child: SafeArea(
           child: Column(
             children: [
@@ -22,9 +24,9 @@ class DormitoryAttendanceView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
                   ),
@@ -39,7 +41,7 @@ class DormitoryAttendanceView extends StatelessWidget {
                     }
 
                     if (controller.attendanceList.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return RefreshIndicator(
@@ -51,7 +53,7 @@ class DormitoryAttendanceView extends StatelessWidget {
                         itemCount: controller.attendanceList.length,
                         itemBuilder: (_, i) {
                           final item = controller.attendanceList[i];
-                          return _card(item);
+                          return _card(context, item);
                         },
                       ),
                     );
@@ -127,7 +129,7 @@ class DormitoryAttendanceView extends StatelessWidget {
     );
   }
 
-  Widget _card(dynamic item) {
+  Widget _card(BuildContext context, dynamic item) {
     final isPresent = item.status == 'present';
     final statusColor = isPresent ? Colors.green : Colors.red;
     final statusText =
@@ -137,12 +139,14 @@ class DormitoryAttendanceView extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: statusColor.withOpacity(.22)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.deepPurple.withOpacity(.08),
+            color: Get.isDarkMode
+                ? Colors.black.withOpacity(.20)
+                : AppColors.deepPurple.withOpacity(.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -170,8 +174,8 @@ class DormitoryAttendanceView extends StatelessWidget {
               children: [
                 Text(
                   statusText,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -182,7 +186,7 @@ class DormitoryAttendanceView extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 12.5,
                   ),
                 ),
@@ -201,12 +205,12 @@ class DormitoryAttendanceView extends StatelessWidget {
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
     return Center(
       child: Text(
         "no_dormitory_attendance_records".tr,
         style: TextStyle(
-          color: Colors.grey.shade600,
+          color: Theme.of(context).textTheme.bodyMedium?.color,
           fontWeight: FontWeight.bold,
         ),
       ),

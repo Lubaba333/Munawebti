@@ -69,8 +69,8 @@ class AppTranslations extends Translations {
   'confirm_password': 'تأكيد كلمة المرور',
   'user_name': 'الاسم الكامل',
   'phone_number': 'رقم الهاتف',
-  'phone number':'رقم الهاتف',
-  'anual_average': 'المعدل السنوي',
+ 'phone':'رقم الهاتف',
+  'annual_average': 'المعدل السنوي',
   'dormitory_status': 'حالة السكن',
   'year': 'السنة الدراسية',
   'specialization': 'التخصص',
@@ -414,6 +414,7 @@ class AppTranslations extends Translations {
 'number': 'الرقم',
 // ar
 'inside_dormitory': 'داخل السكن',
+'dormitory_unit': 'الوحدة السكنية',
 'outside_dormitory': 'خارج السكن',
 'dormitory_attendance_details': 'تفاصيل حضور السكن',
 'view_attendance_record_details': 'عرض سجل الحضور بالتفصيل',
@@ -485,6 +486,12 @@ class AppTranslations extends Translations {
 'transfer_reason': 'سبب النقل',
 'target_student_rejection_reason':'سبب رفض الطالبة ',
 'target_student_approved_at':'وافقت الطالبة في',
+'exit_from_dormitory_permission':'طلب اذن خروج',
+'room_change_without_alternative': 'طلب تبديل غرفة بدون بديلة',
+'room_exchange_with_student':'طلب تبديل غرفة مع بديلة',
+'transfer_to_any_available_room':'طلب نقل إلى أي غرفة متاحة',
+
+
     },
 
     'en': {

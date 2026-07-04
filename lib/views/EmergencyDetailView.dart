@@ -20,11 +20,11 @@ class EmergencyDetailView extends StatelessWidget {
     final controller = Get.find<EmergencyController>();
 
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+  decoration: BoxDecoration(
+    gradient: AppColors.currentGradient,
+  ),
         child: SafeArea(
           child: Column(
             children: [
@@ -33,9 +33,9 @@ class EmergencyDetailView extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
                   ),
@@ -66,19 +66,22 @@ class EmergencyDetailView extends StatelessWidget {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
-                          _certificateHeader(item, isResolved),
+                          _certificateHeader(context, item, isResolved),
                           const SizedBox(height: 22),
                           _certificateItem(
+                            context,
                             icon: Icons.description_outlined,
                             title: "description".tr,
                             value: _text(item.description),
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.calendar_month_rounded,
                             title: "created_at".tr,
                             value: dateStr,
                           ),
                           _certificateItem(
+                            context,
                             icon: isResolved
                                 ? Icons.check_circle_rounded
                                 : Icons.hourglass_bottom_rounded,
@@ -88,6 +91,7 @@ class EmergencyDetailView extends StatelessWidget {
                           ),
                           if (!isResolved)
                             _certificateItem(
+                              context,
                               icon: Icons.info_outline_rounded,
                               title: "note".tr,
                               value: "emergency_under_review_note".tr,
@@ -171,7 +175,11 @@ class EmergencyDetailView extends StatelessWidget {
     );
   }
 
-  Widget _certificateHeader(dynamic item, bool isResolved) {
+  Widget _certificateHeader(
+    BuildContext context,
+    dynamic item,
+    bool isResolved,
+  ) {
     final statusColor = isResolved ? Colors.green : Colors.orange;
 
     return Column(
@@ -196,8 +204,8 @@ class EmergencyDetailView extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           "official_report".tr,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -206,8 +214,8 @@ class EmergencyDetailView extends StatelessWidget {
         Text(
           _text(item.title),
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 23,
             fontWeight: FontWeight.bold,
             height: 1.35,
@@ -230,16 +238,16 @@ class EmergencyDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        Container(
+        Divider(
           height: 1,
-          width: double.infinity,
-          color: Colors.grey.shade200,
+          color: Theme.of(context).dividerColor.withOpacity(.35),
         ),
       ],
     );
   }
 
-  Widget _certificateItem({
+  Widget _certificateItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
@@ -262,8 +270,8 @@ class EmergencyDetailView extends StatelessWidget {
                 width: 120,
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -273,7 +281,7 @@ class EmergencyDetailView extends StatelessWidget {
                 child: Text(
                   value,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 14,
                     height: 1.45,
                   ),
@@ -285,7 +293,7 @@ class EmergencyDetailView extends StatelessWidget {
         if (showDivider)
           Divider(
             height: 1,
-            color: Colors.grey.shade200,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
           ),
       ],
     );

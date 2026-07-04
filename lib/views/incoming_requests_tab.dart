@@ -17,27 +17,39 @@ class IncomingRequestsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value && controller.receivedRequests.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(color: AppColors.mauve),
+        );
       }
 
       final incoming = controller.receivedRequests;
 
       if (incoming.isEmpty) {
-        return Center(child: Text("no_incoming_requests".tr));
+        return Center(
+          child: Text(
+            "no_incoming_requests".tr,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
       }
 
       return RefreshIndicator(
+        color: AppColors.mauve,
         onRefresh: controller.getReceivedRequests,
         child: ListView.builder(
           padding: const EdgeInsets.all(18),
           itemCount: incoming.length,
-          itemBuilder: (_, index) => _incomingCard(incoming[index]),
+          itemBuilder: (_, index) => _incomingCard(context, incoming[index]),
         ),
       );
     });
   }
 
-  Widget _incomingCard(dynamic request) {
+  Widget _incomingCard(BuildContext context, dynamic request) {
+    final isDark = Get.isDarkMode;
     final id = int.tryParse(_text(request['id']));
     final status =
         _text(request['status']).isEmpty ? 'pending' : _text(request['status']);
@@ -51,25 +63,36 @@ class IncomingRequestsTab extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.deepPurple.withOpacity(.10),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : AppColors.deepPurple.withOpacity(.10),
             blurRadius: 14,
             offset: const Offset(0, 7),
           ),
         ],
-        border: Border.all(color: AppColors.mauve.withOpacity(.25)),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.18)
+              : AppColors.mauve.withOpacity(.25),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                backgroundColor: AppColors.softLavender,
-                child: Icon(Icons.swap_horiz, color: AppColors.darkPurple),
+              CircleAvatar(
+                backgroundColor: isDark
+                    ? Colors.white.withOpacity(.08)
+                    : AppColors.softLavender,
+                child: Icon(
+                  Icons.swap_horiz,
+                  color: isDark ? AppColors.mauve : AppColors.darkPurple,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -77,7 +100,8 @@ class IncomingRequestsTab extends StatelessWidget {
                   _text(request['title']).isEmpty
                       ? "incoming_exchange_request".tr
                       : _text(request['title']),
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontWeight: FontWeight.bold,
                     fontSize: 15.5,
                   ),
@@ -86,43 +110,39 @@ class IncomingRequestsTab extends StatelessWidget {
               _statusChip(request),
             ],
           ),
-
           const SizedBox(height: 10),
-
-         Row(
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    Expanded(
-      child: Text(
-        _text(request['description']),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 12,
-        ),
-      ),
-    ),
-
-    if (id != null) ...[
-      const SizedBox(width: 8),
-      TextButton.icon(
-        onPressed: () => controller.showRequestDetails(id),
-        icon: const Icon(Icons.visibility_outlined, size: 18),
-        label: Text("details".tr),
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.darkPurple,
-          padding: EdgeInsets.zero,
-          minimumSize: const Size(0, 36),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-      ),
-    ],
-  ],
-),
-
-const SizedBox(height: 12),
-
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  _text(request['description']),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              if (id != null) ...[
+                const SizedBox(width: 8),
+                TextButton.icon(
+                  onPressed: () => controller.showRequestDetails(id),
+                  icon: const Icon(Icons.visibility_outlined, size: 18),
+                  label: Text("details".tr),
+                  style: TextButton.styleFrom(
+                    foregroundColor:
+                        isDark ? AppColors.mauve : AppColors.darkPurple,
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 36),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
           if (canRespond) ...[
             const SizedBox(height: 8),
             Row(
@@ -132,24 +152,22 @@ const SizedBox(height: 12),
                     onPressed: () => controller.approveExchangeRequest(id),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
                     ),
-                    child: Text(
-                      "accept".tr,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                    child: Text("accept".tr),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _showRejectDialog(id),
+                    onPressed: () => _showRejectDialog(requestId: id),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
                     ),
-                    child: Text(
-                      "reject".tr,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                    child: Text("reject".tr),
                   ),
                 ),
               ],
@@ -160,16 +178,25 @@ const SizedBox(height: 12),
     );
   }
 
-  void _showRejectDialog(int requestId) {
+  void _showRejectDialog({required int requestId}) {
     final reasonController = TextEditingController();
 
     Get.dialog(
       AlertDialog(
-        title: Text("reject_exchange_request".tr),
+        backgroundColor: Get.theme.cardColor,
+        title: Text(
+          "reject_exchange_request".tr,
+          style: TextStyle(
+            color: Get.textTheme.titleLarge?.color,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: TextField(
           controller: reasonController,
+          style: TextStyle(color: Get.textTheme.bodyLarge?.color),
           decoration: InputDecoration(
             hintText: "rejection_reason".tr,
+            hintStyle: TextStyle(color: Get.textTheme.bodyMedium?.color),
           ),
         ),
         actions: [
@@ -215,13 +242,19 @@ const SizedBox(height: 12),
     }
 
     return Container(
+      constraints: const BoxConstraints(maxWidth: 125),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(.12),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Get.isDarkMode ? color.withOpacity(.20) : Colors.transparent,
+        ),
       ),
       child: Text(
         text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: color,
           fontSize: 11,

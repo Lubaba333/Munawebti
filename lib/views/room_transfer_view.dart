@@ -56,13 +56,14 @@ class _RoomTransferViewState extends State<RoomTransferView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
               _header(),
-              Expanded(child: _form()),
+              Expanded(child: _form(context)),
             ],
           ),
         ),
@@ -72,13 +73,27 @@ class _RoomTransferViewState extends State<RoomTransferView> {
 
   Widget _header() {
     return Padding(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
           ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               "room_transfer".tr,
@@ -94,16 +109,30 @@ class _RoomTransferViewState extends State<RoomTransferView> {
     );
   }
 
-  Widget _form() {
+  Widget _form(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(.22)
+                : AppColors.deepPurple.withOpacity(.08),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Obx(() {
         if (controller.isLoadingCurrentRoom.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.mauve),
+          );
         }
 
         final currentRoom = controller.currentRoom.value;
@@ -113,7 +142,9 @@ class _RoomTransferViewState extends State<RoomTransferView> {
             child: Text(
               "current_room_not_loaded_resident".tr,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
             ),
           );
         }
@@ -121,19 +152,21 @@ class _RoomTransferViewState extends State<RoomTransferView> {
         return SingleChildScrollView(
           child: Column(
             children: [
-              const Icon(
+              Icon(
                 Icons.move_up,
-                color: AppColors.darkPurple,
+                color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 size: 76,
               ),
               const SizedBox(height: 12),
               Text(
                 "room_transfer_desc".tr,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                ),
               ),
               const SizedBox(height: 22),
-              _currentRoomCard(currentRoom),
+              _currentRoomCard(context, currentRoom),
               const SizedBox(height: 20),
               CustomTextField(
                 controller: reasonController,
@@ -159,22 +192,33 @@ class _RoomTransferViewState extends State<RoomTransferView> {
     );
   }
 
-  Widget _currentRoomCard(Map<String, dynamic> room) {
+  Widget _currentRoomCard(BuildContext context, Map<String, dynamic> room) {
+    final isDark = Get.isDarkMode;
     final unitName = _unitNameFromRoom(room);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.softLavender,
+        color: isDark
+            ? Colors.white.withOpacity(.07)
+            : AppColors.softLavender,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.mauve.withOpacity(.4)),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.20)
+              : AppColors.mauve.withOpacity(.4),
+        ),
       ),
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.home, color: AppColors.darkPurple),
+          CircleAvatar(
+            backgroundColor:
+                isDark ? AppColors.mauve.withOpacity(.16) : Colors.white,
+            child: Icon(
+              Icons.home,
+              color: isDark ? AppColors.mauve : AppColors.darkPurple,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -183,16 +227,16 @@ class _RoomTransferViewState extends State<RoomTransferView> {
               children: [
                 Text(
                   "current_room".tr,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: isDark ? AppColors.mauve : AppColors.darkPurple,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   "${"room".tr}: ${room['room_number']}  |  ${"unit".tr}: $unitName",
-                  style: const TextStyle(
-                    color: AppColors.black,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),

@@ -17,7 +17,9 @@ class SentRequestsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.initialLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(color: AppColors.mauve),
+        );
       }
 
       final myId = controller.currentStudentId.value;
@@ -35,25 +37,31 @@ class SentRequestsTab extends StatelessWidget {
         return Center(
           child: Text(
             "no_requests".tr,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         );
       }
 
       return RefreshIndicator(
+        color: AppColors.mauve,
         onRefresh: controller.getMyRequests,
         child: ListView.builder(
           padding: const EdgeInsets.all(18),
           itemCount: sent.length,
-          itemBuilder: (_, index) {
-            return _requestCard(sent[index]);
+          itemBuilder: (context, index) {
+            return _requestCard(context, sent[index]);
           },
         ),
       );
     });
   }
 
-  Widget _requestCard(dynamic request) {
+  Widget _requestCard(BuildContext context, dynamic request) {
+    final isDark = Get.isDarkMode;
+
     final status =
         _text(request['status']).isEmpty ? 'pending' : _text(request['status']);
 
@@ -62,20 +70,26 @@ class SentRequestsTab extends StatelessWidget {
         ? _requestTypeName(request)
         : _text(request['title']);
 
+    final statusColor = _statusColor(status);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 13),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.deepPurple.withOpacity(.10),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : AppColors.deepPurple.withOpacity(.10),
             blurRadius: 14,
             offset: const Offset(0, 7),
           ),
         ],
-        border: Border.all(color: _statusColor(status).withOpacity(.25)),
+        border: Border.all(
+          color: statusColor.withOpacity(isDark ? .20 : .25),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,17 +97,20 @@ class SentRequestsTab extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.softLavender,
+                backgroundColor: isDark
+                    ? Colors.white.withOpacity(.08)
+                    : AppColors.softLavender,
                 child: Icon(
                   _requestIcon(request),
-                  color: AppColors.darkPurple,
+                  color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontWeight: FontWeight.bold,
                     fontSize: 15.5,
                   ),
@@ -108,7 +125,10 @@ class SentRequestsTab extends StatelessWidget {
               "${"reason".tr}: ${_requestReason(request)}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+                fontSize: 12,
+              ),
             ),
           const SizedBox(height: 8),
           Row(
@@ -116,7 +136,11 @@ class SentRequestsTab extends StatelessWidget {
               Text(
                 _formatDate(request['created_at']),
                 style: TextStyle(
-                  color: Colors.grey.shade500,
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.color
+                      ?.withOpacity(.75),
                   fontSize: 11,
                 ),
               ),
@@ -132,7 +156,8 @@ class SentRequestsTab extends StatelessWidget {
                 icon: const Icon(Icons.visibility_outlined, size: 18),
                 label: Text("details".tr),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.darkPurple,
+                  foregroundColor:
+                      isDark ? AppColors.mauve : AppColors.darkPurple,
                 ),
               ),
               if (status == 'pending' && id != null)
@@ -201,6 +226,9 @@ class SentRequestsTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(.12),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Get.isDarkMode ? color.withOpacity(.20) : Colors.transparent,
+        ),
       ),
       child: Text(
         _statusText(status),

@@ -33,10 +33,12 @@ class LecturesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -44,11 +46,20 @@ class LecturesView extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -60,7 +71,7 @@ class LecturesView extends StatelessWidget {
                     }
 
                     if (controller.lectures.isEmpty) {
-                      return _emptyState();
+                      return _emptyState(context);
                     }
 
                     return RefreshIndicator(
@@ -97,6 +108,7 @@ class LecturesView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.20),
                 borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.white.withOpacity(.18)),
               ),
               child: IconButton(
                 onPressed: () => Get.back(),
@@ -152,16 +164,22 @@ class LecturesView extends StatelessWidget {
   }
 
   Widget _weeklyTable(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: AppColors.darkPurple.withOpacity(.18),
+          color: isDark
+              ? AppColors.mauve.withOpacity(.20)
+              : AppColors.darkPurple.withOpacity(.18),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkPurple.withOpacity(.10),
+            color: isDark
+                ? Colors.black.withOpacity(.20)
+                : AppColors.darkPurple.withOpacity(.10),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -170,20 +188,24 @@ class LecturesView extends StatelessWidget {
       child: Table(
         defaultColumnWidth: const FixedColumnWidth(135),
         border: TableBorder.all(
-          color: Colors.grey.shade200,
+          color: isDark
+              ? Colors.white.withOpacity(.08)
+              : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(22),
         ),
         children: [
           TableRow(
             decoration: BoxDecoration(
-              color: AppColors.softLavender.withOpacity(.85),
+              color: isDark
+                  ? AppColors.mauve.withOpacity(.16)
+                  : AppColors.softLavender.withOpacity(.85),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(22),
               ),
             ),
             children: [
-              _headerCell("day/time".tr),
-              ...timeSlots.map((t) => _headerCell(_formatTime(t))),
+              _headerCell(context, "day/time".tr),
+              ...timeSlots.map((t) => _headerCell(context, _formatTime(t))),
             ],
           ),
           ...days.asMap().entries.map((entry) {
@@ -192,12 +214,16 @@ class LecturesView extends StatelessWidget {
 
             return TableRow(
               decoration: BoxDecoration(
-                color: index.isEven
-                    ? Colors.white
-                    : AppColors.softLavender.withOpacity(.90),
+                color: isDark
+                    ? (index.isEven
+                        ? Colors.white.withOpacity(.03)
+                        : Colors.white.withOpacity(.06))
+                    : (index.isEven
+                        ? Colors.white
+                        : AppColors.softLavender.withOpacity(.90)),
               ),
               children: [
-                _dayCell(_arabicDay(day), index),
+                _dayCell(context, _arabicDay(day), index),
                 ...timeSlots.map((time) {
                   final lecture = _findLecture(day, time);
                   return _lectureCell(context, lecture);
@@ -220,7 +246,9 @@ class LecturesView extends StatelessWidget {
     }
   }
 
-  Widget _headerCell(String text) {
+  Widget _headerCell(BuildContext context, String text) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       height: 48,
       alignment: Alignment.center,
@@ -228,8 +256,8 @@ class LecturesView extends StatelessWidget {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: AppColors.darkPurple,
+        style: TextStyle(
+          color: isDark ? AppColors.mauve : AppColors.darkPurple,
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -237,19 +265,21 @@ class LecturesView extends StatelessWidget {
     );
   }
 
-  Widget _dayCell(String day, int index) {
+  Widget _dayCell(BuildContext context, String day, int index) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       height: 82,
       alignment: Alignment.center,
       padding: const EdgeInsets.all(8),
-      color: index.isEven
-          ? AppColors.softLavender.withOpacity(.45)
-          : AppColors.softLavender.withOpacity(.62),
+      color: isDark
+          ? AppColors.mauve.withOpacity(index.isEven ? .08 : .12)
+          : AppColors.softLavender.withOpacity(index.isEven ? .45 : .62),
       child: Text(
         day,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: AppColors.darkPurple,
+        style: TextStyle(
+          color: isDark ? AppColors.mauve : AppColors.darkPurple,
           fontSize: 13,
           fontWeight: FontWeight.bold,
         ),
@@ -258,6 +288,8 @@ class LecturesView extends StatelessWidget {
   }
 
   Widget _lectureCell(BuildContext context, LectureModel? lecture) {
+    final isDark = Get.isDarkMode;
+
     if (lecture == null) {
       return Container(
         height: 82,
@@ -265,14 +297,20 @@ class LecturesView extends StatelessWidget {
         child: Text(
           "—",
           style: TextStyle(
-            color: Colors.grey.shade300,
+            color: isDark
+                ? Colors.white.withOpacity(.22)
+                : Colors.grey.shade300,
             fontSize: 18,
           ),
         ),
       );
     }
 
-    final color = lecture.isPractical ? Colors.orange : AppColors.darkPurple;
+    final color = lecture.isPractical
+        ? Colors.orange
+        : isDark
+            ? AppColors.mauve
+            : AppColors.darkPurple;
 
     return InkWell(
       onTap: () => _showLectureSheet(context, lecture),
@@ -280,7 +318,7 @@ class LecturesView extends StatelessWidget {
       child: Container(
         height: 82,
         padding: const EdgeInsets.all(8),
-        color: color.withOpacity(.09),
+        color: color.withOpacity(isDark ? .13 : .09),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -339,15 +377,25 @@ class LecturesView extends StatelessWidget {
   }
 
   void _showLectureSheet(BuildContext context, LectureModel lecture) {
-    final color = lecture.isPractical ? Colors.orange : AppColors.darkPurple;
+    final isDark = Get.isDarkMode;
+    final color = lecture.isPractical
+        ? Colors.orange
+        : isDark
+            ? AppColors.mauve
+            : AppColors.darkPurple;
 
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.fromLTRB(22, 14, 22, 22),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: const BorderRadius.vertical(
             top: Radius.circular(30),
+          ),
+          border: Border.all(
+            color: isDark
+                ? AppColors.mauve.withOpacity(.16)
+                : Colors.transparent,
           ),
         ),
         child: SingleChildScrollView(
@@ -379,8 +427,8 @@ class LecturesView extends StatelessWidget {
                   Expanded(
                     child: Text(
                       lecture.subjectName,
-                      style: const TextStyle(
-                        color: AppColors.darkPurple,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.titleLarge?.color,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -390,37 +438,44 @@ class LecturesView extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               _lectureDetailLine(
+                context,
                 icon: Icons.info_outline_rounded,
                 title: "type".tr,
                 value: lecture.isPractical ? "practical".tr : "theoretical".tr,
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.person_rounded,
                 title: "doctor".tr,
                 value: lecture.teacherName,
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.access_time_rounded,
                 title: "time".tr,
                 value:
                     "${_formatTime(lecture.fromHour)} - ${_formatTime(lecture.toHour)}",
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.calendar_month_rounded,
                 title: "day".tr,
                 value: _arabicDay(lecture.day),
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.location_on_rounded,
                 title: "location".tr,
                 value: lecture.labName,
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.groups_rounded,
                 title: "group".tr,
                 value: lecture.groupNumber,
               ),
               _lectureDetailLine(
+                context,
                 icon: Icons.account_tree_rounded,
                 title: "section".tr,
                 value: lecture.branch,
@@ -431,15 +486,19 @@ class LecturesView extends StatelessWidget {
         ),
       ),
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
     );
   }
 
-  Widget _lectureDetailLine({
+  Widget _lectureDetailLine(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
     bool isLast = false,
   }) {
+    final isDark = Get.isDarkMode;
+
     return Column(
       children: [
         Padding(
@@ -449,7 +508,7 @@ class LecturesView extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: AppColors.darkPurple,
+                color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 size: 22,
               ),
               const SizedBox(width: 14),
@@ -459,8 +518,8 @@ class LecturesView extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        color: AppColors.darkPurple,
+                      style: TextStyle(
+                        color: isDark ? AppColors.mauve : AppColors.darkPurple,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -469,7 +528,7 @@ class LecturesView extends StatelessWidget {
                     Text(
                       value.isEmpty ? "not_specified".tr : value,
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 14,
                         height: 1.4,
                         fontWeight: FontWeight.w500,
@@ -483,7 +542,7 @@ class LecturesView extends StatelessWidget {
         ),
         if (!isLast)
           Divider(
-            color: Colors.grey.shade300,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
             thickness: 1,
             height: 1,
           ),
@@ -497,19 +556,29 @@ class LecturesView extends StatelessWidget {
     required String value,
     bool fullWidth = false,
   }) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       width: fullWidth ? double.infinity : null,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.softLavender.withOpacity(.65),
+        color: isDark
+            ? Colors.white.withOpacity(.07)
+            : AppColors.softLavender.withOpacity(.65),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.mauve.withOpacity(.22),
+          color: isDark
+              ? AppColors.mauve.withOpacity(.18)
+              : AppColors.mauve.withOpacity(.22),
         ),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.darkPurple, size: 20),
+          Icon(
+            icon,
+            color: isDark ? AppColors.mauve : AppColors.darkPurple,
+            size: 20,
+          ),
           const SizedBox(width: 9),
           Expanded(
             child: Column(
@@ -518,7 +587,7 @@ class LecturesView extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Get.context?.theme.textTheme.bodyMedium?.color,
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
@@ -528,8 +597,8 @@ class LecturesView extends StatelessWidget {
                   value.isEmpty ? "not_specified".tr : value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: isDark ? AppColors.mauve : AppColors.darkPurple,
                     fontSize: 13.5,
                     fontWeight: FontWeight.bold,
                   ),
@@ -543,18 +612,22 @@ class LecturesView extends StatelessWidget {
   }
 
   Widget _sheetRow(IconData icon, String label, String value) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Get.theme.cardColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: AppColors.mauve.withOpacity(.16),
+          color: AppColors.mauve.withOpacity(isDark ? .18 : .16),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkPurple.withOpacity(.05),
+            color: isDark
+                ? Colors.black.withOpacity(.18)
+                : AppColors.darkPurple.withOpacity(.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -562,12 +635,16 @@ class LecturesView extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.darkPurple, size: 20),
+          Icon(
+            icon,
+            color: isDark ? AppColors.mauve : AppColors.darkPurple,
+            size: 20,
+          ),
           const SizedBox(width: 10),
           Text(
             "$label:",
-            style: const TextStyle(
-              color: AppColors.darkPurple,
+            style: TextStyle(
+              color: isDark ? AppColors.mauve : AppColors.darkPurple,
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
@@ -578,7 +655,7 @@ class LecturesView extends StatelessWidget {
               value.isEmpty ? "not_specified".tr : value,
               textAlign: TextAlign.left,
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: Get.textTheme.bodyMedium?.color,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -614,12 +691,12 @@ class LecturesView extends StatelessWidget {
     }
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
     return Center(
       child: Text(
         "no_lectures".tr,
         style: TextStyle(
-          color: Colors.grey.shade600,
+          color: Theme.of(context).textTheme.bodyMedium?.color,
           fontSize: 15,
           fontWeight: FontWeight.bold,
         ),

@@ -1,5 +1,5 @@
-// lib/widgets/choice_card.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ChoiceCard extends StatelessWidget {
   final String title;
@@ -19,12 +19,14 @@ class ChoiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return GestureDetector(
       onTap: onTap,
-      child: TweenAnimationBuilder(
+      child: TweenAnimationBuilder<double>(
         duration: const Duration(milliseconds: 400),
         tween: Tween<double>(begin: 0.9, end: 1),
-        builder: (context, double scale, child) {
+        builder: (context, scale, child) {
           return Transform.scale(
             scale: scale,
             child: Container(
@@ -32,19 +34,31 @@ class ChoiceCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 gradient: LinearGradient(
-                  colors: [
-                    color.withOpacity(0.8),
-                    color.withOpacity(0.3),
-                  ],
+                  colors: isDark
+                      ? [
+                          color.withOpacity(0.55),
+                          Theme.of(context).cardColor,
+                        ]
+                      : [
+                          color.withOpacity(0.8),
+                          color.withOpacity(0.3),
+                        ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                border: Border.all(
+                  color: isDark
+                      ? color.withOpacity(.25)
+                      : Colors.white.withOpacity(.10),
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: color.withOpacity(0.4),
+                    color: isDark
+                        ? Colors.black.withOpacity(0.25)
+                        : color.withOpacity(0.4),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
-                  )
+                  ),
                 ],
               ),
               child: Row(
@@ -52,7 +66,7 @@ class ChoiceCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withOpacity(isDark ? 0.12 : 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(icon, color: Colors.white, size: 30),
@@ -64,6 +78,8 @@ class ChoiceCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -73,6 +89,8 @@ class ChoiceCard extends StatelessWidget {
                         const SizedBox(height: 5),
                         Text(
                           subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white70,
                           ),
@@ -84,7 +102,7 @@ class ChoiceCard extends StatelessWidget {
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                     size: 18,
-                  )
+                  ),
                 ],
               ),
             ),

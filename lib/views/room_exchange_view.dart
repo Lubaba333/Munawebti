@@ -119,13 +119,14 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
               _header(),
-              Expanded(child: _form()),
+              Expanded(child: _form(context)),
             ],
           ),
         ),
@@ -135,13 +136,27 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
 
   Widget _header() {
     return Padding(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
           ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               "room_exchange_with_student".tr,
@@ -157,17 +172,31 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     );
   }
 
-  Widget _form() {
+  Widget _form(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(.22)
+                : AppColors.deepPurple.withOpacity(.08),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Obx(() {
         if (controller.isLoadingCurrentRoom.value ||
             controller.isLoadingRooms.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.mauve),
+          );
         }
 
         final currentRoom = controller.currentRoom.value;
@@ -177,7 +206,9 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
             child: Text(
               "current_room_loading".tr,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
             ),
           );
         }
@@ -185,25 +216,27 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
         return SingleChildScrollView(
           child: Column(
             children: [
-              const Icon(
+              Icon(
                 Icons.swap_horiz,
-                color: AppColors.darkPurple,
+                color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 size: 76,
               ),
               const SizedBox(height: 12),
               Text(
                 "room_exchange_desc".tr,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                ),
               ),
               const SizedBox(height: 22),
-              _currentRoomCard(currentRoom),
+              _currentRoomCard(context, currentRoom),
               const SizedBox(height: 18),
-              _unitDropdown(),
+              _unitDropdown(context),
               const SizedBox(height: 14),
-              _roomDropdown(),
+              _roomDropdown(context),
               const SizedBox(height: 14),
-              _studentDropdown(),
+              _studentDropdown(context),
               const SizedBox(height: 14),
               CustomTextField(
                 controller: reasonController,
@@ -246,22 +279,33 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     );
   }
 
-  Widget _currentRoomCard(Map<String, dynamic> room) {
+  Widget _currentRoomCard(BuildContext context, Map<String, dynamic> room) {
+    final isDark = Get.isDarkMode;
     final unitName = _unitName(room);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.softLavender,
+        color: isDark
+            ? Colors.white.withOpacity(.07)
+            : AppColors.softLavender,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.mauve.withOpacity(.4)),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.20)
+              : AppColors.mauve.withOpacity(.4),
+        ),
       ),
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.home, color: AppColors.darkPurple),
+          CircleAvatar(
+            backgroundColor:
+                isDark ? AppColors.mauve.withOpacity(.16) : Colors.white,
+            child: Icon(
+              Icons.home,
+              color: isDark ? AppColors.mauve : AppColors.darkPurple,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -270,16 +314,16 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
               children: [
                 Text(
                   "current_room".tr,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: isDark ? AppColors.mauve : AppColors.darkPurple,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   "${"room".tr}: ${room['room_number']}  |  ${"unit".tr}: $unitName",
-                  style: const TextStyle(
-                    color: AppColors.black,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -292,24 +336,44 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     );
   }
 
-  Widget _unitDropdown() {
+  InputDecoration _dropdownDecoration(BuildContext context, String label) {
+    final isDark = Get.isDarkMode;
+
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(
+        color: isDark ? AppColors.mauve : AppColors.darkPurple,
+      ),
+      filled: true,
+      fillColor: isDark ? Colors.white.withOpacity(.05) : Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.22)
+              : AppColors.mauve.withOpacity(.35),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.mauve),
+      ),
+    );
+  }
+
+  Widget _unitDropdown(BuildContext context) {
     return Obx(() {
       final units = _unitsFromRooms();
 
       return DropdownButtonFormField<int>(
         value: selectedUnitId.value,
         isExpanded: true,
-        decoration: InputDecoration(
-          labelText: "unit".tr,
-          labelStyle: const TextStyle(color: AppColors.darkPurple),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.mauve),
-          ),
-        ),
+        dropdownColor: Theme.of(context).cardColor,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: _dropdownDecoration(context, "unit".tr),
         items: units.map((unit) {
           return DropdownMenuItem<int>(
             value: unit['id'],
@@ -329,32 +393,24 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     });
   }
 
-  Widget _roomDropdown() {
+  Widget _roomDropdown(BuildContext context) {
     return Obx(() {
       if (selectedUnitId.value == null) {
-        return _disabledBox("choose_building_first".tr);
+        return _disabledBox(context, "choose_building_first".tr);
       }
 
       final availableRooms = _filteredRooms();
 
       if (availableRooms.isEmpty) {
-        return _disabledBox("no_rooms_in_building".tr);
+        return _disabledBox(context, "no_rooms_in_building".tr);
       }
 
       return DropdownButtonFormField<int>(
         value: targetRoomId.value,
         isExpanded: true,
-        decoration: InputDecoration(
-          labelText: "exchange_room".tr,
-          labelStyle: const TextStyle(color: AppColors.darkPurple),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.mauve),
-          ),
-        ),
+        dropdownColor: Theme.of(context).cardColor,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: _dropdownDecoration(context, "exchange_room".tr),
         items: availableRooms
             .map((room) {
               final id = int.tryParse(room['id'].toString());
@@ -383,37 +439,31 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     });
   }
 
-  Widget _studentDropdown() {
+  Widget _studentDropdown(BuildContext context) {
     return Obx(() {
       if (targetRoomId.value == null) {
-        return _disabledBox("choose_room_first_for_students".tr);
+        return _disabledBox(context, "choose_room_first_for_students".tr);
       }
 
       if (controller.isLoadingRoomStudents.value) {
         return const Padding(
           padding: EdgeInsets.symmetric(vertical: 16),
-          child: Center(child: CircularProgressIndicator()),
+          child: Center(
+            child: CircularProgressIndicator(color: AppColors.mauve),
+          ),
         );
       }
 
       if (controller.roomStudents.isEmpty) {
-        return _disabledBox("no_students_in_room".tr);
+        return _disabledBox(context, "no_students_in_room".tr);
       }
 
       return DropdownButtonFormField<int>(
         value: targetStudentId.value,
         isExpanded: true,
-        decoration: InputDecoration(
-          labelText: "exchange_student".tr,
-          labelStyle: const TextStyle(color: AppColors.darkPurple),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.mauve),
-          ),
-        ),
+        dropdownColor: Theme.of(context).cardColor,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: _dropdownDecoration(context, "exchange_student".tr),
         items: controller.roomStudents
             .map((student) {
               final id = int.tryParse(student['id'].toString());
@@ -436,18 +486,28 @@ class _RoomExchangeViewState extends State<RoomExchangeView> {
     });
   }
 
-  Widget _disabledBox(String text) {
+  Widget _disabledBox(BuildContext context, String text) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: isDark
+            ? Colors.white.withOpacity(.06)
+            : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.18)
+              : Colors.grey.shade300,
+        ),
       ),
       child: Text(
         text,
-        style: TextStyle(color: Colors.grey.shade600),
+        style: TextStyle(
+          color: Theme.of(context).textTheme.bodyMedium?.color,
+        ),
       ),
     );
   }

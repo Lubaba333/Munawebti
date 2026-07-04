@@ -13,9 +13,9 @@ class LectureAttendanceDetailView extends StatelessWidget {
     final controller = Get.find<LectureAttendanceController>();
 
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -24,9 +24,9 @@ class LectureAttendanceDetailView extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
                   ),
@@ -45,51 +45,61 @@ class LectureAttendanceDetailView extends StatelessWidget {
                       child: Column(
                         children: [
                           _certificateHeader(
+                            context,
                             title: item.subjectName,
                             status: item.status,
                           ),
                           const SizedBox(height: 22),
                           _certificateItem(
+                            context,
                             icon: Icons.fact_check_rounded,
                             title: "status".tr,
                             value: _statusText(item.status),
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.calendar_month_rounded,
                             title: "attendance_date".tr,
                             value: item.attendanceDate,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.person_rounded,
                             title: "doctor".tr,
                             value: item.teacherName,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.access_time_rounded,
                             title: "time".tr,
                             value: "${item.fromHour} - ${item.toHour}",
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.today_rounded,
                             title: "day".tr,
                             value: item.day,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.location_on_rounded,
                             title: "location".tr,
                             value: item.labName,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.groups_rounded,
                             title: "group".tr,
                             value: item.groupNumber,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.account_tree_rounded,
                             title: "section".tr,
                             value: item.branch,
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.menu_book_rounded,
                             title: "lecture_type".tr,
                             value: item.type,
@@ -119,6 +129,7 @@ class LectureAttendanceDetailView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
             ),
             child: IconButton(
               onPressed: () => Get.back(),
@@ -170,7 +181,8 @@ class LectureAttendanceDetailView extends StatelessWidget {
     );
   }
 
-  Widget _certificateHeader({
+  Widget _certificateHeader(
+    BuildContext context, {
     required String title,
     required String status,
   }) {
@@ -195,8 +207,8 @@ class LectureAttendanceDetailView extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           "lecture_attendance_record_single".tr,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -205,8 +217,8 @@ class LectureAttendanceDetailView extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 23,
             fontWeight: FontWeight.bold,
             height: 1.35,
@@ -229,16 +241,16 @@ class LectureAttendanceDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        Container(
+        Divider(
           height: 1,
-          width: double.infinity,
-          color: Colors.grey.shade200,
+          color: Theme.of(context).dividerColor.withOpacity(.35),
         ),
       ],
     );
   }
 
-  Widget _certificateItem({
+  Widget _certificateItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
@@ -257,8 +269,8 @@ class LectureAttendanceDetailView extends StatelessWidget {
                 width: 120,
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -268,7 +280,7 @@ class LectureAttendanceDetailView extends StatelessWidget {
                 child: Text(
                   value.isEmpty ? "not_specified".tr : value,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 14,
                     height: 1.45,
                   ),
@@ -278,7 +290,10 @@ class LectureAttendanceDetailView extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          Divider(height: 1, color: Colors.grey.shade200),
+          Divider(
+            height: 1,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
+          ),
       ],
     );
   }

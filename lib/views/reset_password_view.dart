@@ -16,19 +16,34 @@ class ResetPasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
               Align(
                 alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Get.back(),
+                child: Container(
+                  margin: const EdgeInsets.only(left: 14, top: 10),
+                  width: 45,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(.20),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.white.withOpacity(.18)),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    onPressed: () => Get.back(),
+                  ),
                 ),
               ),
               Padding(
@@ -44,19 +59,32 @@ class ResetPasswordView extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
+                  width: double.infinity,
                   padding: const EdgeInsets.all(25),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(40),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
                       Text(
                         "enter_email_to_reset_password".tr,
-                        style: const TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
                       ),
                       const SizedBox(height: 30),
                       CustomTextField(
@@ -70,6 +98,7 @@ class ResetPasswordView extends StatelessWidget {
                           text: controller.isLoading.value
                               ? "sending".tr
                               : "send_reset_code".tr,
+                          isLoading: controller.isLoading.value,
                           onTap: () async {
                             final email = emailController.text.trim();
 
@@ -77,7 +106,9 @@ class ResetPasswordView extends StatelessWidget {
                               Get.snackbar(
                                 "error".tr,
                                 "please_enter_email".tr,
-                                backgroundColor: Colors.red,
+                                backgroundColor: isDark
+                                    ? const Color(0xFF8B1E2D)
+                                    : Colors.red,
                                 colorText: Colors.white,
                                 snackPosition: SnackPosition.BOTTOM,
                               );
@@ -88,7 +119,9 @@ class ResetPasswordView extends StatelessWidget {
                               Get.snackbar(
                                 "error".tr,
                                 "invalid_email".tr,
-                                backgroundColor: Colors.red,
+                                backgroundColor: isDark
+                                    ? const Color(0xFF8B1E2D)
+                                    : Colors.red,
                                 colorText: Colors.white,
                                 snackPosition: SnackPosition.BOTTOM,
                               );

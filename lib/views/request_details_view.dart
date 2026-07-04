@@ -9,10 +9,12 @@ class RequestDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RequestController controller = Get.find<RequestController>();
+    final isDark = Get.isDarkMode;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -21,126 +23,138 @@ class RequestDetailsView extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(38),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     final request = controller.selectedRequest.value;
 
                     if (controller.isLoadingRequestDetails.value) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.mauve,
+                        ),
+                      );
                     }
 
                     if (request == null) {
                       return Center(
-                        child: Text("no_request_details".tr),
+                        child: Text(
+                          "no_request_details".tr,
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       );
                     }
 
-                    final metadata = request['metadata'] is Map
-                        ? request['metadata'] as Map
-                        : {};
+                    final metadata =
+                        request['metadata'] is Map ? request['metadata'] as Map : {};
 
-                   final requester = request['requester'] is Map ? request['requester'] as Map : null;
-final targetStudent =
-    request['target_student'] is Map ? request['target_student'] as Map : null;
+                    final requester =
+                        request['requester'] is Map ? request['requester'] as Map : null;
 
-final items = <_DetailItem>[
-  _DetailItem(
-    icon: _typeIcon(request),
-    title: "request_type".tr,
-    value: _typeText(request),
-  ),
+                    final targetStudent = request['target_student'] is Map
+                        ? request['target_student'] as Map
+                        : null;
 
-  if (requester != null)
-    _DetailItem(
-      icon: Icons.person_rounded,
-      title: "requester_student".tr,
-      value: requester['full_name'],
-    ),
-
-  if (requester?['current_room'] is Map)
-    _DetailItem(
-      icon: Icons.home_rounded,
-      title: "requester_room".tr,
-      value: _studentRoomText(requester?['current_room']),
-    ),
-
-  if (targetStudent != null)
-    _DetailItem(
-      icon: Icons.person_search_rounded,
-      title: "target_student".tr,
-      value: targetStudent['full_name'],
-    ),
-
-  if (targetStudent?['current_room'] is Map)
-    _DetailItem(
-      icon: Icons.meeting_room_rounded,
-      title: "target_student_room".tr,
-      value: _studentRoomText(targetStudent?['current_room']),
-    ),
-
-  _DetailItem(
-    icon: Icons.title_rounded,
-    title: "title_type".tr,
-    value: request['title'],
-  ),
-
-  _DetailItem(
-    icon: Icons.calendar_month_rounded,
-    title: "created_at".tr,
-    value: _formatDate(request['created_at']),
-  ),
-
-  ..._sortedMetadata(metadata).map(
-    (e) => _DetailItem(
-      icon: _metadataIcon(e.key),
-      title: _metadataLabel(e.key, request),
-      value: _metadataValue(
-        key: e.key,
-        value: e.value,
-        controller: controller,
-      ),
-    ),
-  ),
-
-  if (request['target_student_rejection_reason'] != null)
-    _DetailItem(
-      icon: Icons.cancel_rounded,
-      title: "target_student_rejection_reason".tr,
-      value: request['target_student_rejection_reason'],
-    ),
-
-  if (request['target_student_approved_at'] != null)
-    _DetailItem(
-      icon: Icons.check_circle_rounded,
-      title: 'target_student_approved_at'.tr,
-      value: _formatDate(request['target_student_approved_at']),
-    ),
-
-  if (request['admin_response_reason'] != null)
-    _DetailItem(
-      icon: Icons.admin_panel_settings_outlined,
-      title: "admin_response".tr,
-      value: request['admin_response_reason'],
-    ),
-].where((e) {
-  return e.value != null && e.value.toString().trim().isNotEmpty;
-}).toList();
+                    final items = <_DetailItem>[
+                      _DetailItem(
+                        icon: _typeIcon(request),
+                        title: "request_type".tr,
+                        value: _typeText(request),
+                      ),
+                      if (requester != null)
+                        _DetailItem(
+                          icon: Icons.person_rounded,
+                          title: "requester_student".tr,
+                          value: requester['full_name'],
+                        ),
+                      if (requester?['current_room'] is Map)
+                        _DetailItem(
+                          icon: Icons.home_rounded,
+                          title: "requester_room".tr,
+                          value: _studentRoomText(requester?['current_room']),
+                        ),
+                      if (targetStudent != null)
+                        _DetailItem(
+                          icon: Icons.person_search_rounded,
+                          title: "target_student".tr,
+                          value: targetStudent['full_name'],
+                        ),
+                      if (targetStudent?['current_room'] is Map)
+                        _DetailItem(
+                          icon: Icons.meeting_room_rounded,
+                          title: "target_student_room".tr,
+                          value: _studentRoomText(targetStudent?['current_room']),
+                        ),
+                      _DetailItem(
+                        icon: Icons.title_rounded,
+                        title: "title_type".tr,
+                        value: request['title'],
+                      ),
+                      _DetailItem(
+                        icon: Icons.calendar_month_rounded,
+                        title: "created_at".tr,
+                        value: _formatDate(request['created_at']),
+                      ),
+                      ..._sortedMetadata(metadata).map(
+                        (e) => _DetailItem(
+                          icon: _metadataIcon(e.key),
+                          title: _metadataLabel(e.key, request),
+                          value: _metadataValue(
+                            key: e.key,
+                            value: e.value,
+                            controller: controller,
+                          ),
+                        ),
+                      ),
+                      if (request['target_student_rejection_reason'] != null)
+                        _DetailItem(
+                          icon: Icons.cancel_rounded,
+                          title: "target_student_rejection_reason".tr,
+                          value: request['target_student_rejection_reason'],
+                        ),
+                      if (request['target_student_approved_at'] != null)
+                        _DetailItem(
+                          icon: Icons.check_circle_rounded,
+                          title: 'target_student_approved_at'.tr,
+                          value: _formatDate(request['target_student_approved_at']),
+                        ),
+                      if (request['admin_response_reason'] != null)
+                        _DetailItem(
+                          icon: Icons.admin_panel_settings_outlined,
+                          title: "admin_response".tr,
+                          value: request['admin_response_reason'],
+                        ),
+                    ].where((e) {
+                      return e.value != null && e.value.toString().trim().isNotEmpty;
+                    }).toList();
 
                     return SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _statusHeader(request['status']),
+                          _statusHeader(context, request['status']),
                           const SizedBox(height: 26),
                           Text(
                             "request_details".tr,
-                            style: const TextStyle(
-                              color: AppColors.darkPurple,
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.titleLarge?.color,
                               fontSize: 19,
                               fontWeight: FontWeight.bold,
                             ),
@@ -151,6 +165,7 @@ final items = <_DetailItem>[
                             final item = entry.value;
 
                             return _detailLine(
+                              context,
                               icon: item.icon,
                               title: item.title,
                               value: item.value.toString(),
@@ -172,13 +187,27 @@ final items = <_DetailItem>[
 
   Widget _header() {
     return Padding(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(.20),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
+            ),
+            child: IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
           ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               "request_details".tr,
@@ -194,7 +223,7 @@ final items = <_DetailItem>[
     );
   }
 
-  Widget _statusHeader(dynamic status) {
+  Widget _statusHeader(BuildContext context, dynamic status) {
     final color = _statusColor(status?.toString());
 
     return Container(
@@ -261,12 +290,15 @@ final items = <_DetailItem>[
     );
   }
 
-  Widget _detailLine({
+  Widget _detailLine(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
     required bool isLast,
   }) {
+    final isDark = Get.isDarkMode;
+
     return Column(
       children: [
         Padding(
@@ -276,7 +308,7 @@ final items = <_DetailItem>[
             children: [
               Icon(
                 icon,
-                color: AppColors.darkPurple,
+                color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 size: 23,
               ),
               const SizedBox(width: 14),
@@ -286,8 +318,8 @@ final items = <_DetailItem>[
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        color: AppColors.darkPurple,
+                      style: TextStyle(
+                        color: isDark ? AppColors.mauve : AppColors.darkPurple,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -296,7 +328,7 @@ final items = <_DetailItem>[
                     Text(
                       value,
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 14,
                         height: 1.5,
                         fontWeight: FontWeight.w500,
@@ -310,7 +342,7 @@ final items = <_DetailItem>[
         ),
         if (!isLast)
           Divider(
-            color: Colors.grey.shade300,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
             thickness: 1,
             height: 1,
           ),
@@ -374,43 +406,45 @@ final items = <_DetailItem>[
 
     return "unknown_room".tr;
   }
-String _studentRoomText(dynamic room) {
-  if (room is! Map) return "not_specified".tr;
 
-  final number = room['room_number'] ?? room['number'] ?? '-';
-  final unitRaw = room['dormitory_unit']?['name'] ??
-      room['dormitory_unit_name'];
+  String _studentRoomText(dynamic room) {
+    if (room is! Map) return "not_specified".tr;
 
-  return "${"room".tr} $number - ${_unitArabicName(unitRaw?.toString())}";
-}
-String _unitArabicName(String? name) {
-  if (name == null || name.trim().isEmpty) {
-    return "not_specified".tr;
+    final number = room['room_number'] ?? room['number'] ?? '-';
+    final unitRaw = room['dormitory_unit']?['name'] ??
+        room['dormitory_unit_name'];
+
+    return "${"room".tr} $number - ${_unitArabicName(unitRaw?.toString())}";
   }
 
-  switch (name.trim()) {
-    case "Building A":
-    case "Building 1":
-    case "A":
-    case "1":
-      return "building_1".tr;
+  String _unitArabicName(String? name) {
+    if (name == null || name.trim().isEmpty) {
+      return "not_specified".tr;
+    }
 
-    case "Building B":
-    case "Building 2":
-    case "B":
-    case "2":
-      return "building_2".tr;
+    switch (name.trim()) {
+      case "Building A":
+      case "Building 1":
+      case "A":
+      case "1":
+        return "building_1".tr;
 
-    case "Building C":
-    case "Building 3":
-    case "C":
-    case "3":
-      return "building_3".tr;
+      case "Building B":
+      case "Building 2":
+      case "B":
+      case "2":
+        return "building_2".tr;
 
-    default:
-      return name;
+      case "Building C":
+      case "Building 3":
+      case "C":
+      case "3":
+        return "building_3".tr;
+
+      default:
+        return name;
+    }
   }
-}
 
   IconData _typeIcon(Map<String, dynamic> request) {
     final type = request['request_type']?.toString();
@@ -451,9 +485,13 @@ String _unitArabicName(String? name) {
     final changeType = request['room_change_type']?.toString();
 
     if (type == 'student_exit_permission') return 'exit_permission'.tr;
-    if (changeType == 'specific_room') return 'room_change_without_alternative'.tr;
+    if (changeType == 'specific_room') {
+      return 'room_change_without_alternative'.tr;
+    }
     if (changeType == 'exchange') return 'room_exchange_with_student'.tr;
-    if (changeType == 'any_available') return 'transfer_to_any_available_room'.tr;
+    if (changeType == 'any_available') {
+      return 'transfer_to_any_available_room'.tr;
+    }
 
     return type ?? 'request'.tr;
   }

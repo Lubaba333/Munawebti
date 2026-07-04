@@ -1,4 +1,3 @@
-// lib/widgets/settings_drawer.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,8 +19,13 @@ class SettingsDrawer extends StatefulWidget {
 class _SettingsDrawerState extends State<SettingsDrawer>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
- late ThemeController themeController;
-  late SettingsDrawerController controller;
+
+  final ThemeController themeController = Get.find<ThemeController>();
+
+  final SettingsDrawerController controller =
+      Get.isRegistered<SettingsDrawerController>()
+          ? Get.find<SettingsDrawerController>()
+          : Get.put(SettingsDrawerController());
 
   @override
   void initState() {
@@ -31,30 +35,47 @@ class _SettingsDrawerState extends State<SettingsDrawer>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-
-    controller = Get.put(SettingsDrawerController());
- 
   }
 
   @override
   void dispose() {
     _animController.dispose();
-themeController = Get.find<ThemeController>();
     super.dispose();
+  }
+
+  LinearGradient _drawerGradient() {
+    return Get.isDarkMode
+        ? const LinearGradient(
+            colors: [
+              Color(0xFF2A1230),
+              Color(0xFF3A1B42),
+              Color(0xFF121212),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
+            colors: [
+              AppColors.darkPurple,
+              AppColors.mauve,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.75,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.darkPurple, AppColors.mauve],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        gradient: _drawerGradient(),
         boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 20, spreadRadius: 5),
+          BoxShadow(
+            color: Colors.black.withOpacity(Get.isDarkMode ? .45 : .26),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
         ],
       ),
       child: SafeArea(
@@ -108,12 +129,13 @@ themeController = Get.find<ThemeController>();
               final img = profileController.profileImage.value;
 
               return Container(
+                padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.white, width: 3),
-                  boxShadow: const [
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: [
                     BoxShadow(
-                      color: Colors.black26,
+                      color: Colors.black.withOpacity(.28),
                       blurRadius: 15,
                       spreadRadius: 2,
                     ),
@@ -121,13 +143,17 @@ themeController = Get.find<ThemeController>();
                 ),
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: AppColors.white,
+                  backgroundColor: Get.isDarkMode
+                      ? const Color(0xFF241826)
+                      : AppColors.white,
                   backgroundImage: img != null ? FileImage(img) : null,
                   child: img == null
-                      ? const Icon(
+                      ? Icon(
                           Icons.person,
                           size: 50,
-                          color: AppColors.darkPurple,
+                          color: Get.isDarkMode
+                              ? AppColors.mauve
+                              : AppColors.darkPurple,
                         )
                       : null,
                 ),
@@ -140,6 +166,7 @@ themeController = Get.find<ThemeController>();
               profileController.name.value.isEmpty
                   ? "student".tr
                   : profileController.name.value,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.white,
                 fontSize: 22,
@@ -152,11 +179,14 @@ themeController = Get.find<ThemeController>();
             () => Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white24,
+                color: Colors.white.withOpacity(.22),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withOpacity(.15)),
               ),
               child: Text(
                 profileController.email.value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: AppColors.white, fontSize: 14),
               ),
             ),
@@ -166,112 +196,132 @@ themeController = Get.find<ThemeController>();
     );
   }
 
- Widget _buildMenuItems() {
-  return SingleChildScrollView(
-    padding: const EdgeInsets.symmetric(vertical: 20),
-    child: Column(
-      children: [
-        _languagePopupItem(),
-        _themeToggleItem(),
-        _menuItem(
-          Icons.info_outline,
-          "about_app".tr,
-          "app_version".tr,
-          () => _goTo('/about'),
-        ),
-      ],
-    ),
-  );
-}
-Widget _languagePopupItem() {
-  return PopupMenuButton<String>(
-    color: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
-    onSelected: (value) {
-      final box = GetStorage();
-      box.write('language', value);
-      Get.updateLocale(Locale(value));
-    },
-    itemBuilder: (context) => [
-      PopupMenuItem(
-        value: 'en',
-        child: Row(
-          children: [
-            Icon(
-              Get.locale?.languageCode == 'en'
-                  ? Icons.check_circle
-                  : Icons.circle_outlined,
-              color: AppColors.darkPurple,
-              size: 20,
-            ),
-            const SizedBox(width: 10),
-            const Text('English'),
-          ],
-        ),
-      ),
-      PopupMenuItem(
-        value: 'ar',
-        child: Row(
-          children: [
-            Icon(
-              Get.locale?.languageCode == 'ar'
-                  ? Icons.check_circle
-                  : Icons.circle_outlined,
-              color: AppColors.darkPurple,
-              size: 20,
-            ),
-            const SizedBox(width: 10),
-            const Text('العربية'),
-          ],
-        ),
-      ),
-    ],
-    child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Row(
+  Widget _buildMenuItems() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
         children: [
-          const Icon(Icons.language, color: AppColors.white),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "language".tr,
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  "change_language".tr,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.white70,
+          _languagePopupItem(),
+          _themeToggleItem(),
+          _menuItem(
+            Icons.info_outline,
+            "about_app".tr,
+            "app_version".tr,
+            () => _goTo('/about'),
           ),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
+
+  Widget _languagePopupItem() {
+    return PopupMenuButton<String>(
+      color: Get.isDarkMode ? const Color(0xFF241826) : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      onSelected: (value) {
+        final box = GetStorage();
+        box.write('language', value);
+        Get.updateLocale(Locale(value));
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'en',
+          child: Row(
+            children: [
+              Icon(
+                Get.locale?.languageCode == 'en'
+                    ? Icons.check_circle
+                    : Icons.circle_outlined,
+                color: Get.isDarkMode ? AppColors.mauve : AppColors.darkPurple,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'English',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'ar',
+          child: Row(
+            children: [
+              Icon(
+                Get.locale?.languageCode == 'ar'
+                    ? Icons.check_circle
+                    : Icons.circle_outlined,
+                color: Get.isDarkMode ? AppColors.mauve : AppColors.darkPurple,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'العربية',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+      child: _drawerItemContainer(
+        child: Row(
+          children: [
+            const Icon(Icons.language, color: AppColors.white),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "language".tr,
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    "change_language".tr,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.white70,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerItemContainer({required Widget child}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(Get.isDarkMode ? .08 : .12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withOpacity(Get.isDarkMode ? .16 : .22),
+        ),
+      ),
+      child: child,
+    );
+  }
+
   Widget _menuItem(
     IconData icon,
     String title,
@@ -283,14 +333,7 @@ Widget _languagePopupItem() {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
-          ),
+        child: _drawerItemContainer(
           child: Row(
             children: [
               Icon(icon, color: AppColors.white),
@@ -330,100 +373,114 @@ Widget _languagePopupItem() {
     );
   }
 
-Widget _themeToggleItem() {
-  return Obx(() {
-    final isDark = themeController.isDarkMode.value;
+  Widget _themeToggleItem() {
+    return Obx(() {
+      final isDark = themeController.isDarkMode.value;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      height: 50,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Stack(
-        children: [
-          AnimatedAlign(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            alignment: isDark ? Alignment.centerRight : Alignment.centerLeft,
-            child: Container(
-              width: (MediaQuery.sizeOf(context).width * 0.75 - 32) * 0.5,
-              height: 44,
-              margin: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
-                borderRadius: BorderRadius.circular(14),
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(isDark ? .08 : .12),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withOpacity(.18)),
+        ),
+        child: Stack(
+          children: [
+            AnimatedAlign(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              alignment: isDark ? Alignment.centerRight : Alignment.centerLeft,
+              child: Container(
+                width: (MediaQuery.sizeOf(context).width * 0.75 - 32) * 0.5,
+                height: 44,
+                margin: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.24),
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => themeController.setTheme(false),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.light_mode,
-                          color: !isDark ? Colors.amber : Colors.white70,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          "light".tr,
-                          style: TextStyle(
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => themeController.setTheme(false),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.light_mode,
                             color: !isDark ? Colors.amber : Colors.white70,
-                            fontWeight: FontWeight.bold,
+                            size: 18,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Text(
+                            "light".tr,
+                            style: TextStyle(
+                              color: !isDark ? Colors.amber : Colors.white70,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => themeController.setTheme(true),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.dark_mode,
-                          color: isDark ? Colors.blueAccent : Colors.white70,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          "dark".tr,
-                          style: TextStyle(
-                            color: isDark ? Colors.blueAccent : Colors.white70,
-                            fontWeight: FontWeight.bold,
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => themeController.setTheme(true),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.dark_mode,
+                            color: isDark
+                                ? const Color(0xFFD9B5D5)
+                                : Colors.white70,
+                            size: 18,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Text(
+                            "dark".tr,
+                            style: TextStyle(
+                              color: isDark
+                                  ? const Color(0xFFD9B5D5)
+                                  : Colors.white70,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  });
-}
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+  }
 
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: ElevatedButton(
+      child: ElevatedButton.icon(
         onPressed: _handleLogout,
-        child: Text("logout".tr),
+        icon: const Icon(Icons.logout_rounded),
+        label: Text("logout".tr),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.darkPurple,
+          minimumSize: const Size(double.infinity, 48),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
       ),
     );
   }
@@ -440,7 +497,7 @@ Widget _themeToggleItem() {
           return Transform.scale(
             scale: scale,
             child: Opacity(
-              opacity: 0.25 + (_animController.value * 0.2),
+              opacity: 0.20 + (_animController.value * 0.18),
               child: Icon(icon, size: 26, color: Colors.white),
             ),
           );
@@ -455,7 +512,6 @@ Widget _themeToggleItem() {
   }
 
   void _handleLogout() {
-    final settingsController = Get.find<SettingsDrawerController>();
-    settingsController.logout();
+    controller.logout();
   }
 }

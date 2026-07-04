@@ -16,19 +16,19 @@ class NewPasswordView extends StatelessWidget {
     required this.email,
   });
 
-  final ResetPasswordController controller =
-      Get.put(ResetPasswordController());
+  final ResetPasswordController controller = Get.put(ResetPasswordController());
 
   final passwordController = TextEditingController();
   final confirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -47,8 +47,24 @@ class NewPasswordView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(25),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: isDark
+                          ? Theme.of(context).cardColor.withOpacity(.96)
+                          : Colors.white.withOpacity(0.92),
                       borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.mauve.withOpacity(.16)
+                            : Colors.white.withOpacity(.35),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? Colors.black.withOpacity(.25)
+                              : AppColors.deepPurple.withOpacity(.12),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
                     child: Column(
                       children: [
@@ -71,12 +87,17 @@ class NewPasswordView extends StatelessWidget {
                             text: controller.isLoading.value
                                 ? "updating".tr
                                 : "update_password".tr,
+                            isLoading: controller.isLoading.value,
                             onTap: () {
                               if (passwordController.text !=
                                   confirmController.text) {
                                 Get.snackbar(
                                   "error".tr,
                                   "passwords_not_match".tr,
+                                  backgroundColor: isDark
+                                      ? const Color(0xFF8B1E2D)
+                                      : Colors.red,
+                                  colorText: Colors.white,
                                 );
                                 return;
                               }

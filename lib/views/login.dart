@@ -87,16 +87,19 @@ class _LoginViewState extends State<LoginView>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: FadeTransition(
         opacity: _fade,
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.mainGradient,
+          decoration: BoxDecoration(
+            gradient: AppColors.currentGradient,
           ),
           child: Stack(
             children: [
-              _background(),
+              _background(isDark),
               SafeArea(
                 child: Column(
                   children: [
@@ -109,7 +112,7 @@ class _LoginViewState extends State<LoginView>
                         position: _formSlide,
                         child: ScaleTransition(
                           scale: _formScale,
-                          child: _form(),
+                          child: _form(context),
                         ),
                       ),
                     ),
@@ -123,13 +126,28 @@ class _LoginViewState extends State<LoginView>
     );
   }
 
-  Widget _background() {
+  Widget _background(bool isDark) {
     return Stack(
       children: [
-        _circle(80, 40, 30, AppColors.lightPink),
-        _circle(60, 100, 300, Colors.white.withOpacity(0.2)),
-        _circle(100, 600, -20, AppColors.deepPurple),
-        _circle(90, -20, 300, AppColors.mauve),
+        _circle(
+          80,
+          40,
+          30,
+          isDark ? AppColors.mauve.withOpacity(.20) : AppColors.lightPink,
+        ),
+        _circle(60, 100, 300, Colors.white.withOpacity(0.16)),
+        _circle(
+          100,
+          600,
+          -20,
+          isDark ? Colors.black.withOpacity(.18) : AppColors.deepPurple,
+        ),
+        _circle(
+          90,
+          -20,
+          300,
+          isDark ? AppColors.mauve.withOpacity(.22) : AppColors.mauve,
+        ),
       ],
     );
   }
@@ -178,12 +196,23 @@ class _LoginViewState extends State<LoginView>
     );
   }
 
-  Widget _form() {
+  Widget _form(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       padding: const EdgeInsets.all(25),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withOpacity(.25)
+                : AppColors.deepPurple.withOpacity(.08),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -213,8 +242,8 @@ class _LoginViewState extends State<LoginView>
                 },
                 child: Text(
                   "forgot_password".tr,
-                  style: const TextStyle(
-                    color: AppColors.deepPurple,
+                  style: TextStyle(
+                    color: isDark ? AppColors.mauve : AppColors.deepPurple,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -224,9 +253,8 @@ class _LoginViewState extends State<LoginView>
             const SizedBox(height: 20),
             Obx(
               () => GradientButton(
-                text: controller.isLoading.value
-                    ? "loading".tr
-                    : "login".tr,
+                text: controller.isLoading.value ? "loading".tr : "login".tr,
+                isLoading: controller.isLoading.value,
                 onTap: () {
                   controller.login(
                     email: emailController.text,
@@ -240,15 +268,20 @@ class _LoginViewState extends State<LoginView>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("dont_have_account".tr),
+                Text(
+                  "dont_have_account".tr,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => RegisterView());
                   },
                   child: Text(
                     "register".tr,
-                    style: const TextStyle(
-                      color: AppColors.darkPurple,
+                    style: TextStyle(
+                      color: isDark ? AppColors.mauve : AppColors.darkPurple,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

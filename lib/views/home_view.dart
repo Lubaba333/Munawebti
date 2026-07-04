@@ -156,16 +156,16 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       _randomEntry(
         index: 9,
         child: ServiceItem(
-          icon: Icons.menu_book,
-          title: "  dormitory_attendance  _record".tr,
+          icon: Icons.home_work_rounded,
+          title: "dormitory_attendance_record".tr,
           onTap: () => Get.to(() => DormitoryAttendanceView()),
         ),
       ),
       _randomEntry(
         index: 10,
         child: ServiceItem(
-          icon: Icons.menu_book,
-          title: "  lecture_attendance _record".tr,
+          icon: Icons.fact_check_rounded,
+          title: "lecture_attendance_record".tr,
           onTap: () => Get.to(() => LectureAttendanceView()),
         ),
       ),
@@ -174,60 +174,67 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _randomEntry(
-              index: 0,
-              child: const TopBar(),
-            ),
-            _randomEntry(
-              index: 2,
-              child: Obx(
-                () => Center(
-                  child: Text(
-                    profileController.name.value.isEmpty
-                        ? "student".tr
-                        : profileController.name.value,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+    final isDark = Get.isDarkMode;
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _randomEntry(
+                index: 0,
+                child: const TopBar(),
+              ),
+              _randomEntry(
+                index: 2,
+                child: Obx(
+                  () => Center(
+                    child: Text(
+                      profileController.name.value.isEmpty
+                          ? "student".tr
+                          : profileController.name.value,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.titleLarge?.color,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 25),
-            _randomEntry(
-              index: 3,
-              child: MainCard(animController: animController),
-            ),
-            const SizedBox(height: 30),
-            _randomEntry(
-              index: 4,
-              child: Text(
-                "services".tr,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 25),
+              _randomEntry(
+                index: 3,
+                child: MainCard(animController: animController),
+              ),
+              const SizedBox(height: 30),
+              _randomEntry(
+                index: 4,
+                child: Text(
+                  "services".tr,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleLarge?.color,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 15),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
-              childAspectRatio: 1.1,
-              children: _services(),
-            ),
-            const SizedBox(height: 25),
-          ],
+              const SizedBox(height: 15),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1.1,
+                children: _services(),
+              ),
+              const SizedBox(height: 25),
+            ],
+          ),
         ),
       ),
     );

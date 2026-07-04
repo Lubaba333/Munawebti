@@ -1,4 +1,4 @@
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
@@ -13,94 +13,117 @@ class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
- return  Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
- GestureDetector(
-      onTap: () {
-        Get.to(() => ProfileView());
-      },
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.mauve,
-            width: 2,
-          ),
-        ),
-        child: Obx(() {
-          final profileController = Get.find<ProfileController>();
-          final img = profileController.profileImage.value;
+    final isDark = Get.isDarkMode;
 
-          return CircleAvatar(
-            radius: 18,
-            backgroundColor: AppColors.mauve.withOpacity(.3),
-            backgroundImage: img != null ? FileImage(img) : null,
-            child: img == null
-                ? const Icon(
-                    Icons.person,
-                    color: AppColors.darkPurple,
-                  )
-                : null,
-          );
-        }),
-      ),
-    ),
-    Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () {
-            Get.to(() => NotificationsView());
-          },
+          onTap: () => Get.to(() => ProfileView()),
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.6),
-              borderRadius: BorderRadius.circular(12),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isDark ? AppColors.mauve : AppColors.darkPurple,
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark
+                      ? Colors.black.withOpacity(.20)
+                      : AppColors.mauve.withOpacity(.20),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
-            child: const Icon(
-              Icons.notifications,
-              color: AppColors.darkPurple,
-            ),
+            child: Obx(() {
+              final profileController = Get.find<ProfileController>();
+              final img = profileController.profileImage.value;
+
+              return CircleAvatar(
+                radius: 20,
+                backgroundColor: isDark
+                    ? Colors.white.withOpacity(.08)
+                    : AppColors.mauve.withOpacity(.30),
+                backgroundImage: img != null ? FileImage(img) : null,
+                child: img == null
+                    ? Icon(
+                        Icons.person,
+                        color: isDark ? AppColors.mauve : AppColors.darkPurple,
+                      )
+                    : null,
+              );
+            }),
           ),
         ),
-
-        Positioned(
-          right: 6,
-          top: 6,
-          child: Obx(() {
-            if (controller.notificationCount.value == 0) {
-              return const SizedBox();
-            }
-
-            return Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              constraints: const BoxConstraints(
-                minWidth: 18,
-                minHeight: 18,
-              ),
-              child: Center(
-                child: Text(
-                  controller.notificationCount.value.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+        Stack(
+          children: [
+            GestureDetector(
+              onTap: () => Get.to(() => NotificationsView()),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Theme.of(context).cardColor.withOpacity(.92)
+                      : Colors.white.withOpacity(.70),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.mauve.withOpacity(.18)
+                        : Colors.white.withOpacity(.35),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDark
+                          ? Colors.black.withOpacity(.22)
+                          : Colors.black.withOpacity(.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.notifications,
+                  color: isDark ? AppColors.mauve : AppColors.darkPurple,
                 ),
               ),
-            );
-          }),
+            ),
+            Positioned(
+              right: 6,
+              top: 6,
+              child: Obx(() {
+                if (controller.notificationCount.value == 0) {
+                  return const SizedBox();
+                }
+
+                return Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 18,
+                  ),
+                  child: Center(
+                    child: Text(
+                      controller.notificationCount.value.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
         ),
       ],
-    ),
-   
-  ],
-);
+    );
   }
 }

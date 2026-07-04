@@ -23,8 +23,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   final List<TextEditingController> _otpControllers =
       List.generate(6, (_) => TextEditingController());
 
-  final List<FocusNode> _focusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void initState() {
@@ -87,7 +86,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         Get.snackbar(
           "error".tr,
           "email_not_found".tr,
-          backgroundColor: Colors.red,
+          backgroundColor:
+              Get.isDarkMode ? const Color(0xFF8B1E2D) : Colors.red,
           colorText: Colors.white,
         );
         Get.back();
@@ -125,7 +125,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
       Get.snackbar(
         "error".tr,
         "enter_6_digit_code".tr,
-        backgroundColor: Colors.red,
+        backgroundColor:
+            Get.isDarkMode ? const Color(0xFF8B1E2D) : Colors.red,
         colorText: Colors.white,
       );
       return;
@@ -168,10 +169,13 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
+        decoration: BoxDecoration(
+          gradient: AppColors.currentGradient,
         ),
         child: SafeArea(
           child: Center(
@@ -191,15 +195,17 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   const SizedBox(height: 12),
                   Text(
                     "we_sent_6_digit_code".tr,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withOpacity(0.82),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Obx(
                     () => Text(
                       email.value.isNotEmpty ? email.value : "your_email".tr,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -214,11 +220,24 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       vertical: 30,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: isDark
+                          ? Theme.of(context).cardColor.withOpacity(.94)
+                          : Colors.white.withOpacity(0.16),
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: isDark
+                            ? AppColors.mauve.withOpacity(.18)
+                            : Colors.white.withOpacity(0.22),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? Colors.black.withOpacity(.25)
+                              : AppColors.deepPurple.withOpacity(.10),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
                     child: Column(
                       children: [
@@ -228,7 +247,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 3),
-                                child: _buildOtpBox(index),
+                                child: _buildOtpBox(context, index),
                               ),
                             );
                           }),
@@ -239,6 +258,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                             text: isLoading.value
                                 ? "verifying".tr
                                 : "verify_code".tr,
+                            isLoading: isLoading.value,
                             onTap: _verifyOtp,
                           ),
                         ),
@@ -248,10 +268,13 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                             onPressed: isLoading.value ? null : _resendOtp,
                             child: Text(
                               "resend_code_question".tr,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              style: TextStyle(
+                                color:
+                                    isDark ? AppColors.mauve : Colors.white70,
                                 fontSize: 12,
                                 decoration: TextDecoration.underline,
+                                decorationColor:
+                                    isDark ? AppColors.mauve : Colors.white70,
                               ),
                             ),
                           ),
@@ -268,12 +291,21 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     );
   }
 
-  Widget _buildOtpBox(int index) {
+  Widget _buildOtpBox(BuildContext context, int index) {
+    final isDark = Get.isDarkMode;
+
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.85),
+        color: isDark
+            ? Colors.white.withOpacity(.08)
+            : Colors.white.withOpacity(0.85),
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark
+              ? AppColors.mauve.withOpacity(.25)
+              : Colors.white.withOpacity(.35),
+        ),
       ),
       child: TextField(
         controller: _otpControllers[index],
@@ -281,7 +313,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).textTheme.titleLarge?.color,
+        ),
         decoration: const InputDecoration(
           counterText: "",
           border: InputBorder.none,

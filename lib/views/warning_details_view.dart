@@ -21,12 +21,12 @@ class WarningDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: AppColors.softLavender,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.mainGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.currentGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -35,11 +35,20 @@ class WarningDetailsView extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(36),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withOpacity(.22)
+                            : AppColors.deepPurple.withOpacity(.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -54,7 +63,14 @@ class WarningDetailsView extends StatelessWidget {
 
                     if (warning.isEmpty) {
                       return Center(
-                        child: Text("no_details".tr),
+                        child: Text(
+                          "no_details".tr,
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       );
                     }
 
@@ -63,24 +79,28 @@ class WarningDetailsView extends StatelessWidget {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
-                          _certificateHeader(warning),
+                          _certificateHeader(context, warning),
                           const SizedBox(height: 22),
                           _certificateItem(
+                            context,
                             icon: Icons.description_rounded,
                             title: "description".tr,
                             value: _text(warning['description']),
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.calendar_month_rounded,
                             title: "warning_date".tr,
                             value: _text(warning['warning_date']),
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.gavel_rounded,
                             title: "possible_penalty".tr,
                             value: _text(warning['possible_penalty']),
                           ),
                           _certificateItem(
+                            context,
                             icon: Icons.person_rounded,
                             title: "supervisor".tr,
                             value: creator is Map
@@ -112,6 +132,7 @@ class WarningDetailsView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.20),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withOpacity(.18)),
             ),
             child: IconButton(
               onPressed: () => Get.back(),
@@ -166,7 +187,7 @@ class WarningDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _certificateHeader(Map warning) {
+  Widget _certificateHeader(BuildContext context, Map warning) {
     return Column(
       children: [
         Container(
@@ -189,8 +210,8 @@ class WarningDetailsView extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           "official_warning".tr,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -199,29 +220,31 @@ class WarningDetailsView extends StatelessWidget {
         Text(
           _text(warning['title']),
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.darkPurple,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
             fontSize: 23,
             fontWeight: FontWeight.bold,
             height: 1.35,
           ),
         ),
         const SizedBox(height: 18),
-        Container(
+        Divider(
           height: 1,
-          width: double.infinity,
-          color: Colors.grey.shade200,
+          color: Theme.of(context).dividerColor.withOpacity(.35),
         ),
       ],
     );
   }
 
-  Widget _certificateItem({
+  Widget _certificateItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String value,
     bool showDivider = true,
   }) {
+    final isDark = Get.isDarkMode;
+
     return Column(
       children: [
         Padding(
@@ -239,8 +262,8 @@ class WarningDetailsView extends StatelessWidget {
                 width: 120,
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.darkPurple,
+                  style: TextStyle(
+                    color: isDark ? AppColors.mauve : AppColors.darkPurple,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -250,7 +273,7 @@ class WarningDetailsView extends StatelessWidget {
                 child: Text(
                   value,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 14,
                     height: 1.45,
                   ),
@@ -262,7 +285,7 @@ class WarningDetailsView extends StatelessWidget {
         if (showDivider)
           Divider(
             height: 1,
-            color: Colors.grey.shade200,
+            color: Theme.of(context).dividerColor.withOpacity(.35),
           ),
       ],
     );

@@ -1,5 +1,7 @@
 // lib/core/colors/app_colors.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class AppColors {
   // الألوان الأساسية من الصورة
@@ -107,4 +109,18 @@ class AppColors {
     sphere4Gradient,
     sphere5Gradient,
   ];
+  static const LinearGradient darkMainGradient = LinearGradient(
+  colors: [
+    Color(0xFF2A1230),
+    Color(0xFF3A1B42),
+    Color(0xFF121212),
+  ],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+static LinearGradient get currentGradient {
+  return Get.isDarkMode
+      ? darkMainGradient
+      : mainGradient;
+}
 }
