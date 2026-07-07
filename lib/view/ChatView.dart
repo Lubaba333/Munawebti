@@ -13,8 +13,6 @@ class ChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
-      /// 🔝 AppBar احترافي
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primary,

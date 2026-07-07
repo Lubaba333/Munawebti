@@ -753,92 +753,144 @@ class HomeView extends StatelessWidget {
   }
 
 
-
-
-
-
-
   Widget _scheduleCard(
+      Map<String, String> item,
+      BuildContext context,
+      ) {
 
-      Map<String,String> item,
-
-      BuildContext context
-
-      ){
-
+    final bool isLecture = item["type"] == "lecture";
 
     return Container(
-
-      margin:
-      const EdgeInsets.only(bottom:12),
-
-
-      padding:
-      const EdgeInsets.all(18),
-
-
-      decoration:BoxDecoration(
-
-        color:
-        Theme.of(context).cardColor,
-
-
-        borderRadius:
-        BorderRadius.circular(18),
-
-
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isLecture
+            ? AppColors.primary.withOpacity(.12)
+            : Colors.blue.withOpacity(.12),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isLecture
+              ? AppColors.primary
+              : Colors.blue,
+          width: 1.5,
+        ),
       ),
 
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-      child:Row(
-
-        children:[
-
-
-          Icon(
-
-            Icons.access_time,
-
-            color:
-            AppColors.primary,
-
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isLecture
+                  ? Color(0xFFA467A7)
+                  : Colors.blue,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isLecture
+                  ? Icons.school
+                  : Icons.apartment,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
 
+          const SizedBox(width: 15),
 
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-          const SizedBox(width:15),
+                /// اسم المادة أو اسم مبنى السكن
+                Text(
+                  item["place"] ?? "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
 
+                const SizedBox(height: 6),
 
+                /// تفاصيل المحاضرة
+                if (isLecture) ...[
 
-          Text(
-            item['time'] ?? "",
+                  if ((item["teacher"] ?? "").isNotEmpty)
+                    Text(
+                      "👨‍🏫 ${item["teacher"]}",
+                      style: const TextStyle(fontSize: 13),
+                    ),
+
+                  if ((item["lab"] ?? "").isNotEmpty)
+                    Text(
+                      "🏫 ${item["lab"]}",
+                      style: const TextStyle(fontSize: 13),
+                    ),
+
+                  if ((item["specialization"] ?? "").isNotEmpty)
+                    Text(
+                      "🎓 ${item["specialization"]}",
+                      style: const TextStyle(fontSize: 13),
+                    ),
+
+                  if ((item["year"] ?? "").isNotEmpty)
+                    Text(
+                      "📚 السنة ${item["year"]}",
+                      style: const TextStyle(fontSize: 13),
+                    ),
+
+                  const SizedBox(height: 6),
+                ],
+
+                /// الوقت
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 16,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      item["time"] ?? "",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
           ),
 
-
-
-          const Spacer(),
-
-
-
-          Text(
-            item['place'] ?? "",
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: isLecture
+                  ? Color(0xFFA467A7)
+                  : Colors.blue,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              isLecture ? "Lecture" : "Housing",
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-
-
 
         ],
-
       ),
-
-
     );
-
-
   }
-
-
-
-
 
   Widget _title(String text){
 
@@ -859,9 +911,6 @@ class HomeView extends StatelessWidget {
 
     );
 
-
   }
-
-
 
 }

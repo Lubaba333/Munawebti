@@ -10,53 +10,329 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ما في داعي لتحديد لون هون، AppBarTheme بالثيم بيتكفل فيه
-      appBar: AppBar(title: const Text("Settings")),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      body: Obx(() => Column(
-        children: [
+      appBar: AppBar(
+        title: const Text("Settings"),
+        centerTitle: true,
+      ),
 
-          /// ================= DARK MODE =================
-          SwitchListTile(
-            title: Text(
-              "Dark Mode",
-              style: Theme.of(context).textTheme.bodyLarge,
+      body: Obx(
+        () => ListView(
+          padding: const EdgeInsets.all(18),
+          children: [
+
+            /// ================= APPEARANCE =================
+            _sectionTitle(context, "Appearance"),
+            const SizedBox(height: 10),
+
+            _settingsCard(
+              context: context,
+              children: [
+                _iconTile(
+                  context: context,
+                  icon: controller.isDarkMode.value
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded,
+                  title: "Dark Mode",
+                  subtitle: controller.isDarkMode.value
+                      ? "Currently on"
+                      : "Currently off",
+                  trailing: Switch(
+                    value: controller.isDarkMode.value,
+                    onChanged: (_) => controller.toggleTheme(),
+                  ),
+                ),
+              ],
             ),
-            value: controller.isDarkMode.value,
-            onChanged: (_) => controller.toggleTheme(),
-          ),
 
-          const Divider(),
+            const SizedBox(height: 28),
 
-          /// ================= LANGUAGE =================
-          ListTile(
-            title: Text(
-              "Language",
-              style: Theme.of(context).textTheme.titleMedium,
+            /// ================= LANGUAGE =================
+            _sectionTitle(context, "Language"),
+            const SizedBox(height: 10),
+
+            _settingsCard(
+              context: context,
+              children: [
+                _languageTile(
+                  context: context,
+                  flag: const Text("🇬🇧", style: TextStyle(fontSize: 22)),
+                  title: "English",
+                  value: 'en',
+                ),
+                _divider(context),
+                _languageTile(
+                  context: context,
+                  flag: _syrianFlagIcon(),
+                  title: "العربية",
+                  value: 'ar',
+                ),
+              ],
             ),
-          ),
 
-          RadioListTile(
-            title: Text(
-              "English",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            value: 'en',
-            groupValue: controller.locale.value.languageCode,
-            onChanged: (value) => controller.changeLanguage('en'),
-          ),
+            const SizedBox(height: 28),
 
-          RadioListTile(
-            title: Text(
-              "العربية",
-              style: Theme.of(context).textTheme.bodyLarge,
+            /// ================= ABOUT =================
+            _sectionTitle(context, "About"),
+            const SizedBox(height: 10),
+
+            _settingsCard(
+              context: context,
+              children: [
+                _iconTile(
+                  context: context,
+                  icon: Icons.info_outline_rounded,
+                  title: "About App",
+                  subtitle: "Version, developer info",
+                  trailing: Icon(
+                    Icons.chevron_right_rounded,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  onTap: () => _showAboutSheet(context),
+                ),
+              ],
             ),
-            value: 'ar',
-            groupValue: controller.locale.value.languageCode,
-            onChanged: (value) => controller.changeLanguage('ar'),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= SECTION TITLE =================
+  Widget _sectionTitle(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          letterSpacing: .3,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+  }
+
+  // ================= CARD WRAPPER =================
+  Widget _settingsCard({
+    required BuildContext context,
+    required List<Widget> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
-      )),
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _divider(BuildContext context) {
+    return Divider(
+      height: 1,
+      indent: 70,
+      color: Theme.of(context).dividerColor,
+    );
+  }
+
+  // ================= ICON TILE (generic row) =================
+  Widget _iconTile({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.primary,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (trailing != null) trailing,
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= LANGUAGE TILE =================
+  Widget _languageTile({
+    required BuildContext context,
+    required Widget flag,
+    required String title,
+    required String value,
+  }) {
+    final selected = controller.locale.value.languageCode == value;
+
+    return InkWell(
+      onTap: () => controller.changeLanguage(value),
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            flag,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight:
+                          selected ? FontWeight.bold : FontWeight.normal,
+                    ),
+              ),
+            ),
+            if (selected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: Theme.of(context).colorScheme.primary,
+              )
+            else
+              Icon(
+                Icons.circle_outlined,
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= SYRIAN FLAG (drawn manually) =================
+  // Emoji flags depend on the OS font and may still show the old design,
+  // so we draw the new flag (green/white/black + 3 red stars) ourselves.
+  Widget _syrianFlagIcon() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(2),
+      child: Container(
+        width: 28,
+        height: 20,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12, width: .5),
+        ),
+        child: Column(
+          children: [
+            Expanded(child: Container(color: const Color(0xFF007A3D))),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    3,
+                    (_) => const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 1.5),
+                      child: Icon(
+                        Icons.star,
+                        size: 6,
+                        color: Color(0xFFCE1126),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(child: Container(color: Colors.black)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= ABOUT SHEET =================
+  void _showAboutSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/munawebti.png',
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Munawebti",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Version 1.0.0",
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "An app for supervisors to manage students, schedules, "
+                "requests and emergencies.",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
     );
   }
 }

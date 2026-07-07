@@ -10,7 +10,7 @@ class ComplaintController extends GetxController {
   var complaints = <HousingComplaint>[].obs;
   var isLoading = false.obs;
 
-  /// 🔵 GET ALL COMPLAINTS
+  /// GET ALL COMPLAINTS
   Future<void> fetchComplaints() async {
     try {
       isLoading.value = true;

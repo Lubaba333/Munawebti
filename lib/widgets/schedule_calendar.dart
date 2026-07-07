@@ -159,8 +159,8 @@ class ScheduleCalendar extends StatelessWidget {
                 return _dayCell(
                   context: context,
                   day: day,
-                  selected: true,
-                  today: false,
+                  selected: false,
+                  today: true,
                   hasShift: hasShift,
                   selectedType: controller.selectedType.value,
                 );

@@ -27,22 +27,143 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadData();
+    getTodayShifts();
   }
 
-  /// 🔵 Fake dashboard data
-  void loadData() {
-    isLoading.value = true;
+  Future<void> getTodayShifts() async {
 
-    Future.delayed(const Duration(seconds: 1), () {
-      todaySchedule.value = [
-        {"time": "08:00 - 02:00", "place": "Hospital"},
-        {"time": "03:00 - 08:00", "place": "Dorm"},
-      ];
+    try {
+
+      isLoading.value = true;
+
+      todaySchedule.clear();
+
+      final response = await apiService.get(
+
+        "/supervisor/my-shifts",
+
+        queryParameters: {
+
+          "per_page": 15,
+          "page": 1,
+          "today": 1,
+
+        },
+
+      );
+
+      final data = response["data"] ?? {};
+//------------------ lectures ------------------//
+
+      if (data["lecture"] != null) {
+
+        for (var lecture in data["lecture"]) {
+
+          final assignment =
+          lecture["lecture_supervisor_assignment"];
+
+          if (assignment == null) continue;
+
+          final lec = assignment["lecture"];
+          todaySchedule.add({
+
+            "time":
+            "${lecture["from_hour"].toString().substring(0,5)} - ${lecture["to_hour"].toString().substring(0,5)}",
+
+            "place":
+            lec["subject"]["name"],
+
+            "teacher":
+            lec["teacher_name"] ?? "",
+
+            "lab":
+            assignment["lecture_location_assignment"]?["lab_name"] ?? "",
+
+            "specialization":
+            lec["specialization"] ?? "",
+
+            "year":
+            lec["year"].toString(),
+
+            "type":
+            "lecture",
+
+          });
+
+        }
+
+      }
+
+      //------------------ housing ------------------//
+
+      if (data["housing"] != null) {
+
+        for (var housing in data["housing"]) {
+
+          final assignment =
+          housing["housing_supervisor_assignment"];
+
+          if (assignment == null) continue;
+          todaySchedule.add({
+
+            "time":
+            "${housing["from_hour"].toString().substring(0,5)} - ${housing["to_hour"].toString().substring(0,5)}",
+
+            "place":
+            assignment["dormitory_unit"]["name"],
+
+            "type":
+            "housing",
+
+          });
+
+        }
+
+      }
+
+      //---------------- Current Shift ----------------//
+
+      if (todaySchedule.isNotEmpty) {
+
+        currentShift.value = {
+
+          "title": todaySchedule.first["place"]!,
+
+          "time": todaySchedule.first["time"]!,
+
+          "type": todaySchedule.first["type"]!,
+
+          "status": "active",
+
+        };
+
+      } else {
+
+        currentShift.value = {
+
+          "title": "لا توجد مناوبات اليوم",
+
+          "time": "--",
+
+          "type": "",
+
+          "status": "",
+
+        };
+
+      }
+    }catch (e) {
+
+      print(e);
+
+    } finally {
 
       isLoading.value = false;
-    });
+
+    }
+
   }
+
 
   /// 🔵 REAL API CALL (Correct place)
   Future<HousingComplaint> getComplaintById(int id) async {
