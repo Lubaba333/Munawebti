@@ -24,7 +24,7 @@ class ScheduleView extends StatelessWidget {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         centerTitle: true,
         title: Text(
-          "My Schedule",
+          "my_schedule".tr,
           style: TextStyle(
             color: Theme.of(context).appBarTheme.foregroundColor,
             fontWeight: FontWeight.bold,
@@ -57,7 +57,7 @@ class ScheduleView extends StatelessWidget {
 
             Expanded(
               child: ChoiceChip(
-                label: const Text("Lecture"),
+                label:  Text("lecture".tr),
 
                 selected:
                 controller.selectedType.value ==
@@ -87,7 +87,7 @@ class ScheduleView extends StatelessWidget {
 
             Expanded(
               child: ChoiceChip(
-                label: const Text("Housing"),
+                label:  Text("housing".tr),
 
                 selected:
                 controller.selectedType.value ==

@@ -23,7 +23,7 @@ class ComplaintsView extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add),
-        label:  Text("New".tr),
+        label:  Text("new_label".tr),
         onPressed: () => Get.to(() => AddComplaintView()),
       ),
 
@@ -33,7 +33,7 @@ class ComplaintsView extends StatelessWidget {
         }
 
         if (controller.complaints.isEmpty) {
-          return const Center(child: Text("No complaints found"));
+          return Center(child: Text("no_complaints_found".tr));
         }
 
         return ListView.separated(
@@ -85,6 +85,19 @@ class _ComplaintTile extends StatelessWidget {
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _translatedStatus(String status) {
+    switch (status) {
+      case "pending":
+        return "pending".tr;
+      case "approved":
+        return "approved".tr;
+      case "rejected":
+        return "rejected".tr;
+      default:
+        return status.toUpperCase();
     }
   }
 
@@ -153,7 +166,7 @@ class _ComplaintTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    item.status.toUpperCase(),
+                    _translatedStatus(item.status),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,

@@ -49,9 +49,9 @@ class ViolationDetailsView
 
         title:
 
-        const Text(
+        Text(
 
-          "تفاصيل المخالفة",
+          "violation_details".tr,
 
           style:
 
@@ -107,12 +107,12 @@ class ViolationDetailsView
         if(violation == null){
 
 
-          return const Center(
+          return Center(
 
             child:
 
             Text(
-              "لا توجد بيانات",
+              "no_data".tr,
             ),
 
           );
@@ -158,7 +158,7 @@ class ViolationDetailsView
                 Icons.description_outlined,
 
                 title:
-                "الوصف",
+                "description".tr,
 
                 value:
                 violation.description,
@@ -176,7 +176,7 @@ class ViolationDetailsView
                 Icons.category_outlined,
 
                 title:
-                "التصنيف",
+                "category".tr,
 
                 value:
                 violation.category,
@@ -195,7 +195,7 @@ class ViolationDetailsView
                 Icons.warning_amber_outlined,
 
                 title:
-                "العقوبة",
+                "penalty".tr,
 
                 value:
                 violation.penalty,
@@ -215,10 +215,11 @@ class ViolationDetailsView
                 Icons.date_range,
 
                 title:
-                "تاريخ المخالفة",
+                "violation_date".tr,
 
                 value:
-                violation.violationDate,
+                violation.violationDate.split('T')
+                    .first,
 
               ),
 
@@ -256,9 +257,9 @@ class ViolationDetailsView
 
                   label:
 
-                  const Text(
+                  Text(
 
-                    "تعديل المخالفة",
+                    "edit_violation".tr,
 
                     style:
 

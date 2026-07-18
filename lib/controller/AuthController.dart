@@ -1,15 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supervisors/controller/StudentsController.dart';
-import 'package:supervisors/controller/emergency_controller.dart';
 import 'package:supervisors/controller/request_controller.dart';
-import '../models/supervisor_model.dart';
-import '../services/api_service.dart';
-import '../view/LoginView.dart';
-import '../view/MainView.dart';
-import '../view/OTPView.dart';
-import '../view/ResetPasswordView.dart';
+import 'package:supervisors/models/supervisor_model.dart';
+import 'package:supervisors/services/api_service.dart';
+import 'package:supervisors/view/LoginView.dart';
+import 'package:supervisors/view/MainView.dart';
+import 'package:supervisors/view/OTPView.dart';
+import 'package:supervisors/view/ResetPasswordView.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class AuthController extends GetxController { 
 
@@ -45,6 +44,24 @@ class AuthController extends GetxController {
     rememberMe.value = value ?? false;
   }
 
+
+  /// FCM TOKEN
+  Future<String?> _getFcmToken() async {
+    try {
+      await FirebaseMessaging.instance.requestPermission();
+      final token = await FirebaseMessaging.instance.getToken();
+      print("✅ FCM TOKEN: $token");
+      return token;
+    } catch (e) {
+      print("❌ FCM TOKEN ERROR: $e");
+      return null;
+    }
+  }
+
+
+
+
+
   /// LOGIN
   Future<void> login() async {
     if (!_validateInputs()) return;
@@ -52,11 +69,14 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
+      final fcmToken = await _getFcmToken();
+
       final response = await _api.post(
         '/auth/supervisor/login',
         {
           "email": email.value.trim(),
           "password": password.value.trim(),
+          "fcm_token": fcmToken,
         },
         authRequired: false,
       );

@@ -46,9 +46,9 @@ class ReportDetailsView extends StatelessWidget {
         AppColors.primary,
 
 
-        title: const Text(
+        title: Text(
 
-          "تفاصيل التقرير",
+          "report_details".tr,
 
           style: TextStyle(
 
@@ -95,13 +95,13 @@ class ReportDetailsView extends StatelessWidget {
         if(report == null){
 
 
-          return const Center(
+          return  Center(
 
             child:
 
             Text(
 
-              "لا يوجد بيانات",
+              "no_data".tr,
 
               style:
 
@@ -199,10 +199,10 @@ class ReportDetailsView extends StatelessWidget {
 
 
 
-                    const Text(
+                    Text(
 
 
-                      "تقرير الطالب",
+                      "student_report".tr,
 
                       style:
 
@@ -255,7 +255,7 @@ class ReportDetailsView extends StatelessWidget {
 
 
                 title:
-                "الملاحظات",
+                "notes".tr,
 
 
                 value:
@@ -330,10 +330,10 @@ class ReportDetailsView extends StatelessWidget {
                   label:
 
 
-                  const Text(
+                  Text(
 
 
-                    "تعديل التقرير",
+                    "edit_report".tr,
 
 
                     style:

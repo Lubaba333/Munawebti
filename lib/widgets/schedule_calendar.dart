@@ -372,8 +372,8 @@ class ShiftBottomSheet extends StatelessWidget {
                                 ),
                                 child: Text(
                                   isLecture
-                                      ? "Lecture"
-                                      : "Housing",
+                                      ? "lecture".tr
+                                      : "housing".tr,
                                   style: TextStyle(
                                     color: isLecture
                                         ? primary
@@ -397,9 +397,9 @@ class ShiftBottomSheet extends StatelessWidget {
                           Text(
                             isLecture
                                 ? lecture?.subjectName ??
-                                "Lecture"
+                                "lecture".tr
                                 : housing?.dormitoryName ??
-                                "Housing",
+                                "housing".tr,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
@@ -411,7 +411,7 @@ class ShiftBottomSheet extends StatelessWidget {
                           _infoTile(
                             context,
                             Icons.schedule,
-                            "Time",
+                            "time".tr,
                             "${_time(shift.startTime)} - ${_time(shift.endTime)}",
                           ),
 
@@ -420,7 +420,7 @@ class ShiftBottomSheet extends StatelessWidget {
                             _infoTile(
                               context,
                               Icons.person_outline,
-                              "Lecturer",
+                              "lecturer".tr,
                               lecture?.teacherName ??
                                   "-",
                             ),
@@ -428,16 +428,16 @@ class ShiftBottomSheet extends StatelessWidget {
                             _infoTile(
                               context,
                               Icons.location_on_outlined,
-                              "Location",
+                              "location".tr,
                               lecture?.labName ??
-                                  "No Lab",
+                                  "no_lab".tr,
                             ),
 
                             _infoTile(
                               context,
                               Icons.school_outlined,
-                              "Class",
-                              "${lecture?.specialization}\nYear ${lecture?.year} • Branch ${lecture?.branch}",
+                              "class_label".tr,
+                              "${lecture?.specialization}\n${"year".tr} ${lecture?.year} • ${"branch".tr} ${lecture?.branch}",
                             ),
 
                           ] else ...[
@@ -445,7 +445,7 @@ class ShiftBottomSheet extends StatelessWidget {
                             _infoTile(
                               context,
                               Icons.home_work_outlined,
-                              "Dormitory",
+                              "dormitory".tr,
                               housing?.dormitoryName ??
                                   "",
                             ),
@@ -470,8 +470,8 @@ class ShiftBottomSheet extends StatelessWidget {
                                 Icons.fact_check,
                                 color: Colors.white,
                               ),
-                              label: const Text(
-                                "Take Attendance",
+                              label:  Text(
+                                "take_attendance".tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight:
@@ -567,23 +567,28 @@ class ShiftBottomSheet extends StatelessWidget {
   Widget _statusChip(String status) {
 
     Color color;
+    String translatedStatus;
 
     switch (status.toLowerCase()) {
 
       case "assigned":
         color = Colors.green;
+        translatedStatus = "assigned".tr;
         break;
 
       case "completed":
         color = Colors.blue;
+        translatedStatus = "completed".tr;
         break;
 
       case "cancelled":
         color = Colors.red;
+        translatedStatus = "cancelled".tr;
         break;
 
       default:
         color = Colors.orange;
+        translatedStatus = status.toUpperCase();
     }
 
     return Container(
@@ -596,7 +601,7 @@ class ShiftBottomSheet extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
-        status.toUpperCase(),
+        translatedStatus,
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.bold,
@@ -610,23 +615,23 @@ class ShiftBottomSheet extends StatelessWidget {
 
     final date = DateTime.parse(value);
 
-    const months = [
+    const monthKeys = [
       "",
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "month_1",
+      "month_2",
+      "month_3",
+      "month_4",
+      "month_5",
+      "month_6",
+      "month_7",
+      "month_8",
+      "month_9",
+      "month_10",
+      "month_11",
+      "month_12",
     ];
 
-    return "${date.day} ${months[date.month]} ${date.year}";
+    return "${date.day} ${monthKeys[date.month].tr} ${date.year}";
   }
 
   String _time(String value) {
@@ -667,22 +672,22 @@ class ShiftLegend extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const [
+        children: [
 
           _LegendItem(
-            color: Color(0xFFA467A7),
-            title: "Lecture Shift",
+            color: const Color(0xFFA467A7),
+            title: "lecture_shift".tr,
             icon: Icons.school_rounded,
           ),
 
-          SizedBox(
+          const SizedBox(
             height: 28,
             child: VerticalDivider(),
           ),
 
           _LegendItem(
             color: Colors.blue,
-            title: "Housing Shift",
+            title: "housing_shift".tr,
             icon: Icons.home_work_rounded,
           ),
         ],

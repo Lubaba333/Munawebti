@@ -128,8 +128,8 @@ class _EditWarningViewState
       appBar: AppBar(
 
         title:
-        const Text(
-            "تعديل التحذير"
+        Text(
+            "edit_warning".tr
         ),
 
 
@@ -161,13 +161,13 @@ class _EditWarningViewState
 
             _field(
               title,
-              "العنوان",
+              "title".tr,
             ),
 
 
             _field(
               description,
-              "الوصف",
+              "description".tr,
               maxLines:4,
             ),
 
@@ -175,14 +175,14 @@ class _EditWarningViewState
 
             _field(
               date,
-              "تاريخ التحذير",
+              "warning_date".tr,
             ),
 
 
 
             _field(
               penalty,
-              "العقوبة المحتملة",
+              "possible_penalty".tr,
             ),
 
 
@@ -303,9 +303,9 @@ class _EditWarningViewState
 
                     :
 
-                const Text(
+                Text(
 
-                  "حفظ التعديل",
+                  "save_changes".tr,
 
                   style:
                   TextStyle(

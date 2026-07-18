@@ -12,7 +12,7 @@ class ViolationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Violations"),
+        title: Text("violations".tr),
         backgroundColor: AppColors.primary,
       ),
       body: Padding(
@@ -66,7 +66,7 @@ class ViolationsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.description,
-                              "Description",
+                              "description".tr,
                               violation["description"] ?? "",
                             ),
 
@@ -75,7 +75,7 @@ class ViolationsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.calendar_today,
-                              "Violation Date",
+                              "violation_date".tr,
                               violation["violation_date"] ?.toString().split("T").first ?? ""
                             ),
 
@@ -84,7 +84,7 @@ class ViolationsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.gavel,
-                              "Penalty",
+                              "penalty".tr,
                               violation["penalty"] ?? "",
                             ),
 
@@ -93,7 +93,7 @@ class ViolationsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.category,
-                              "Category",
+                              "category".tr,
                               violation["category"] ?? "",
                             ),
                           ],

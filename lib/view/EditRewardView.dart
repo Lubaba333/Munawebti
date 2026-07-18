@@ -141,9 +141,9 @@ class _EditRewardViewState
 
         title:
 
-        const Text(
+        Text(
 
-          "تعديل المكافأة",
+          "edit_reward".tr,
 
         ),
 
@@ -194,7 +194,7 @@ class _EditRewardViewState
 
               title,
 
-              "العنوان",
+              "title".tr,
 
             ),
 
@@ -206,7 +206,7 @@ class _EditRewardViewState
 
               description,
 
-              "الوصف",
+              "description".tr,
 
               maxLines:4,
 
@@ -220,7 +220,7 @@ class _EditRewardViewState
 
               date,
 
-              "تاريخ المكافأة",
+              "reward_date".tr,
 
             ),
 
@@ -407,11 +407,11 @@ class _EditRewardViewState
 
 
 
-                    const Text(
+                    Text(
 
 
 
-                      "حفظ التعديل",
+                      "save_changes".tr,
 
 
 

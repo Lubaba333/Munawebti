@@ -125,8 +125,8 @@ class _EditViolationViewState
       appBar: AppBar(
 
         title:
-        const Text(
-            "تعديل المخالفة"
+        Text(
+            "edit_violation".tr
         ),
 
         backgroundColor:
@@ -153,32 +153,32 @@ class _EditViolationViewState
 
             _field(
                 title,
-                "العنوان"
+                "title".tr
             ),
 
 
             _field(
                 description,
-                "الوصف",
+                "description".tr,
                 max:3
             ),
 
 
             _field(
                 date,
-                "التاريخ"
+                "date".tr
             ),
 
 
             _field(
                 category,
-                "التصنيف"
+                "category".tr
             ),
 
 
             _field(
                 penalty,
-                "العقوبة"
+                "penalty".tr
             ),
 
 
@@ -276,8 +276,8 @@ class _EditViolationViewState
 
                     :
 
-                const Text(
-                  "حفظ التعديل",
+                Text(
+                  "save_changes".tr,
                   style:
                   TextStyle(
                       color:Colors.white

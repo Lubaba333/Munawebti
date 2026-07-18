@@ -127,6 +127,7 @@ class HomeView extends StatelessWidget {
                   children: [
 
 
+
                     _actionCard(
 
                       context: context,
@@ -516,7 +517,7 @@ class HomeView extends StatelessWidget {
 
 
                     controller.currentShift['time']
-                        ?? "No time available".tr,
+                        ?? "no_time_available".tr,
 
 
 
@@ -806,7 +807,7 @@ class HomeView extends StatelessWidget {
 
                 /// اسم المادة أو اسم مبنى السكن
                 Text(
-                  item["place".tr] ?? "",
+                  item["place"] ?? "",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -820,25 +821,25 @@ class HomeView extends StatelessWidget {
 
                   if ((item["teacher"] ?? "").isNotEmpty)
                     Text(
-                      "👨‍🏫 ${item["teacher".tr]}",
+                      "👨‍🏫 ${item["teacher"]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["lab"] ?? "").isNotEmpty)
                     Text(
-                      "🏫 ${item["lab".tr]}",
+                      "🏫 ${item["lab"]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["specialization"] ?? "").isNotEmpty)
                     Text(
-                      "🎓 ${item["specialization".tr]}",
+                      "🎓 ${item["specialization"]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["year"] ?? "").isNotEmpty)
                     Text(
-                      "📚 السنة ${item["year".tr]}",
+                      "📚 ${"year".tr} ${item["year"]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
@@ -855,7 +856,7 @@ class HomeView extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      item["time".tr] ?? "",
+                      item["time"] ?? "",
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
@@ -879,7 +880,7 @@ class HomeView extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              isLecture ? "Lecture" : "Housing",
+              isLecture ? "lecture".tr : "housing".tr,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

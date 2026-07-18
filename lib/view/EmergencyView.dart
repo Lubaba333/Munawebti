@@ -72,7 +72,7 @@ class _EmergencyViewState extends State<EmergencyView>{
 
           return  Center(
             child:Text(
-                "No emergency_cases".tr
+                "no_emergency_cases".tr
             ),
           );
 
@@ -504,7 +504,7 @@ class _EmergencyViewState extends State<EmergencyView>{
 
       Text(
 
-        status,
+        _translatedStatus(status),
 
         style:
 
@@ -522,6 +522,19 @@ class _EmergencyViewState extends State<EmergencyView>{
     );
 
 
+  }
+
+  String _translatedStatus(String status) {
+    switch (status) {
+      case "pending":
+        return "pending".tr;
+      case "approved":
+        return "approved".tr;
+      case "rejected":
+        return "rejected".tr;
+      default:
+        return status;
+    }
   }
 
   InputDecoration buildInputDecoration(String label) {
@@ -579,14 +592,14 @@ class _EmergencyViewState extends State<EmergencyView>{
 
                 TextField(
                   controller: controller.caseTypeController,
-                  decoration: buildInputDecoration("Case Type".tr),
+                  decoration: buildInputDecoration("case_type".tr),
                 ),
                 const SizedBox(height: 10),
 
                 Obx(() {
                   if (controller.students.isEmpty) {
-                    return const Center(
-                      child: Text("Loading students..."),
+                    return  Center(
+                      child: Text("loading_students".tr),
                     );
                   }
 

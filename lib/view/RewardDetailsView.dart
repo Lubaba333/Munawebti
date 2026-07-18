@@ -51,9 +51,9 @@ class RewardDetailsView extends StatelessWidget {
 
         title:
 
-        const Text(
+        Text(
 
-          "تفاصيل المكافأة",
+          "reward_details".tr,
 
           style:
 
@@ -106,13 +106,13 @@ class RewardDetailsView extends StatelessWidget {
         if(reward == null){
 
 
-          return const Center(
+          return  Center(
 
             child:
 
             Text(
 
-              "لا يوجد بيانات",
+              "no_data".tr,
 
               style:
 
@@ -314,7 +314,7 @@ class RewardDetailsView extends StatelessWidget {
 
                 title:
 
-                "العنوان",
+                "title".tr,
 
 
                 value:
@@ -342,7 +342,7 @@ class RewardDetailsView extends StatelessWidget {
 
                 title:
 
-                "الوصف",
+                "description".tr,
 
 
                 value:
@@ -371,7 +371,7 @@ class RewardDetailsView extends StatelessWidget {
 
                 title:
 
-                "تاريخ الإنشاء",
+                "created_date".tr,
 
 
                 value:
@@ -462,11 +462,11 @@ class RewardDetailsView extends StatelessWidget {
                   label:
 
 
-                  const Text(
+                  Text(
 
 
 
-                    "تعديل المكافأة",
+                    "edit_reward".tr,
 
 
 

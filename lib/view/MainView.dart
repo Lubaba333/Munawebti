@@ -74,15 +74,15 @@ class MainView extends StatelessWidget {
   String _getTitle(int index) {
     switch (index) {
       case 0:
-        return "Home";
+        return "home".tr;
       case 1:
-        return "Schedule";
+        return "schedule".tr;
       case 2:
-        return "Students";
+        return "students".tr;
       case 3:
-        return "Chat";
+        return "chat".tr;
       case 4:
-        return "Settings";
+        return "settings".tr;
       default:
         return "";
     }
@@ -118,11 +118,11 @@ class CustomBottomNav extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _navItem(context, Icons.home, "Home", 0),
-          _navItem(context, Icons.calendar_today, "Schedule", 1),
-          _navItem(context, Icons.school, "Students", 2),
-          _navItem(context, Icons.chat_bubble_outline, "Chat", 3),
-          _navItem(context, Icons.settings, "Settings", 4),
+          _navItem(context, Icons.home, "home".tr, 0),
+          _navItem(context, Icons.calendar_today, "schedule".tr, 1),
+          _navItem(context, Icons.school, "students".tr, 2),
+          _navItem(context, Icons.chat_bubble_outline, "chat".tr, 3),
+          _navItem(context, Icons.settings, "settings".tr, 4),
         ],
       ),
     );

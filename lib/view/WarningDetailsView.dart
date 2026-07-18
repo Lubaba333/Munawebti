@@ -120,9 +120,9 @@ class _WarningDetailsViewState
 
         title:
 
-        const Text(
+        Text(
 
-          "تفاصيل التحذير",
+          "warning_details".tr,
 
           style:
 
@@ -170,11 +170,11 @@ class _WarningDetailsViewState
         if(warning == null){
 
 
-          return const Center(
+          return Center(
 
             child:
             Text(
-              "لا توجد بيانات",
+              "no_data".tr,
             ),
 
           );
@@ -245,7 +245,7 @@ class _WarningDetailsViewState
 
 
                   title:
-                  "الوصف",
+                  "description".tr,
 
 
                   value:
@@ -271,11 +271,12 @@ class _WarningDetailsViewState
 
 
                   title:
-                  "تاريخ التحذير",
+                  "warning_date".tr,
 
 
                   value:
-                  warning.warningDate,
+                  warning.warningDate.split('T')
+                      .first,
 
 
                 ),
@@ -297,7 +298,7 @@ class _WarningDetailsViewState
 
 
                   title:
-                  "العقوبة المحتملة",
+                  "possible_penalty".tr,
 
 
                   value:
@@ -343,9 +344,9 @@ class _WarningDetailsViewState
 
                     label:
 
-                    const Text(
+                    Text(
 
-                      "تعديل التحذير",
+                      "edit_warning".tr,
 
                       style:
 

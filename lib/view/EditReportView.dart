@@ -104,8 +104,8 @@ class _EditReportViewState
       AppBar(
 
         title:
-        const Text(
-            "تعديل التقرير"
+        Text(
+            "edit_report".tr
         ),
 
         backgroundColor:
@@ -156,7 +156,7 @@ class _EditReportViewState
                 notes,
 
                 label:
-                "الملاحظات",
+                "notes".tr,
 
                 maxLines:
                 4,
@@ -292,9 +292,9 @@ class _EditReportViewState
                         :
 
 
-                    const Text(
+                    Text(
 
-                      "حفظ التعديل",
+                      "save_changes".tr,
 
                       style:
 

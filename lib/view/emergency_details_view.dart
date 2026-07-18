@@ -68,7 +68,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Name".tr,
+                  "name".tr,
                   emergency.student.fullName,
                 ),
 
@@ -123,8 +123,8 @@ class EmergencyDetailsView extends StatelessWidget {
                   context,
                   "resident".tr,
                   emergency.student.isResident
-                      ? "Yes"
-                      : "No",
+                      ? "yes".tr
+                      : "no".tr,
                 ),
 
 
@@ -156,7 +156,7 @@ class EmergencyDetailsView extends StatelessWidget {
                 _item(
                   context,
                   "status".tr,
-                  emergency.status,
+                  _translatedStatus(emergency.status),
                 ),
 
 
@@ -313,7 +313,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
             child:Text(
 
-              emergency.status,
+              _translatedStatus(emergency.status),
 
               style:const TextStyle(
 
@@ -444,6 +444,19 @@ class EmergencyDetailsView extends StatelessWidget {
 
 
 
+
+  String _translatedStatus(String status) {
+    switch (status) {
+      case "pending":
+        return "pending".tr;
+      case "approved":
+        return "approved".tr;
+      case "rejected":
+        return "rejected".tr;
+      default:
+        return status;
+    }
+  }
 
   Widget _item(BuildContext context, String title,String value){
 

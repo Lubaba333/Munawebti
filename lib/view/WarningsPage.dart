@@ -12,7 +12,7 @@ class WarningsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Warnings"),
+        title: Text("warnings".tr),
         backgroundColor: AppColors.primary,
       ),
       body: Padding(
@@ -64,7 +64,7 @@ class WarningsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.description,
-                              "Description",
+                              "description".tr,
                               warning["description"] ?? "",
                             ),
 
@@ -73,7 +73,7 @@ class WarningsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.calendar_today,
-                              "Warning Date",
+                              "warning_date".tr,
                                 warning["warning_date"]?.toString().split("T").first ?? ""
                             ),
 
@@ -82,7 +82,7 @@ class WarningsPage extends StatelessWidget {
                             _buildInfoRow(
                               context,
                               Icons.gavel,
-                              "Possible Penalty",
+                              "possible_penalty".tr,
                               warning["possible_penalty"] ?? "",
                             ),
                           ],

@@ -1,4 +1,4 @@
-package com.example.supervisors
+package com.munawebti.supervisors
 
 import io.flutter.embedding.android.FlutterActivity
 

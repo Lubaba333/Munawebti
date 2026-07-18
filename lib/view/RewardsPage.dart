@@ -13,7 +13,7 @@ class RewardsPage extends StatelessWidget {
     return Scaffold(
      // backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text("Rewards"),
+        title: Text("rewards".tr),
         backgroundColor: AppColors.primary,
       ),
       body: Padding(
@@ -76,7 +76,7 @@ class RewardsPage extends StatelessWidget {
                         _buildInfoRow(
                           context,
                           Icons.description,
-                          "Description",
+                          "description".tr,
                           reward["description"] ?? "",
                         ),
                       ],

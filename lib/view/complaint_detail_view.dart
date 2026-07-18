@@ -21,12 +21,26 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
     switch (status) {
       case "pending":
         return Colors.orange;
+
       case "approved":
         return Colors.green;
       case "rejected":
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _translatedStatus(String status) {
+    switch (status) {
+      case "pending":
+        return "pending".tr;
+      case "approved":
+        return "approved".tr;
+      case "rejected":
+        return "rejected".tr;
+      default:
+        return status.toUpperCase();
     }
   }
 
@@ -118,7 +132,7 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
                             border: Border.all(color: Colors.white24),
                           ),
                           child: Text(
-                            c.status.toUpperCase(),
+                            _translatedStatus(c.status),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -149,11 +163,11 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
 
                   const SizedBox(height: 40),
 
-                  _sectionTitle("Administration response".tr),
+                  _sectionTitle("admin_response".tr),
                   _animatedBlock(
                     _textBlock(
                       Icons.message,
-                      c.adminResponse ?? "NO reply at this time".tr
+                      c.adminResponse ?? "no_reply_yet".tr
                     ),
                   ),
 
