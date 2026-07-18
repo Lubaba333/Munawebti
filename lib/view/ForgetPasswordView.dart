@@ -1,5 +1,4 @@
 
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -76,11 +75,11 @@ class ForgetPasswordView extends StatelessWidget {
 
                       children: [
 
-                        const Text(
+                        Text(
 
-                          "Reset Password",
+                          "reset_password".tr,
 
-                          style: TextStyle(
+                          style: const TextStyle(
 
                             fontSize: 22,
 
@@ -95,14 +94,14 @@ class ForgetPasswordView extends StatelessWidget {
                           height: 10,
                         ),
 
-                        const Text(
+                        Text(
 
-                          "Enter your email to receive OTP code",
+                          "enter_email_receive_otp".tr,
 
                           textAlign:
                               TextAlign.center,
 
-                          style: TextStyle(
+                          style: const TextStyle(
                             color:
                                 AppColors.textLight,
                           ),
@@ -130,11 +129,11 @@ class ForgetPasswordView extends StatelessWidget {
                             Get.back();
                           },
 
-                          child: const Text(
+                          child: Text(
 
-                            "Back to Login",
+                            "back_to_login".tr,
 
-                            style: TextStyle(
+                            style: const TextStyle(
                               color:
                                   AppColors.textLight,
                             ),
@@ -181,16 +180,16 @@ class ForgetPasswordView extends StatelessWidget {
           color: Colors.white,
         ),
 
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
 
-          icon: Icon(
+          icon: const Icon(
             Icons.email,
             color: AppColors.textLight,
           ),
 
-          hintText: "Email",
+          hintText: "email".tr,
 
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: AppColors.textLight,
           ),
 
@@ -242,11 +241,11 @@ class ForgetPasswordView extends StatelessWidget {
                         color: Colors.white,
                       )
 
-                    : const Text(
+                    : Text(
 
-                        "Send OTP",
+                        "send_otp".tr,
 
-                        style: TextStyle(
+                        style: const TextStyle(
 
                           color: Colors.white,
 

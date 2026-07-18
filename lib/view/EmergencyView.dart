@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/controller/emergency_controller.dart';
-import 'package:supervisors/models/StudentModel.dart';
 import 'package:supervisors/view/emergency_details_view.dart';
 
 class EmergencyView extends StatefulWidget {
@@ -45,7 +44,7 @@ class _EmergencyViewState extends State<EmergencyView>{
       appBar: AppBar(
 
         title:
-        const Text("Emergency Cases"),
+         Text("emergency_cases".tr),
 
         backgroundColor:
         AppColors.primary,
@@ -71,9 +70,9 @@ class _EmergencyViewState extends State<EmergencyView>{
 
         if(controller.cases.isEmpty){
 
-          return const Center(
+          return  Center(
             child:Text(
-                "No Emergency Cases"
+                "No emergency_cases".tr
             ),
           );
 
@@ -425,7 +424,7 @@ class _EmergencyViewState extends State<EmergencyView>{
 
 
         label:
-        const Text("New Emergency"),
+         Text("new_emergency".tr),
 
 
 
@@ -562,25 +561,25 @@ class _EmergencyViewState extends State<EmergencyView>{
               children: [
                 TextField(
                   controller: controller.titleController,
-                  decoration: buildInputDecoration("Title"),
+                  decoration: buildInputDecoration("title".tr),
                 ),
                 const SizedBox(height: 10),
 
                 TextField(
                   controller: controller.descriptionController,
-                  decoration: buildInputDecoration("Description"),
+                  decoration: buildInputDecoration("description".tr),
                 ),
                 const SizedBox(height: 10),
 
                 TextField(
                   controller: controller.severityController,
-                  decoration: buildInputDecoration("Severity"),
+                  decoration: buildInputDecoration("severity".tr),
                 ),
                 const SizedBox(height: 10),
 
                 TextField(
                   controller: controller.caseTypeController,
-                  decoration: buildInputDecoration("Case Type"),
+                  decoration: buildInputDecoration("Case Type".tr),
                 ),
                 const SizedBox(height: 10),
 
@@ -597,7 +596,7 @@ class _EmergencyViewState extends State<EmergencyView>{
                             (s) => s.id == controller.selectedStudent.value?.id)
                         ? controller.selectedStudent.value?.id
                         : null,
-                    decoration: buildInputDecoration("Select Student"),
+                    decoration: buildInputDecoration("select_student".tr),
                     items: controller.students.map((student) {
                       return DropdownMenuItem<int>(
                         value: student.id,
@@ -634,7 +633,7 @@ class _EmergencyViewState extends State<EmergencyView>{
                     onPressed: () {
                       controller.createCase();
                     },
-                    child: const Text("Send Emergency"),
+                    child:  Text("send_emergency".tr),
                   ),
                 ),
               ],

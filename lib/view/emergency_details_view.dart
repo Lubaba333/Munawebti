@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 
 
@@ -30,8 +31,8 @@ class EmergencyDetailsView extends StatelessWidget {
 
         elevation:0,
 
-        title: const Text(
-          "Emergency Details",
+        title:  Text(
+          "emergency_details".tr,
         ),
 
       ),
@@ -58,7 +59,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
               context: context,
 
-              title:"Student Information",
+              title:"student_information".tr,
 
               icon:Icons.person,
 
@@ -67,14 +68,14 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Name",
+                  "Name".tr,
                   emergency.student.fullName,
                 ),
 
 
                 _item(
                   context,
-                  "Student ID",
+                  "student_id".tr,
                   emergency.student.id.toString(),
                 ),
 
@@ -82,7 +83,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Email",
+                  "email".tr,
                   emergency.student.email.isNotEmpty
                       ? emergency.student.email
                       : "-",
@@ -92,7 +93,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Phone",
+                  "phone".tr,
                   emergency.student.phoneNumber.isNotEmpty
                       ? emergency.student.phoneNumber
                       : "-",
@@ -102,7 +103,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Specialization",
+                  "specialization".tr,
                   emergency.student.specialization.isNotEmpty
                       ? emergency.student.specialization
                       : "-",
@@ -112,7 +113,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Year",
+                  "year".tr,
                   emergency.student.year.toString(),
                 ),
 
@@ -120,7 +121,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Resident",
+                  "resident".tr,
                   emergency.student.isResident
                       ? "Yes"
                       : "No",
@@ -143,7 +144,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
               context: context,
 
-              title:"Emergency Status",
+              title:"emergency_status".tr,
 
               icon:Icons.timeline,
 
@@ -154,7 +155,7 @@ class EmergencyDetailsView extends StatelessWidget {
 
                 _item(
                   context,
-                  "Status",
+                  "status".tr,
                   emergency.status,
                 ),
 

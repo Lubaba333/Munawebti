@@ -84,11 +84,11 @@ class OTPView extends StatelessWidget {
 
                       children: [
 
-                        const Text(
+                        Text(
 
-                          "Verification Code",
+                          "verification_code".tr,
 
-                          style: TextStyle(
+                          style: const TextStyle(
 
                             fontSize: 22,
 
@@ -104,14 +104,14 @@ class OTPView extends StatelessWidget {
                           height: 10,
                         ),
 
-                        const Text(
+                        Text(
 
-                          "Enter OTP code sent to email",
+                          "enter_otp_sent_to_email".tr,
 
                           textAlign:
                               TextAlign.center,
 
-                          style: TextStyle(
+                          style: const TextStyle(
                             color:
                                 AppColors.textLight,
                           ),
@@ -131,7 +131,16 @@ class OTPView extends StatelessWidget {
 
                             6,
 
-                            (i) => _otpField(i),
+                            (i) => Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                  horizontal: 3,
+                                ),
+                                child: _otpField(i),
+                              ),
+                            ),
                           ),
                         ),
 
@@ -156,7 +165,7 @@ class OTPView extends StatelessWidget {
 
     return Container(
 
-      width: 45,
+      width: double.infinity,
 
       height: 60,
 
@@ -265,11 +274,11 @@ class OTPView extends StatelessWidget {
                         color: Colors.white,
                       )
 
-                    : const Text(
+                    : Text(
 
-                        "Verify Code",
+                        "verify_code".tr,
 
-                        style: TextStyle(
+                        style: const TextStyle(
 
                           color:
                               AppColors.textWhite,

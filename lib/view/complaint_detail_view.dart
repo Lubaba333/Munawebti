@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/models/housing_complaint_model.dart';
 
@@ -142,17 +143,17 @@ class _ComplaintDetailViewState extends State<ComplaintDetailView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  _sectionTitle("الوصف"),
+                  _sectionTitle("description".tr),
                   _animatedBlock(_textBlock(Icons.description, c.description)),
 
 
                   const SizedBox(height: 40),
 
-                  _sectionTitle("رد الإدارة"),
+                  _sectionTitle("Administration response".tr),
                   _animatedBlock(
                     _textBlock(
                       Icons.message,
-                      c.adminResponse ?? "لا يوجد رد حالياً",
+                      c.adminResponse ?? "NO reply at this time".tr
                     ),
                   ),
 

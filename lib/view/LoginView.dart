@@ -45,7 +45,7 @@ class LoginView extends StatelessWidget {
           Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
+                padding:  EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
                   children: [
             Column(
@@ -79,9 +79,9 @@ class LoginView extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                /// 🔥 اسم التطبيق (محسّن)
-                const Text(
-                  "Munawebti",
+
+                 Text(
+                  "Munawebti".tr,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -112,9 +112,9 @@ class LoginView extends StatelessWidget {
                           child: Column(
                             children: [
 
-                              const Text(
-                                "Welcome",
-                                style: TextStyle(
+                              Text(
+                                "welcome_login".tr,
+                                style: const TextStyle(
                                   fontSize: 22,
                                   //fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -125,7 +125,7 @@ class LoginView extends StatelessWidget {
 
                                                       _field(
                             icon: Icons.email,
-                            hint: "Email",
+                            hint: "email".tr,
                             onChanged: (v) => controller.email.value = v,
                           ),
                                                       
@@ -135,7 +135,7 @@ class LoginView extends StatelessWidget {
                               /// Password
                               Obx(() => _field(
                                     icon: Icons.lock,
-                                    hint: "Password",
+                                    hint: "password".tr,
                                     isPassword:
                                         controller.isPasswordHidden.value,
                                     onChanged: (v) =>
@@ -162,15 +162,15 @@ class LoginView extends StatelessWidget {
                                             controller.toggleRemember,
                                         activeColor: Colors.white,
                                       )),
-                                  const Text("Remember",
-                                      style: TextStyle(color: Colors.white)),
+                                  Text("remember".tr,
+                                      style: const TextStyle(color: Colors.white)),
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () =>
                                         Get.to(() => ForgetPasswordView()),
-                                    child: const Text(
-                                      "Forgot password?",
-                                      style: TextStyle(
+                                    child: Text(
+                                      "forgot_password".tr,
+                                      style: const TextStyle(
                                        color: AppColors.textLight,
                                        // decoration:
                                           //  TextDecoration.underline,
@@ -198,7 +198,7 @@ class LoginView extends StatelessWidget {
                         child: Center(
                           child: controller.isLoading.value
                               ? CircularProgressIndicator(color: Colors.white)
-                              : Text("Login", style: TextStyle(color: Colors.white)),
+                              : Text("login".tr, style: TextStyle(color: Colors.white)),
                         ),
                       ),
                     )),

@@ -158,7 +158,7 @@ class ProfileView extends StatelessWidget {
           _buildRow(
             context,
             Icons.email_outlined,
-            "Email",
+            "email".tr,
             controller.email,
           ),
 
@@ -167,7 +167,7 @@ class ProfileView extends StatelessWidget {
           _buildRow(
             context,
             Icons.badge_outlined,
-            "Supervisor ID",
+            "supervisor_id".tr,
             controller.supervisorId,
           ),
 
@@ -176,7 +176,7 @@ class ProfileView extends StatelessWidget {
           _buildRow(
             context,
             Icons.school_outlined,
-            "University",
+            "university".tr,
             controller.certificatePlace,
           ),
 
@@ -185,7 +185,7 @@ class ProfileView extends StatelessWidget {
           _buildRow(
             context,
             Icons.calendar_month,
-            "Certificate Date",
+            "certificate_date".tr,
             controller.certificateDate,
           ),
 
@@ -194,7 +194,7 @@ class ProfileView extends StatelessWidget {
           _buildRow(
             context,
             Icons.psychology_alt,
-            "Specialization",
+            "specialization".tr,
             controller.role,
           ),
         ],
@@ -345,7 +345,7 @@ class ProfileView extends StatelessWidget {
 
                 Text(
 
-                  "Performance Records",
+                  "performance_records".tr,
 
                   style: TextStyle(
 
@@ -382,7 +382,7 @@ class ProfileView extends StatelessWidget {
 
                     icon: Icons.card_giftcard,
 
-                    title: "Rewards",
+                    title: "rewards".tr,
 
                     count: controller.rewards.length.toString(),
 
@@ -405,7 +405,7 @@ class ProfileView extends StatelessWidget {
 
                     icon: Icons.warning_amber,
 
-                    title: "Warnings",
+                    title: "warnings".tr,
 
                     count: controller.warnings.length.toString(),
 
@@ -427,7 +427,7 @@ class ProfileView extends StatelessWidget {
 
                     icon: Icons.report_problem,
 
-                    title: "Violations",
+                    title: "violations".tr,
 
                     count: controller.violations.length.toString(),
 
@@ -503,13 +503,13 @@ class ProfileView extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(22),
         ),
-        child: const Row(
+        child:  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.logout_rounded, color: Colors.red),
             SizedBox(width: 10),
             Text(
-              "Logout",
+              "logout".tr,
               style: TextStyle(
                 color: Colors.red,
                 fontWeight: FontWeight.bold,

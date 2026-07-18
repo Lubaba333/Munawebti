@@ -72,11 +72,11 @@ class ResetPasswordView extends StatelessWidget {
 
                       children: [
 
-                        const Text(
+                        Text(
 
-                          "Create New Password",
+                          "create_new_password".tr,
 
-                          style: TextStyle(
+                          style: const TextStyle(
 
                             fontSize: 22,
 
@@ -92,11 +92,11 @@ class ResetPasswordView extends StatelessWidget {
                           height: 15,
                         ),
 
-                        const Text(
+                        Text(
 
-                          "Enter your new password below",
+                          "enter_new_password_below".tr,
 
-                          style: TextStyle(
+                          style: const TextStyle(
                             color:
                                 AppColors.textLight,
                           ),
@@ -111,7 +111,7 @@ class ResetPasswordView extends StatelessWidget {
                           () => _field(
 
                             hint:
-                                "New Password",
+                                "new_password".tr,
 
                             icon:
                                 Icons.lock,
@@ -143,7 +143,7 @@ class ResetPasswordView extends StatelessWidget {
                           () => _field(
 
                             hint:
-                                "Confirm Password",
+                                "confirm_password".tr,
 
                             icon:
                                 Icons.lock_outline,
@@ -184,11 +184,11 @@ class ResetPasswordView extends StatelessWidget {
                             Get.back();
                           },
 
-                          child: const Text(
+                          child: Text(
 
-                            "Back",
+                            "back".tr,
 
-                            style: TextStyle(
+                            style: const TextStyle(
                               color:
                                   AppColors.textLight,
                             ),
@@ -343,11 +343,11 @@ class ResetPasswordView extends StatelessWidget {
                         color: Colors.white,
                       )
 
-                    : const Text(
+                    : Text(
 
-                        "Reset Password",
+                        "reset_password".tr,
 
-                        style: TextStyle(
+                        style: const TextStyle(
 
                           color:
                               AppColors.textWhite,

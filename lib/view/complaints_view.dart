@@ -15,7 +15,7 @@ class ComplaintsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Complaints"),
+        title:  Text("complaints".tr),
         backgroundColor: AppColors.primary,
         elevation: 0,
       ),
@@ -23,7 +23,7 @@ class ComplaintsView extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add),
-        label: const Text("New"),
+        label:  Text("New".tr),
         onPressed: () => Get.to(() => AddComplaintView()),
       ),
 
@@ -255,7 +255,7 @@ class AddComplaintView extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        title: const Text("New Complaint"),
+        title:  Text("new_complaint".tr),
         backgroundColor: AppColors.primary,
         elevation: 0,
       ),
@@ -265,11 +265,11 @@ class AddComplaintView extends StatelessWidget {
         child: Column(
           children: [
 
-            _field("Title", title),
+            _field("title".tr, title),
 
-            _field("Type", type),
+            _field("type".tr, type),
 
-            _field("Description", desc, max: 4),
+            _field("description".tr, desc, max: 4),
 
             const SizedBox(height: 25),
 
@@ -292,7 +292,7 @@ class AddComplaintView extends StatelessWidget {
                     description: desc.text,
                   );
                 },
-                child: const Text("Submit"),
+                child:  Text("submit".tr),
               ),
             ),
           ],

@@ -13,7 +13,7 @@ class SettingsView extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        title: const Text("Settings"),
+        title:  Text("settings".tr),
         centerTitle: true,
       ),
 
@@ -23,7 +23,7 @@ class SettingsView extends StatelessWidget {
           children: [
 
             /// ================= APPEARANCE =================
-            _sectionTitle(context, "Appearance"),
+            _sectionTitle(context, "appearance".tr),
             const SizedBox(height: 10),
 
             _settingsCard(
@@ -34,10 +34,10 @@ class SettingsView extends StatelessWidget {
                   icon: controller.isDarkMode.value
                       ? Icons.dark_mode_rounded
                       : Icons.light_mode_rounded,
-                  title: "Dark Mode",
+                  title: "dark_mode".tr,
                   subtitle: controller.isDarkMode.value
-                      ? "Currently on"
-                      : "Currently off",
+                      ? "currently_on".tr
+                      : "currently_off".tr,
                   trailing: Switch(
                     value: controller.isDarkMode.value,
                     onChanged: (_) => controller.toggleTheme(),
@@ -49,7 +49,7 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 28),
 
             /// ================= LANGUAGE =================
-            _sectionTitle(context, "Language"),
+            _sectionTitle(context, "language".tr),
             const SizedBox(height: 10),
 
             _settingsCard(
@@ -74,7 +74,7 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 28),
 
             /// ================= ABOUT =================
-            _sectionTitle(context, "About"),
+            _sectionTitle(context, "about".tr),
             const SizedBox(height: 10),
 
             _settingsCard(
@@ -83,8 +83,8 @@ class SettingsView extends StatelessWidget {
                 _iconTile(
                   context: context,
                   icon: Icons.info_outline_rounded,
-                  title: "About App",
-                  subtitle: "Version, developer info",
+                  title: "about_app".tr,
+                  subtitle: "about_app_subtitle".tr,
                   trailing: Icon(
                     Icons.chevron_right_rounded,
                     color: Theme.of(context).textTheme.bodySmall?.color,
@@ -245,9 +245,7 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  // ================= SYRIAN FLAG (drawn manually) =================
-  // Emoji flags depend on the OS font and may still show the old design,
-  // so we draw the new flag (green/white/black + 3 red stars) ourselves.
+  // ================= SYRIAN FLAG  =================
   Widget _syrianFlagIcon() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(2),
@@ -291,7 +289,7 @@ class SettingsView extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).cardColor,
-      shape: const RoundedRectangleBorder(
+      shape:  RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (context) {
@@ -311,20 +309,19 @@ class SettingsView extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                "Munawebti",
+                "munawebti".tr,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
               ),
               const SizedBox(height: 6),
               Text(
-                "Version 1.0.0",
+                "Version 1.0.0".tr,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
               Text(
-                "An app for supervisors to manage students, schedules, "
-                "requests and emergencies.",
+                "about_description".tr,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

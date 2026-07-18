@@ -61,7 +61,7 @@ class HomeView extends StatelessWidget {
                 /// HEADER
 
                 Text(
-                  "Welcome 👋",
+                  "welcome".tr,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -98,7 +98,7 @@ class HomeView extends StatelessWidget {
                 const SizedBox(height:30),
 
                 _title(
-                    "Quick Actions"
+                    "quick_actions".tr
                 ),
 
 
@@ -133,7 +133,7 @@ class HomeView extends StatelessWidget {
 
                       icon:Icons.emergency,
 
-                      title:"Emergency",
+                      title:"emergency".tr,
 
                       onTap:(){
 
@@ -153,7 +153,7 @@ class HomeView extends StatelessWidget {
 
                       icon:Icons.report_problem,
 
-                      title:"Complaints",
+                      title:"complaints".tr,
 
                       onTap:(){
 
@@ -174,7 +174,7 @@ class HomeView extends StatelessWidget {
 
                       icon:Icons.assignment,
 
-                      title:"Requests",
+                      title:"requests".tr,
 
                       onTap:(){
 
@@ -195,7 +195,7 @@ class HomeView extends StatelessWidget {
 
                       icon:Icons.check_circle,
 
-                      title:"Attendance",
+                      title:"attendance".tr,
 
                     ),
 
@@ -213,7 +213,7 @@ class HomeView extends StatelessWidget {
 
 
                 _title(
-                    "Today's Schedule"
+                    "todays_schedule".tr
                 ),
 
 
@@ -356,7 +356,7 @@ class HomeView extends StatelessWidget {
 
                   Text(
 
-                    "Current Shift",
+                    "current_shift".tr,
 
                     style: TextStyle(
 
@@ -382,7 +382,7 @@ class HomeView extends StatelessWidget {
 
 
                     controller.currentShift['title']
-                        ?? "No Shift",
+                        ?? "no_shift".tr,
 
 
 
@@ -516,7 +516,7 @@ class HomeView extends StatelessWidget {
 
 
                     controller.currentShift['time']
-                        ?? "No time available",
+                        ?? "No time available".tr,
 
 
 
@@ -592,9 +592,9 @@ class HomeView extends StatelessWidget {
 
 
 
-              const Text(
+               Text(
 
-                "Active Now",
+                "active_now".tr,
 
                 style:TextStyle(
 
@@ -806,7 +806,7 @@ class HomeView extends StatelessWidget {
 
                 /// اسم المادة أو اسم مبنى السكن
                 Text(
-                  item["place"] ?? "",
+                  item["place".tr] ?? "",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -820,25 +820,25 @@ class HomeView extends StatelessWidget {
 
                   if ((item["teacher"] ?? "").isNotEmpty)
                     Text(
-                      "👨‍🏫 ${item["teacher"]}",
+                      "👨‍🏫 ${item["teacher".tr]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["lab"] ?? "").isNotEmpty)
                     Text(
-                      "🏫 ${item["lab"]}",
+                      "🏫 ${item["lab".tr]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["specialization"] ?? "").isNotEmpty)
                     Text(
-                      "🎓 ${item["specialization"]}",
+                      "🎓 ${item["specialization".tr]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
                   if ((item["year"] ?? "").isNotEmpty)
                     Text(
-                      "📚 السنة ${item["year"]}",
+                      "📚 السنة ${item["year".tr]}",
                       style: const TextStyle(fontSize: 13),
                     ),
 
@@ -855,7 +855,7 @@ class HomeView extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      item["time"] ?? "",
+                      item["time".tr] ?? "",
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
