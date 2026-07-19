@@ -80,18 +80,18 @@ String get group => _group.value;
         final unitName =
             currentRoom['dormitory_unit']?['name']?.toString() ?? '';
 
-        _room.value = roomNumber.isEmpty ? 'غير محدد' : roomNumber;
-        _roomUnit.value = unitName.isEmpty ? 'غير محدد' : _unitArabicName(unitName);
+        _room.value = roomNumber.isEmpty ? 'not_specified'.tr : roomNumber;
+        _roomUnit.value = unitName.isEmpty ? 'not_specified'.tr : _unitArabicName(unitName);
       } else {
-        _room.value = isResident.value ? 'غير مخصصة بعد' : 'غير مقيمة بالسكن';
+        _room.value = isResident.value ? 'not_assigned'.tr : 'not_resident'.tr;
         _roomUnit.value = '';
       }
       final latestGroup = student['latest_group'];
 
 if (latestGroup != null && latestGroup is Map) {
-  _group.value = latestGroup['group_number']?.toString() ?? 'غير محددة';
+  _group.value = latestGroup['group_number']?.toString() ?? 'not_specified'.tr;
 } else {
-  _group.value = 'غير محددة';
+  _group.value = 'not_specified'.tr;
 }
 
       final prefs = await SharedPreferences.getInstance();
@@ -114,7 +114,7 @@ if (latestGroup != null && latestGroup is Map) {
       case "Building C":
         return "مبنى الطالبات الثالث";
       default:
-        return name ?? "غير محدد";
+        return name ?? "not_specified".tr;
     }
   }
 
@@ -139,12 +139,12 @@ if (latestGroup != null && latestGroup is Map) {
     required String newEmail,
   }) async {
     if (newName.trim().length < 3) {
-      errorMessage.value = 'الاسم ضعيف';
+      errorMessage.value = 'weak_name'.tr;
       return false;
     }
 
     if (!GetUtils.isEmail(newEmail)) {
-      errorMessage.value = 'إيميل غير صحيح';
+      errorMessage.value = 'invalid_email_format'.tr;
       return false;
     }
 

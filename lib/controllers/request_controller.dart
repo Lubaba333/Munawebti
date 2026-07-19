@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/models/request_model.dart';
 import 'package:studants/services/service.dart';
+import 'package:studants/views/main_navigation_view.dart';
 import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/views/request_details_view.dart';
 
@@ -44,10 +45,10 @@ var initialLoading = true.obs;
     return [];
   }
 
-  Future<void> _handleRequestSuccess(String message) async {
+Future<void> _handleRequestSuccess(String messageKey) async {
   Get.snackbar(
-    "تم بنجاح",
-    message,
+    "success".tr,
+    messageKey.tr,
     backgroundColor: Colors.green,
     colorText: Colors.white,
     snackPosition: SnackPosition.BOTTOM,
@@ -55,7 +56,8 @@ var initialLoading = true.obs;
 
   await getMyRequests();
 
-  Get.off(() => const MyRequestsView());
+  // رجوع للشاشة الرئيسية مع النيف بار
+  Get.offAll(() => MainNavigationView(initialIndex: 1));
 }
 
   Future<void> getCurrentStudentRoom() async {
@@ -205,10 +207,10 @@ Future<void> getReceivedRequests() async {
         authRequired: true,
       );
 
-      await _handleRequestSuccess("تم تسجيل طلب سماح الخروج بنجاح");
+      await _handleRequestSuccess("exit_request_success");
     } catch (e) {
       Get.snackbar(
-        "Error",
+        "error".tr,
         e.toString().replaceAll('Exception:', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -225,19 +227,19 @@ Future<void> getReceivedRequests() async {
     final current = currentRoom.value;
 
     if (current == null || current['id'] == null) {
-      Get.snackbar("تنبيه", "لم يتم تحميل غرفتك الحالية بعد");
+      Get.snackbar("warning".tr, "current_room_loading".tr);
       return;
     }
 
     final int currentRoomId = int.parse(current['id'].toString());
 
     if (currentRoomId == requestedRoomId) {
-      Get.snackbar("تنبيه", "لا يمكن اختيار نفس غرفتك الحالية");
+      Get.snackbar("warning".tr, "cannot_select_same_room".tr);
       return;
     }
 
     if (reason.trim().isEmpty) {
-      Get.snackbar("تنبيه", "اكتبي سبب طلب تبديل الغرفة");
+      Get.snackbar("warning".tr, "write_room_transfer_reason".tr);
       return;
     }
 
@@ -264,10 +266,10 @@ Future<void> getReceivedRequests() async {
         authRequired: true,
       );
 
-      await _handleRequestSuccess("تم إرسال طلب تبديل الغرفة بنجاح");
+      await _handleRequestSuccess("room_change_request_success");
     } catch (e) {
       Get.snackbar(
-        "Error",
+        "error".tr,
         e.toString().replaceAll('Exception:', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -283,14 +285,14 @@ Future<void> getReceivedRequests() async {
     final current = currentRoom.value;
 
     if (current == null || current['id'] == null) {
-      Get.snackbar("تنبيه", "لم يتم تحميل غرفتك الحالية بعد");
+      Get.snackbar("warning".tr, "current_room_loading".tr);
       return;
     }
 
     final int currentRoomId = int.parse(current['id'].toString());
 
     if (reason.trim().isEmpty) {
-      Get.snackbar("تنبيه", "اكتبي سبب طلب النقل");
+      Get.snackbar("warning".tr, "write_transfer_reason".tr);
       return;
     }
 
@@ -316,10 +318,10 @@ Future<void> getReceivedRequests() async {
         authRequired: true,
       );
 
-      await _handleRequestSuccess("تم تسجيل طلب النقل بنجاح");
+      await _handleRequestSuccess("transfer_request_success");
     } catch (e) {
       Get.snackbar(
-        "Error",
+        "error".tr,
         e.toString().replaceAll('Exception:', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -337,19 +339,19 @@ Future<void> getReceivedRequests() async {
     final current = currentRoom.value;
 
     if (current == null || current['id'] == null) {
-      Get.snackbar("تنبيه", "لم يتم تحميل غرفتك الحالية بعد");
+      Get.snackbar("warning".tr, "current_room_loading".tr);
       return;
     }
 
     final int currentRoomId = int.parse(current['id'].toString());
 
     if (currentRoomId == targetRoomId) {
-      Get.snackbar("تنبيه", "لا يمكن التبديل مع نفس غرفتك الحالية");
+      Get.snackbar("warning".tr, "cannot_exchange_same_room".tr);
       return;
     }
 
     if (reason.trim().isEmpty) {
-      Get.snackbar("تنبيه", "اكتبي سبب طلب التبديل");
+      Get.snackbar("warning".tr, "write_exchange_reason".tr);
       return;
     }
 
@@ -377,18 +379,18 @@ Future<void> getReceivedRequests() async {
         authRequired: true,
       );
 
-      await _handleRequestSuccess("تم تسجيل طلب التبديل مع طالبة بنجاح");
+      await _handleRequestSuccess("exchange_request_success");
     } catch (e) {
      final error = e.toString().replaceAll('Exception:', '').trim();
 
 String message = error;
 
 if (error.contains('already a pending exchange request')) {
-  message = 'يوجد طلب تبديل سابق قيد الانتظار مع هذه الطالبة';
+  message = 'pending_exchange_exists'.tr;
 }
 
 Get.snackbar(
-  "تعذر إرسال الطلب",
+  "cannot_send_request".tr,
   message,
   backgroundColor: Colors.orange,
   colorText: Colors.white,
@@ -421,8 +423,8 @@ Future<void> approveExchangeRequest(int requestId) async {
     }
 
     Get.snackbar(
-      "تم بنجاح",
-      "تم قبول الطلب وتحويله للإدارة",
+      "success".tr,
+      "exchange_approved_admin".tr,
       backgroundColor: Colors.green,
       colorText: Colors.white,
     );
@@ -430,7 +432,7 @@ Future<void> approveExchangeRequest(int requestId) async {
    await getReceivedRequests();
   } catch (e) {
     Get.snackbar(
-      "Error",
+      "error".tr,
       e.toString().replaceAll('Exception:', ''),
       backgroundColor: Colors.red,
       colorText: Colors.white,
@@ -473,8 +475,8 @@ Future<void> rejectExchangeRequest({
     }
 
     Get.snackbar(
-      "تم بنجاح",
-      "تم رفض الطلب",
+      "success".tr,
+      "exchange_rejected_success".tr,
       backgroundColor: Colors.green,
       colorText: Colors.white,
     );
@@ -482,7 +484,7 @@ Future<void> rejectExchangeRequest({
    await getReceivedRequests();
   } catch (e) {
     Get.snackbar(
-      "Error",
+      "error".tr,
       e.toString().replaceAll('Exception:', ''),
       backgroundColor: Colors.red,
       colorText: Colors.white,
@@ -503,8 +505,8 @@ Future<void> cancelRequest(int requestId) async {
     );
 
     Get.snackbar(
-      "تم بنجاح",
-      "تم إلغاء الطلب بنجاح",
+      "success".tr,
+      "request_cancelled_success".tr,
       backgroundColor: Colors.green,
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
@@ -513,7 +515,7 @@ Future<void> cancelRequest(int requestId) async {
     await getMyRequests();
   } catch (e) {
     Get.snackbar(
-      "تعذر إلغاء الطلب",
+      "cannot_cancel_request".tr,
       e.toString().replaceAll('Exception:', ''),
       backgroundColor: Colors.red,
       colorText: Colors.white,
@@ -547,11 +549,11 @@ Future<void> showRequestDetails(int requestId) async {
       selectedRequest.value = Map<String, dynamic>.from(data);
       Get.to(() => const RequestDetailsView());
     } else {
-      Get.snackbar("تنبيه", "لم يتم تحميل تفاصيل الطلب");
+      Get.snackbar("warning".tr, "request_details_not_loaded".tr);
     }
   } catch (e) {
     Get.snackbar(
-      "Error",
+      "error".tr,
       e.toString().replaceAll('Exception:', ''),
       backgroundColor: Colors.red,
       colorText: Colors.white,

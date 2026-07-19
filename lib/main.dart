@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:studants/controllers/auth_controller.dart';
+import 'package:studants/controllers/notification_controller.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/controllers/reset_password_controller.dart';
 import 'package:studants/firebase_options.dart';
@@ -33,6 +34,7 @@ void main() async {
   Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
   Get.put(ProfileController());
   Get.put(ThemeController());
+Get.put(NotificationController());
   Get.lazyPut<ResetPasswordController>(
     () => ResetPasswordController(),
     fenix: true,

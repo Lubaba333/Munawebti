@@ -7,7 +7,12 @@ import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/widgets/widgets_home/bottom_nav.dart';
 
 class MainNavigationView extends StatefulWidget {
-  const MainNavigationView({super.key});
+  final int initialIndex;
+
+  const MainNavigationView({
+    super.key,
+    this.initialIndex = 1,
+  });
 
   @override
   State<MainNavigationView> createState() => _MainNavigationViewState();
@@ -16,8 +21,13 @@ class MainNavigationView extends StatefulWidget {
 class _MainNavigationViewState extends State<MainNavigationView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int _currentIndex = 1;
+ late int _currentIndex;
 
+@override
+void initState() {
+  super.initState();
+  _currentIndex = widget.initialIndex;
+}
   void _onNavItemTapped(int index) {
     if (index == 4) {
       _scaffoldKey.currentState?.openDrawer();

@@ -20,7 +20,7 @@ class HousingController extends GetxController {
 
   Future<void> sendSwapRequest(String reason) async {
     if (selectedStudentId.value == null) {
-      Get.snackbar("Error", "Please select a student");
+      Get.snackbar("error".tr, "please_select_student".tr);
       return;
     }
 
@@ -35,11 +35,11 @@ class HousingController extends GetxController {
 
       await api.post('/room-requests', request.toJson());
 
-      Get.snackbar("Success", "Swap request sent");
+      Get.snackbar("success".tr, "swap_request_sent".tr);
       Get.back();
 
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("error".tr, e.toString());
     } finally {
       isLoading.value = false;
     }

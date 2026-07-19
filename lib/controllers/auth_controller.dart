@@ -1,4 +1,5 @@
 // lib/modules/auth/controllers/auth_controller.dart
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/controllers/profile_controller.dart';
@@ -49,7 +50,7 @@ class AuthController extends GetxController {
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Failed to Send OTP".tr,
+        "failed_send_otp".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -77,8 +78,8 @@ class AuthController extends GetxController {
       isEmailVerified.value = true;
       
       Get.snackbar(
-        "Success".tr,
-        "Email verified! You can now complete registration.".tr,
+        "success".tr,
+        "email_verified_success".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -118,8 +119,8 @@ class AuthController extends GetxController {
   }) async {
     if (password != confirmPassword) {
       Get.snackbar(
-        "Error".tr,
-        "Passwords do not match".tr,
+        "error".tr,
+        "passwords_not_match".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -129,8 +130,8 @@ class AuthController extends GetxController {
 
     if (!isEmailVerified.value || email != verifiedEmail.value) {
       Get.snackbar(
-        "Email Not Verified".tr,
-        "Please verify your email first by entering the OTP code".tr,
+        "email_not_verified".tr,
+        "verify_email_first".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -171,8 +172,8 @@ await Get.find<ProfileController>().getProfile();
       verifiedEmail.value = '';
 
       Get.snackbar(
-        "Success".tr,
-        "Account created successfully!".tr,
+        "success".tr,
+        "account_created".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -187,7 +188,7 @@ await Get.find<ProfileController>().getProfile();
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Registration Failed".tr,
+        "register_failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -200,61 +201,63 @@ await Get.find<ProfileController>().getProfile();
   }
 
   // ================= LOGIN =================
-  Future<void> login({
-    required String email,
-    required String studantid,
-    required String password,
-  }) async {
-    try {
-      isLoading.value = true;
+ Future<void> login({
+  required String email,
+  required String studantid,
+  required String password,
+}) async {
+  try {
+    isLoading.value = true;
 
-      final response = await _apiService.post(
-        '/auth/student/login',
-        {
-          'email': email,
-          'password': password,
-          'student_identifier': studantid,
-        },
-        authRequired: false,
-      );
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print("🟢 LOGIN FCM TOKEN: $fcmToken");
 
-      print("✅ Login Success: $response");
+    final response = await _apiService.post(
+      '/auth/student/login',
+      {
+        'email': email,
+        'password': password,
+        'student_identifier': studantid,
+        'fcm_token': fcmToken,
+      },
+      authRequired: false,
+    );
 
-      final token = response['data']?['token'];
+    print("✅ Login Success: $response");
 
-      if (token != null) {
-        _apiService.setToken(token);
-        await Get.find<ProfileController>().getProfile();
-      }
+    final token = response['data']?['token'];
 
-      Get.snackbar(
-        "Success".tr,
-        "Welcome back!".tr,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-
-      Get.offAll(() =>  MainNavigationView());
-
-    } catch (e) {
-      print("❌ Login Error: $e");
-      
-      // 🔥 استخراج رسالة الخطأ التفصيلية
-      String errorMessage = _extractErrorMessage(e);
-      
-      Get.snackbar(
-        "Login Failed".tr,
-        errorMessage,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 4),
-      );
-    } finally {
-      isLoading.value = false;
+    if (token != null) {
+      await _apiService.setToken(token);
+      await Get.find<ProfileController>().getProfile();
     }
+
+    Get.snackbar(
+      "success".tr,
+      "welcome_back".tr,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+
+    Get.offAll(() => MainNavigationView());
+  } catch (e) {
+    print("❌ Login Error: $e");
+
+    final errorMessage = _extractErrorMessage(e);
+
+    Get.snackbar(
+      "login_failed".tr,
+      errorMessage,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 4),
+    );
+  } finally {
+    isLoading.value = false;
   }
+}
 
   // 🔥 دالة مساعدة لاستخراج رسالة الخطأ الحقيقية من الـ API
   String _extractErrorMessage(dynamic error) {

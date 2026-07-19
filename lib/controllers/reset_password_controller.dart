@@ -17,12 +17,12 @@ class ResetPasswordController extends GetxController {
   /// 📧 الخطوة 1: إرسال OTP لإعادة تعيين كلمة المرور (حسب Postman)
   Future<void> sendResetOTP(String emailAddress) async {
     if (emailAddress.isEmpty) {
-      Get.snackbar("Error", "Please enter your email");
+      Get.snackbar("error".tr, "enter_email".tr);
       return;
     }
 
     if (!GetUtils.isEmail(emailAddress)) {
-      Get.snackbar("Error", "Please enter a valid email");
+      Get.snackbar("error".tr, "enter_valid_email".tr);
       return;
     }
 
@@ -47,8 +47,8 @@ class ResetPasswordController extends GetxController {
       isOtpSent.value = true;
 
       Get.snackbar(
-        "OTP Sent",
-        "Verification code sent to your email",
+        "otp_sent".tr,
+        "verification_code_sent".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -75,8 +75,8 @@ class ResetPasswordController extends GetxController {
     // 🔥 التحقق من وجود البريد الإلكتروني
     if (email.value.isEmpty) {
       Get.snackbar(
-        "Error",
-        "Email not found. Please request OTP again.",
+        "error".tr,
+        "email_not_found_retry".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -86,8 +86,8 @@ class ResetPasswordController extends GetxController {
     
     if (otp.length != 6) {
       Get.snackbar(
-        "Error",
-        "Please enter the 6-digit OTP code",
+        "error".tr,
+        "enter_otp_6digits".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -117,8 +117,8 @@ class ResetPasswordController extends GetxController {
       isOtpVerified.value = true;
 
       Get.snackbar(
-        "Success",
-        "Code verified successfully",
+        "success".tr,
+        "code_verified_success".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -138,7 +138,7 @@ class ResetPasswordController extends GetxController {
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Verification Failed",
+        "verification_failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -154,25 +154,25 @@ class ResetPasswordController extends GetxController {
   /// 🔄 الخطوة 3: إعادة تعيين كلمة المرور (حسب Postman)
   Future<bool> resetPassword(String newPassword, String confirmPassword) async {
     if (newPassword.isEmpty) {
-      Get.snackbar("Error", "Please enter new password");
+      Get.snackbar("error".tr, "enter_new_password".tr);
       return false;
     }
 
     if (newPassword.length < 6) {
-      Get.snackbar("Error", "Password must be at least 6 characters");
+      Get.snackbar("error".tr, "password_min_length".tr);
       return false;
     }
 
     if (newPassword != confirmPassword) {
-      Get.snackbar("Error", "Passwords do not match");
+      Get.snackbar("error".tr, "passwords_not_match".tr);
       return false;
     }
 
     // التأكد من أن OTP تم التحقق منه
     if (!isOtpVerified.value || otpCode.value.isEmpty) {
       Get.snackbar(
-        "Error",
-        "Please verify your OTP code first",
+        "error".tr,
+        "verify_otp_first".tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -203,8 +203,8 @@ class ResetPasswordController extends GetxController {
       resetState();
 
       Get.snackbar(
-        "Success",
-        "Password changed successfully! Please login with your new password.",
+        "success".tr,
+        "password_changed_success".tr,
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -224,7 +224,7 @@ class ResetPasswordController extends GetxController {
       String errorMessage = _extractErrorMessage(e);
       
       Get.snackbar(
-        "Reset Failed",
+        "reset_failed".tr,
         errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,

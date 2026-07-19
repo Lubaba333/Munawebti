@@ -37,7 +37,7 @@ class HousingComplaintController extends GetxController {
       }
 
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("error".tr, e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -58,7 +58,7 @@ class HousingComplaintController extends GetxController {
       }
 
     } catch (e) {
-      Get.snackbar("Error", "فشل تحميل التفاصيل");
+      Get.snackbar("error".tr, "failed_load_complaint_details".tr);
     } finally {
       isLoading.value = false;
     }
@@ -79,12 +79,12 @@ class HousingComplaintController extends GetxController {
 
       Get.back();
 
-      Get.snackbar("Success", "تم إرسال الشكوى");
+      Get.snackbar("success".tr, "complaint_sent".tr);
 
       fetchComplaints();
 
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("error".tr, e.toString());
     } finally {
       isLoading.value = false;
     }

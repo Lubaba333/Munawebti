@@ -73,8 +73,8 @@ class EmergencyController extends GetxController {
       print("❌ Error fetching emergency cases: $e");
       
       Get.snackbar(
-        'خطأ', 
-        'فشل في جلب بيانات الطوارئ: $e', 
+        'error'.tr, 
+        '${'failed_fetch_emergency_data'.tr}: $e', 
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
@@ -113,7 +113,7 @@ print("🔍 Raw JSON for case $id: $data");
         }
       }
     } catch (e) {
-      Get.snackbar('خطأ', 'فشل في جلب تفاصيل البلاغ: ${e.toString()}', 
+      Get.snackbar('error'.tr, '${'failed_fetch_report_details'.tr}: ${e.toString()}', 
         snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
@@ -137,7 +137,7 @@ print("🔍 Raw JSON for case $id: $data");
       await _api.post('/student/emergency-cases', body);
       
       Get.back();
-      Get.snackbar('✅ تم الإرسال', 'تم استلام بلاغ الطوارئ وسيتم معالجته فوراً', 
+      Get.snackbar('success'.tr, 'report_sent'.tr, 
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -146,7 +146,7 @@ print("🔍 Raw JSON for case $id: $data");
       fetchEmergencyCases(page: 1);
       
     } catch (e) {
-      Get.snackbar('❌ فشل الإرسال', e.toString(), 
+      Get.snackbar('report_failed'.tr, e.toString(), 
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
