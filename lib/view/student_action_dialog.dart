@@ -61,16 +61,16 @@ class _StudentActionDialogState
   String get dialogTitle {
     switch (widget.type) {
       case StudentActionType.warning:
-        return "إضافة تحذير";
+        return "add_warning".tr;
 
       case StudentActionType.violation:
-        return "إضافة مخالفة";
+        return "add_violation".tr;
 
       case StudentActionType.reward:
-        return "إضافة مكافأة";
+        return "add_reward".tr;
 
       case StudentActionType.report:
-        return "إضافة تقرير";
+        return "add_report".tr;
     }
   }
 
@@ -140,20 +140,20 @@ class _StudentActionDialogState
         return [
           _field(
             titleController,
-            "العنوان",
+            "title".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             descriptionController,
-            "الوصف",
+            "description".tr,
             maxLines: 3,
           ),
           const SizedBox(height: 12),
 
           _field(
             extra1Controller,
-            "العقوبة المحتملة",
+            "possible_penalty".tr,
           ),
         ];
 
@@ -162,26 +162,26 @@ class _StudentActionDialogState
         return [
           _field(
             titleController,
-            "العنوان",
+            "title".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             descriptionController,
-            "الوصف",
+            "description".tr,
             maxLines: 3,
           ),
           const SizedBox(height: 12),
 
           _field(
             extra1Controller,
-            "التصنيف",
+            "category".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             extra2Controller,
-            "العقوبة",
+            "penalty".tr,
           ),
         ];
 
@@ -190,26 +190,26 @@ class _StudentActionDialogState
         return [
           _field(
             extra1Controller,
-            "نوع المكافأة",
+            "reward_type".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             titleController,
-            "العنوان",
+            "title".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             descriptionController,
-            "الوصف",
+            "description".tr,
             maxLines: 3,
           ),
           const SizedBox(height: 12),
 
           _field(
             extra2Controller,
-            "عدد النقاط",
+            "points".tr,
             keyboardType:
             TextInputType.number,
           ),
@@ -220,20 +220,20 @@ class _StudentActionDialogState
         return [
           _field(
             extra1Controller,
-            "نوع التقرير",
+            "report_type".tr,
           ),
           const SizedBox(height: 12),
 
           _field(
             descriptionController,
-            "الوصف",
+            "description".tr,
             maxLines: 3,
           ),
           const SizedBox(height: 12),
 
           _field(
             extra2Controller,
-            "الملاحظات",
+            "notes".tr,
             maxLines: 3,
           ),
         ];
@@ -276,7 +276,7 @@ class _StudentActionDialogState
 
             _field(
               dateController,
-              "التاريخ",
+              "date".tr,
             ),
           ],
         ),
@@ -286,7 +286,7 @@ class _StudentActionDialogState
 
         TextButton(
           onPressed: Get.back,
-          child: const Text("إلغاء"),
+          child: Text("cancel".tr),
         ),
 
         Obx(
@@ -305,7 +305,7 @@ class _StudentActionDialogState
                 strokeWidth: 2,
               ),
             )
-                : const Text("حفظ"),
+                : Text("save".tr),
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentAttendanceTab
     extends StatelessWidget {
@@ -16,25 +17,25 @@ class StudentAttendanceTab
       padding:
       const EdgeInsets.all(16),
 
-      children: const [
+      children: [
 
         Card(
           child: ListTile(
             leading:
-            Icon(Icons.check_circle),
+            const Icon(Icons.check_circle),
             title:
-            Text("محاضرة البرمجة"),
-            subtitle: Text("حاضر"),
+            Text("programming_lecture".tr),
+            subtitle: Text("present".tr),
           ),
         ),
 
         Card(
           child: ListTile(
             leading:
-            Icon(Icons.cancel),
+            const Icon(Icons.cancel),
             title:
-            Text("السكن"),
-            subtitle: Text("غائب"),
+            Text("housing".tr),
+            subtitle: Text("absent".tr),
           ),
         ),
       ],

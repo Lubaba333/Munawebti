@@ -383,7 +383,7 @@ class HomeView extends StatelessWidget {
 
 
                     controller.currentShift['title']
-                        ?? "no_shift".tr,
+                        ??"no_shift".tr,
 
 
 

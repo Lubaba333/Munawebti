@@ -9,7 +9,6 @@ class AppTranslations extends Translations {
       };
 
   static const Map<String, String> _en = {
-
     // ===== Common =====
     'save': 'Save',
     'cancel': 'Cancel',
@@ -156,6 +155,16 @@ class AppTranslations extends Translations {
     'save_changes': 'Save Changes',
     'reward_date': 'Reward Date',
     'date': 'Date',
+    'reward_type': 'Reward Type',
+    'points': 'Points',
+    'report_type': 'Report Type',
+    'info_tab': 'Info',
+    'history_tab': 'History',
+    'present': 'Present',
+    'absent': 'Absent',
+    'programming_lecture': 'Programming Lecture',
+    'report': 'Report',
+    'residency': 'Residency',
 
     // ===== Emergency =====
     'emergency_cases': 'Emergency Cases',
@@ -370,6 +379,16 @@ class AppTranslations extends Translations {
     'save_changes': 'حفظ التعديل',
     'reward_date': 'تاريخ المكافأة',
     'date': 'التاريخ',
+    'reward_type': 'نوع المكافأة',
+    'points': 'عدد النقاط',
+    'report_type': 'نوع التقرير',
+    'info_tab': 'المعلومات',
+    'history_tab': 'السجل',
+    'present': 'حاضر',
+    'absent': 'غائب',
+    'programming_lecture': 'محاضرة البرمجة',
+    'report': 'تقرير',
+    'residency': 'السكن',
 
     // ===== Emergency =====
     'emergency_cases': 'حالات الطوارئ',

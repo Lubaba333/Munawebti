@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supervisors/const/app_colors.dart';
 import 'package:supervisors/models/StudentModel.dart';
 
@@ -20,7 +21,7 @@ class StudentInfoTab extends StatelessWidget {
 
     return SingleChildScrollView(
 
-      padding: const EdgeInsets.all(20),
+      padding:  EdgeInsets.all(20),
 
 
       child: Column(
@@ -36,7 +37,7 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.badge,
 
-            title:"الرقم الجامعي",
+            title:"student_id".tr,
 
             value:student.studentIdentifier,
 
@@ -50,7 +51,7 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.school,
 
-            title:"الاختصاص",
+            title:"specialization".tr,
 
             value:student.specialization,
 
@@ -64,7 +65,7 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.email,
 
-            title:"البريد",
+            title:"email".tr,
 
             value:student.email,
 
@@ -78,7 +79,7 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.phone,
 
-            title:"الهاتف",
+            title:"phone".tr,
 
             value:student.phoneNumber,
 
@@ -92,7 +93,7 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.layers,
 
-            title:"السنة",
+            title:"year".tr,
 
             value:student.year.toString(),
 
@@ -106,11 +107,11 @@ class StudentInfoTab extends StatelessWidget {
 
             icon:Icons.home,
 
-            title:"السكن",
+            title:"residency".tr,
 
             value:student.isResident
-                ? "مقيم"
-                : "غير مقيم",
+                ? "resident".tr
+                : "non_resident".tr,
 
           ),
 

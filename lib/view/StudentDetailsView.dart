@@ -139,21 +139,21 @@ class StudentDetailsView extends StatelessWidget {
                 unselectedLabelColor:
                 Colors.white70,
 
-                tabs: const [
+                tabs: [
 
                   Tab(
                     text:
-                    "المعلومات",
+                    "info_tab".tr,
                   ),
 
                   Tab(
                     text:
-                    "الحضور",
+                    "attendance".tr,
                   ),
 
                   Tab(
                     text:
-                    "السجل",
+                    "history_tab".tr,
                   ),
                 ],
               ),

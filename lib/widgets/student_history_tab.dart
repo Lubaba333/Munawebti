@@ -45,7 +45,7 @@ class StudentHistoryTab extends StatelessWidget {
           ///// WARNINGS
           StudentRecordSection(
 
-            title:"التحذيرات",
+            title:"warnings".tr,
 
             icon:
             Icons.warning_amber_rounded,
@@ -123,7 +123,7 @@ class StudentHistoryTab extends StatelessWidget {
           StudentRecordSection(
 
             title:
-            "المخالفات",
+            "violations".tr,
 
             icon:
             Icons.block,
@@ -218,7 +218,7 @@ class StudentHistoryTab extends StatelessWidget {
           StudentRecordSection(
 
             title:
-            "المكافآت",
+            "rewards".tr,
 
 
             icon:
@@ -325,7 +325,7 @@ class StudentHistoryTab extends StatelessWidget {
           StudentRecordSection(
 
           title:
-          "التقارير",
+          "reports".tr,
 
 
           icon:
@@ -360,7 +360,7 @@ class StudentHistoryTab extends StatelessWidget {
 
 
           title:
-          "تقرير",
+          "report".tr,
 
 
           subtitle:
@@ -594,7 +594,7 @@ class StudentHistoryTab extends StatelessWidget {
               itemBuilder:(context)=>[
 
 
-                const PopupMenuItem(
+                PopupMenuItem(
 
                   value:"edit",
 
@@ -602,11 +602,11 @@ class StudentHistoryTab extends StatelessWidget {
 
                     children:[
 
-                      Icon(Icons.edit),
+                      const Icon(Icons.edit),
 
-                      SizedBox(width:8),
+                      const SizedBox(width:8),
 
-                      Text("تعديل"),
+                      Text("edit".tr),
 
                     ],
 
@@ -616,7 +616,7 @@ class StudentHistoryTab extends StatelessWidget {
 
 
 
-                const PopupMenuItem(
+                PopupMenuItem(
 
                   value:"delete",
 
@@ -624,11 +624,11 @@ class StudentHistoryTab extends StatelessWidget {
 
                     children:[
 
-                      Icon(Icons.delete,color:Colors.red),
+                      const Icon(Icons.delete,color:Colors.red),
 
-                      SizedBox(width:8),
+                      const SizedBox(width:8),
 
-                      Text("حذف"),
+                      Text("delete".tr),
 
                     ],
 

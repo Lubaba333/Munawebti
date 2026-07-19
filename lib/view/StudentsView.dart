@@ -42,9 +42,9 @@ class StudentsView extends GetView<StudentsController> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _chip(context, 'الكل', 'all'),
-                    _chip(context, 'مقيم', 'resident'),
-                    _chip(context, 'غير مقيم', 'non_resident'),
+                    _chip(context, 'all'.tr, 'all'),
+                    _chip(context, 'resident'.tr, 'resident'),
+                    _chip(context, 'non_resident'.tr, 'non_resident'),
                   ],
                 ),
               ),
@@ -62,8 +62,8 @@ class StudentsView extends GetView<StudentsController> {
                   }
 
                   if (controller.filteredStudents.isEmpty) {
-                    return const Center(
-                      child: Text('لا يوجد طلاب'),
+                    return Center(
+                      child: Text('no_students'.tr),
                     );
                   }
 
@@ -446,9 +446,9 @@ class _StudentCardState extends State<StudentCard> {
 
         student.isResident
 
-            ? "مقيم"
+            ? "resident".tr
 
-            : "غير مقيم",
+            : "non_resident".tr,
 
 
 
@@ -501,7 +501,7 @@ return TextField(
     controller: controller,
     onChanged: onChanged,
     decoration: InputDecoration(
-    hintText: 'ابحث عن طالب...',
+    hintText: 'search_student'.tr,
     prefixIcon: const Icon(Icons.search),
     filled: true,
     fillColor: Theme.of(context).cardColor,

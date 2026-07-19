@@ -91,9 +91,9 @@ class StudentActionsSheet
 
             title:
 
-            const Text(
+            Text(
 
-              "إضافة تحذير",
+              "add_warning".tr,
 
             ),
 
@@ -130,9 +130,9 @@ class StudentActionsSheet
 
             title:
 
-            const Text(
+            Text(
 
-              "إضافة مخالفة",
+              "add_violation".tr,
 
             ),
 
@@ -169,9 +169,9 @@ class StudentActionsSheet
 
             title:
 
-            const Text(
+            Text(
 
-              "إضافة مكافأة",
+              "add_reward".tr,
 
             ),
 
@@ -208,9 +208,9 @@ class StudentActionsSheet
 
             title:
 
-            const Text(
+            Text(
 
-              "إضافة تقرير",
+              "add_report".tr,
 
             ),
 
