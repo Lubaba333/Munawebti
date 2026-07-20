@@ -12,10 +12,12 @@ import 'package:supervisors/controller/emergency_controller.dart';
 import 'package:supervisors/controller/request_controller.dart';
 import 'package:supervisors/controller/supervisor_shift_controller.dart';
 import 'package:supervisors/services/api_service.dart';
+import 'package:supervisors/view/NotificationsView.dart';
 import 'package:supervisors/view/onboarding_view.dart';
 import 'controller/AuthController.dart';
 import 'controller/SettingsController.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'controller/notifications_controller.dart';
 import 'firebase_options.dart';
 
 
@@ -58,6 +60,34 @@ void main() async {
     await androidImplementation.requestNotificationsPermission();
   }
 
+  // /// الاستماع للإشعارات وقت التطبيق مفتوح (Foreground)
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print("📩 Foreground message: ${message.notification?.title}");
+  //
+  //   if (message.notification != null) {
+  //     flutterLocalNotificationsPlugin.show(
+  //       message.hashCode,
+  //       message.notification!.title,
+  //       message.notification!.body,
+  //       const NotificationDetails(
+  //         android: AndroidNotificationDetails(
+  //           'default_channel',
+  //           'Default Notifications',
+  //           importance: Importance.max,
+  //           priority: Priority.high,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // });
+  //
+  // /// وقت المستخدم يضغط ع الإشعار والتطبيق كان بالخلفية
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //   print("👉 User tapped notification: ${message.data}");
+  //   // هون لاحقاً منضيف كود التنقل (Navigation) حسب نوع الإشعار
+  // });
+
+
   /// الاستماع للإشعارات وقت التطبيق مفتوح (Foreground)
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print("📩 Foreground message: ${message.notification?.title}");
@@ -77,17 +107,22 @@ void main() async {
         ),
       );
     }
+
+    /// زيادة العداد محلياً فوراً
+    if (Get.isRegistered<NotificationsController>()) {
+      Get.find<NotificationsController>().incrementUnreadLocally();
+    }
   });
 
-  /// وقت المستخدم يضغط ع الإشعار والتطبيق كان بالخلفية
+  /// وقت المستخدم يضغط ع الإشعار (سواء بالخلفية أو مقفول تماماً)
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     print("👉 User tapped notification: ${message.data}");
-    // هون لاحقاً منضيف كود التنقل (Navigation) حسب نوع الإشعار
+    Get.to(() => NotificationsView());
   });
 
   /// AUTH
   Get.put(AuthController());
-
+  Get.put(NotificationsController());
   await GetStorage.init();
 
   Get.put(SettingsController());
@@ -101,6 +136,14 @@ void main() async {
   runApp(
     MyApp(),
   );
+
+  /// إذا التطبيق فتح بسبب ضغطة على إشعار (كان مقفول تماماً)
+  FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    if (message != null) {
+      print("🚀 App opened from terminated state via notification");
+      Get.to(() => NotificationsView());
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {

@@ -230,6 +230,10 @@ class AppTranslations extends Translations {
     'supervisor_id': 'Supervisor ID',
     'university': 'University',
     'certificate_date': 'Certificate Date',
+
+
+    'Notifications':'Notifications',
+    'No notifications':'No notifications',
   };
 
   static const Map<String, String> _ar = {
@@ -453,5 +457,8 @@ class AppTranslations extends Translations {
     'supervisor_id': 'رقم المشرف',
     'university': 'الجامعة',
     'certificate_date': 'تاريخ الشهادة',
+
+    'Notifications':'الإشعارات',
+    'No notifications':'لا توجد إشعارات',
   };
 }

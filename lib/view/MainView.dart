@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'ChatView.dart';
+import '../controller/notifications_controller.dart';
+import 'ChatListView.dart';
 import 'HomeView.dart';
 import 'NotificationsView.dart';
 import 'ProfileView.dart';
@@ -18,7 +19,7 @@ class MainView extends StatelessWidget {
     HomeView(),
     ScheduleView(),
     StudentsView(),
-    ChatView(),
+    ChatListView(),
     SettingsView(),
   ];
 
@@ -37,15 +38,42 @@ class MainView extends StatelessWidget {
   ),
 
   actions: [
-    IconButton(
-      icon: Icon(
-        Icons.notifications,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      onPressed: () {
-        Get.to(() => NotificationsView());
-      },
-    ),
+    Obx(() {
+      final notifController = Get.find<NotificationsController>();
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            icon:  Icon(Icons.notifications),
+            color: Theme.of(context).colorScheme.primary,
+            onPressed: () => Get.to(() => NotificationsView()),
+          ),
+          if (notifController.unreadCount.value > 0)
+            Positioned(
+              right: 6,
+              top: 6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 16,
+                  minHeight: 16,
+                ),
+                child: Text(
+                  notifController.unreadCount.value > 99
+                      ? '99+'
+                      : '${notifController.unreadCount.value}',
+                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+        ],
+      );
+    }),
 
     IconButton(
       icon: Icon(
