@@ -13,7 +13,7 @@ class ChatListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chats"),
+        title:  Text("chat".tr),
         centerTitle: true,
       ),
 
@@ -26,8 +26,8 @@ class ChatListView extends StatelessWidget {
         }
 
         if (controller.conversations.isEmpty) {
-          return const Center(
-            child: Text("No Conversations"),
+          return  Center(
+            child: Text("No Conversations".tr),
           );
         }
 
@@ -128,7 +128,7 @@ class ChatListView extends StatelessWidget {
 
               return Container(
                 height: 500,
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
 
                 child: ListView.builder(
 

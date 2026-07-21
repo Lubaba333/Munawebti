@@ -70,6 +70,9 @@ class AppTranslations extends Translations {
     'home': 'Home',
     'schedule': 'Schedule',
     'chat': 'Chat',
+    'No Conversations':'No Conversations',
+    'start chat':'start chat👋',
+    'write message':'write message....',
 
     // ===== Home =====
     'welcome': 'Welcome 👋',
@@ -298,6 +301,9 @@ class AppTranslations extends Translations {
     'home': 'الرئيسية',
     'schedule': 'الجدول',
     'chat': 'الدردشة',
+    'No Conversations':'لا يوجد محادثة',
+    'start chat':'ابدأ المحادثة👋',
+    'write message':'اكتب رسالة...',
 
     // ===== Home =====
     'welcome': 'أهلاً 👋',

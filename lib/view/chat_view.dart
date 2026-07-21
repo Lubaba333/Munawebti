@@ -63,8 +63,8 @@ class _ChatViewState extends State<ChatView> {
               }
 
               if (controller.messages.isEmpty) {
-                return const Center(
-                  child: Text("ابدأ المحادثة 👋"),
+                return  Center(
+                  child: Text("start chat".tr),
                 );
               }
 
@@ -119,8 +119,8 @@ class _ChatViewState extends State<ChatView> {
             Expanded(
               child: TextField(
                 controller: controller.messageController,
-                decoration: const InputDecoration(
-                  hintText: "اكتب رسالة...",
+                decoration:  InputDecoration(
+                  hintText: "write message".tr,
                   border: OutlineInputBorder(),
                 ),
               ),
