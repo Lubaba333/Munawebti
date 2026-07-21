@@ -1,4 +1,5 @@
 class ConversationModel {
+
   final int id;
 
   final int otherUserId;
@@ -10,7 +11,7 @@ class ConversationModel {
 
   int unreadCount;
 
-  String lastMessageAt;
+  DateTime? lastMessageAt;
 
   ConversationModel({
     required this.id,
@@ -24,6 +25,7 @@ class ConversationModel {
   });
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
+
     return ConversationModel(
       id: json["id"],
 
@@ -39,7 +41,9 @@ class ConversationModel {
 
       unreadCount: json["unread_count"] ?? 0,
 
-      lastMessageAt: json["last_message_at"] ?? "",
+      lastMessageAt: json["last_message_at"] == null
+          ? null
+          : DateTime.parse(json["last_message_at"]).toLocal(),
     );
   }
 }

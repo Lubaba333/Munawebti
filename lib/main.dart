@@ -13,8 +13,10 @@ import 'package:supervisors/controller/request_controller.dart';
 import 'package:supervisors/controller/supervisor_shift_controller.dart';
 import 'package:supervisors/services/api_service.dart';
 import 'package:supervisors/view/NotificationsView.dart';
+import 'package:supervisors/view/chat_view.dart';
 import 'package:supervisors/view/onboarding_view.dart';
 import 'controller/AuthController.dart';
+import 'controller/ChatController.dart';
 import 'controller/SettingsController.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'controller/notifications_controller.dart';
@@ -60,36 +62,21 @@ void main() async {
     await androidImplementation.requestNotificationsPermission();
   }
 
-  // /// الاستماع للإشعارات وقت التطبيق مفتوح (Foreground)
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   print("📩 Foreground message: ${message.notification?.title}");
-  //
-  //   if (message.notification != null) {
-  //     flutterLocalNotificationsPlugin.show(
-  //       message.hashCode,
-  //       message.notification!.title,
-  //       message.notification!.body,
-  //       const NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           'default_channel',
-  //           'Default Notifications',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //         ),
-  //       ),
-  //     );
-  //   }
-  // });
-  //
-  // /// وقت المستخدم يضغط ع الإشعار والتطبيق كان بالخلفية
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //   print("👉 User tapped notification: ${message.data}");
-  //   // هون لاحقاً منضيف كود التنقل (Navigation) حسب نوع الإشعار
-  // });
+  //اذا وصل اشعار والتطبيق بالخلفيه
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
 
+    print("DATA = ${message.data}");
 
-  /// الاستماع للإشعارات وقت التطبيق مفتوح (Foreground)
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("TITLE = ${message.notification?.title}");
+    print("BODY = ${message.notification?.body}");
+    if (message.data["type"] == "chat_message") {
+      if (Get.isRegistered<ChatController>()) {
+        await Get.find<ChatController>().onNewMessageNotification(
+          conversationId: int.parse(message.data["conversation_id"]),
+          senderId: int.parse(message.data["sender_id"]),
+        );
+      }
+    }
     print("📩 Foreground message: ${message.notification?.title}");
 
     if (message.notification != null) {
@@ -108,22 +95,39 @@ void main() async {
       );
     }
 
-    /// زيادة العداد محلياً فوراً
     if (Get.isRegistered<NotificationsController>()) {
       Get.find<NotificationsController>().incrementUnreadLocally();
     }
+
   });
 
-  /// وقت المستخدم يضغط ع الإشعار (سواء بالخلفية أو مقفول تماماً)
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print("👉 User tapped notification: ${message.data}");
-    Get.to(() => NotificationsView());
+
+    final data = message.data;
+
+    if (data["click_action"] == "OPEN_CHAT") {
+
+      Get.to(
+            () => ChatView(
+          conversationId: int.parse(data["conversation_id"]),
+          receiverId: int.parse(data["sender_id"]),
+          receiverName: message.notification?.title ?? "Chat",
+        ),
+      );
+
+    } else {
+
+      Get.to(() => NotificationsView());
+
+    }
+
   });
 
   /// AUTH
   Get.put(AuthController());
   Get.put(NotificationsController());
   await GetStorage.init();
+  Get.put(ChatController(), permanent: true);
 
   Get.put(SettingsController());
   Get.put(ApiService());
@@ -139,10 +143,27 @@ void main() async {
 
   /// إذا التطبيق فتح بسبب ضغطة على إشعار (كان مقفول تماماً)
   FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-    if (message != null) {
-      print("🚀 App opened from terminated state via notification");
+
+    if (message == null) return;
+
+    final data = message.data;
+
+    if (data["click_action"] == "OPEN_CHAT") {
+
+      Get.to(
+            () => ChatView(
+          conversationId: int.parse(data["conversation_id"]),
+          receiverId: int.parse(data["sender_id"]),
+          receiverName: message.notification?.title ?? "Chat",
+        ),
+      );
+
+    } else {
+
       Get.to(() => NotificationsView());
+
     }
+
   });
 }
 

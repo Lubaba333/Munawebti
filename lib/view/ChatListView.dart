@@ -74,9 +74,9 @@ class ChatListView extends StatelessWidget {
                 children: [
 
                   Text(
-                    conversation.lastMessageAt.isEmpty
-                        ? ""
-                        : conversation.lastMessageAt.substring(11, 16),
+                      conversation.lastMessageAt == null
+                          ? ""
+                          : "${conversation.lastMessageAt!.hour.toString().padLeft(2, '0')}:${conversation.lastMessageAt!.minute.toString().padLeft(2, '0')}"
                   ),
 
                   const SizedBox(height: 6),
@@ -109,6 +109,82 @@ class ChatListView extends StatelessWidget {
           },
         );
       }),
+
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.chat),
+        onPressed: () async {
+
+          await controller.getSupervisors();
+
+          Get.bottomSheet(
+
+            Obx(() {
+
+              if(controller.isSupervisorsLoading.value){
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return Container(
+                height: 500,
+                color: Colors.white,
+
+                child: ListView.builder(
+
+                  itemCount: controller.supervisors.length,
+
+                  itemBuilder: (_,index){
+
+                    final supervisor =
+                    controller.supervisors[index];
+
+                    return ListTile(
+
+                      leading: const CircleAvatar(
+                        child: Icon(Icons.person),
+                      ),
+
+                      title: Text(
+                        supervisor.fullName,
+                      ),
+
+                      subtitle: Text(
+                        supervisor.email,
+                      ),
+
+                      onTap: (){
+
+                        Get.back();
+
+                        Get.to(
+                              ()=>ChatView(
+
+                            conversationId: 0,
+
+                            receiverId: supervisor.id,
+
+                            receiverName:
+                            supervisor.fullName,
+
+                          ),
+                        );
+
+                      },
+
+                    );
+
+                  },
+                ),
+              );
+            }),
+          );
+
+        },
+      ),
     );
   }
+
+
+
 }

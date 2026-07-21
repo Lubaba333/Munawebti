@@ -7,6 +7,8 @@ import '../models/supervisor_model.dart';
 import '../services/api_service.dart';
 import 'package:flutter/material.dart';
 
+import 'notifications_controller.dart';
+
 class ChatController extends GetxController {
   final ApiService _api = ApiService();
 
@@ -35,6 +37,11 @@ class ChatController extends GetxController {
 
   final RxBool isSending = false.obs;
 
+  final RxList<SupervisorModel> supervisors =
+      <SupervisorModel>[].obs;
+
+  final RxBool isSupervisorsLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -55,39 +62,34 @@ class ChatController extends GetxController {
     });
 
   }
-  //
-  // Future<void> getSupervisors() async {
-  //   try {
-  //     isLoading.value = true;
-  //
-  //     final response = await _api.get(
-  //       "/supervisor/supervisors",
-  //       queryParameters: {
-  //         "page": 1,
-  //         "per_page": 15,
-  //       },
-  //     );
-  //
-  //     if (response["status_code"] == 200) {
-  //       final List data = response["data"]["data"];
-  //
-  //       supervisors.assignAll(
-  //         data
-  //             .map(
-  //               (e) => SupervisorModel.fromJson(e),
-  //         )
-  //             .toList(),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Error",
-  //       e.toString(),
-  //     );
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
+
+
+  Future<void> getSupervisors() async {
+    try {
+      isSupervisorsLoading.value = true;
+
+      final response = await _api.get(
+        "/supervisor/supervisors",
+        queryParameters: {
+          "page": 1,
+          "per_page": 100,
+        },
+      );
+
+      final List list = response["data"]["data"];
+
+      supervisors.assignAll(
+        list.map((e) => SupervisorModel.fromJson(e)).toList(),
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+      );
+    } finally {
+      isSupervisorsLoading.value = false;
+    }
+  }
 
   void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -146,6 +148,7 @@ class ChatController extends GetxController {
             .map((e) => MessageModel.fromJson(e))
             .toList(),
       );
+      await markConversationAsRead();
 
       scrollToBottom();
     } catch (e) {
@@ -162,7 +165,6 @@ class ChatController extends GetxController {
   Future<void> sendMessage({
     required int receiverId,
   }) async {
-
     if (messageController.text.trim().isEmpty) return;
 
     isSending.value = true;
@@ -172,61 +174,51 @@ class ChatController extends GetxController {
     messageController.clear();
 
     try {
+      Map<String, dynamic> response;
 
-      Map<String,dynamic> response;
-
-      if(conversationId.value==0){
-
+      if (conversationId.value == 0) {
         response = await _api.post(
           "/chat/messages",
           {
-            "receiver_type":"supervisor",
-            "receiver_id":receiverId,
-            "body":body,
+            "receiver_type": "supervisor",
+            "receiver_id": receiverId,
+            "body": body,
           },
         );
-
-      }else{
-
+      } else {
         response = await _api.post(
           "/chat/messages",
           {
-            "conversation_id":conversationId.value,
-            "body":body,
+            "conversation_id": conversationId.value,
+            "body": body,
           },
         );
-
       }
 
-      final message =
-      MessageModel.fromJson(response["data"]);
+      final message = MessageModel.fromJson(response["data"]);
 
-      if(conversationId.value==0){
+      /// نجبرها تكون رسالتي مباشرة
+      message.isMine = true;
 
-        conversationId.value =
-            message.conversationId;
-
+      /// إذا أول رسالة بالمحادثة
+      if (conversationId.value == 0) {
+        conversationId.value = message.conversationId;
       }
 
+      /// إضافة الرسالة مرة واحدة فقط
       messages.add(message);
 
       scrollToBottom();
 
-      getConversations();
-
-    } catch(e){
-
+      await getConversations();
+    } catch (e) {
       Get.snackbar(
         "Error",
         e.toString(),
       );
-
-    } finally{
-
-      isSending.value=false;
-
+    } finally {
+      isSending.value = false;
     }
-
   }
 
 
@@ -325,6 +317,65 @@ class ChatController extends GetxController {
       );
     } finally {
       isConversationLoading.value = false;
+    }
+  }
+
+  Future<void> getMessagesByConversation() async {
+
+    final response = await _api.get(
+      "/chat/conversations/${conversationId.value}/messages",
+      queryParameters: {
+        "limit":20,
+      },
+    );
+
+    final data = response["data"];
+
+    messages.assignAll(
+      (data["messages"] as List)
+          .map((e)=>MessageModel.fromJson(e))
+          .toList(),
+    );
+
+    hasMore.value =
+        data["meta"]["has_more"] ?? false;
+
+    nextCursor.value =
+        data["meta"]["next_cursor"]?.toString() ?? "";
+  }
+
+  Future<void> onNewMessageNotification({
+    required int conversationId,
+    required int senderId,
+  }) async {
+    await getConversations();
+
+    if (this.conversationId.value == conversationId) {
+      await getMessages(
+        receiverId: senderId,
+      );
+    }
+  }
+
+  Future<void> markConversationAsRead() async {
+    if (conversationId.value == 0) return;
+
+    try {
+      await _api.post(
+        "/chat/conversations/${conversationId.value}/read",
+        {},
+      );
+
+      await getConversations();
+      if (Get.isRegistered<NotificationsController>()) {
+        await Get.find<NotificationsController>()
+            .fetchNotifications(refresh: true);
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+      );
     }
   }
 }

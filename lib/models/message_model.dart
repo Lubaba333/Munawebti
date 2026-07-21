@@ -2,7 +2,9 @@ class MessageModel {
   final int id;
   final int conversationId;
   final String body;
-  final bool isMine;
+
+  bool isMine;
+
   final String? readAt;
   final DateTime createdAt;
 
@@ -31,8 +33,7 @@ class MessageModel {
       body: json["body"] ?? "",
       isMine: json["is_mine"] ?? false,
       readAt: json["read_at"],
-      createdAt: DateTime.parse(json["created_at"]),
-
+      createdAt: DateTime.parse(json["created_at"]).toLocal(),
       senderId: json["sender"]["id"],
       senderType: json["sender"]["type"],
       senderName: json["sender"]["name"] ?? "",
