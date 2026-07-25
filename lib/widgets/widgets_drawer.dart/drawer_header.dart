@@ -10,6 +10,7 @@ class DrawerHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
+    
 
     return Container(
       width: double.infinity,

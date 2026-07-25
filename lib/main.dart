@@ -3,9 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:studants/controllers/auth_controller.dart';
-import 'package:studants/controllers/notification_controller.dart';
+import 'package:studants/controllers/notification_controller%20.dart';
+
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/controllers/reset_password_controller.dart';
 import 'package:studants/firebase_options.dart';
@@ -14,6 +16,7 @@ import 'package:studants/translations/app_translations.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/utlis/theme_helper.dart';
 import 'package:studants/views/welcome_view.dart';
+import 'package:studants/views/main_navigation_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +35,12 @@ void main() async {
   await LocalNotificationService.init();
 
   Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
-  Get.put(ProfileController());
+  Get.lazyPut<ProfileController>(() => ProfileController(), fenix: true);
   Get.put(ThemeController());
-Get.put(NotificationController());
+  Get.lazyPut<NotificationController>(
+    () => NotificationController(),
+    fenix: true,
+  );
   Get.lazyPut<ResetPasswordController>(
     () => ResetPasswordController(),
     fenix: true,
@@ -42,7 +48,12 @@ Get.put(NotificationController());
 
   await initFCM();
 
-  runApp(const MyApp());
+  // 🔥 نتحقق هل فيه توكن محفوظ عالجهاز
+  final prefs = await SharedPreferences.getInstance();
+  final savedToken = prefs.getString('auth_token');
+  final bool isLoggedIn = savedToken != null && savedToken.isNotEmpty;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 Future<void> initFCM() async {
@@ -56,11 +67,14 @@ Future<void> initFCM() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('📩 Message arrived');
     LocalNotificationService.showBasicNotification(message);
+    Get.find<NotificationController>().getNotifications();
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +125,9 @@ class MyApp extends StatelessWidget {
         ),
 
         themeMode: themeController.themeMode,
-        home: const WelcomeView(),
+
+        // 🔥 هون القرار: لو فيه توكن روحي على الشاشة الرئيسية، غير هيك روحي على welcome
+        home: isLoggedIn ? const MainNavigationView() : const WelcomeView(),
       );
     });
   }

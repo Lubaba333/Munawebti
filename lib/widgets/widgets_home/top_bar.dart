@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/controllers/notification_controller%20.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/controllers/home_controller.dart';
@@ -12,8 +13,8 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomeController>();
-    final isDark = Get.isDarkMode;
+  final notificationController = Get.find<NotificationController>();
+final isDark = Get.isDarkMode;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,70 +60,85 @@ class TopBar extends StatelessWidget {
           ),
         ),
         Stack(
-          children: [
-            GestureDetector(
-              onTap: () => Get.to(() => NotificationsView()),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Theme.of(context).cardColor.withOpacity(.92)
-                      : Colors.white.withOpacity(.70),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.mauve.withOpacity(.18)
-                        : Colors.white.withOpacity(.35),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDark
-                          ? Colors.black.withOpacity(.22)
-                          : Colors.black.withOpacity(.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.notifications,
-                  color: isDark ? AppColors.mauve : AppColors.darkPurple,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 6,
-              top: 6,
-              child: Obx(() {
-                if (controller.notificationCount.value == 0) {
-                  return const SizedBox();
-                }
+  children: [
+    GestureDetector(
+onTap: () {
+  final controller = Get.find<NotificationController>();
 
-                return Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 18,
-                    minHeight: 18,
-                  ),
-                  child: Center(
-                    child: Text(
-                      controller.notificationCount.value.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
-              }),
+  controller.markAllAsRead();
+
+  Get.to(() => NotificationsView());
+},
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark
+              ? Theme.of(context).cardColor.withOpacity(.92)
+              : Colors.white.withOpacity(.70),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark
+                ? AppColors.mauve.withOpacity(.18)
+                : Colors.white.withOpacity(.35),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withOpacity(.22)
+                  : Colors.black.withOpacity(.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
+        child: Icon(
+          Icons.notifications,
+          color: isDark ? AppColors.mauve : AppColors.darkPurple,
+        ),
+      ),
+    ),
+
+    Positioned(
+      right: 6,
+      top: 6,
+      child: Obx(() {
+
+ final count =
+     notificationController.unreadNotificationsCount.value;
+
+
+ if(count == 0){
+   return const SizedBox();
+ }
+
+
+ return Container(
+   padding: const EdgeInsets.all(4),
+   constraints: const BoxConstraints(
+     minWidth: 18,
+     minHeight: 18,
+   ),
+   decoration: const BoxDecoration(
+     color: Colors.red,
+     shape: BoxShape.circle,
+   ),
+   child: Center(
+     child: Text(
+       count.toString(),
+       style: const TextStyle(
+         color: Colors.white,
+         fontSize: 10,
+         fontWeight: FontWeight.bold,
+       ),
+     ),
+   ),
+ );
+
+
+})
+    ),
+  ],
+),
       ],
     );
   }

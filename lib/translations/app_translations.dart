@@ -420,6 +420,7 @@ class AppTranslations extends Translations {
 'view_attendance_record_details': 'عرض سجل الحضور بالتفصيل',
 // ar
 'dormitory_attendance': 'حضور السكن',
+'create_new_request': 'إنشاء طلب جديد',
 'dormitory_attendance_record': 'سجل حضور السكن',
 'lecture_attendance_record': 'سجل حضور المحاضرات',
 'dormitory_attendance_subtitle': 'سجل دخولك وخروجك من السكن',

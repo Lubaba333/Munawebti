@@ -251,16 +251,15 @@ class IncomingRequestsTab extends StatelessWidget {
           color: Get.isDarkMode ? color.withOpacity(.20) : Colors.transparent,
         ),
       ),
-      child: Text(
-        text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: color,
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child:Text(
+  text,
+  textAlign: TextAlign.center,
+  style: TextStyle(
+    color: color,
+    fontSize: 11,
+    fontWeight: FontWeight.bold,
+  ),
+)
     );
   }
 }

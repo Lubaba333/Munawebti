@@ -229,8 +229,9 @@ await Get.find<ProfileController>().getProfile();
 
     if (token != null) {
       await _apiService.setToken(token);
-      await Get.find<ProfileController>().getProfile();
+ await Get.put(ProfileController()).getProfile();
     }
+    
 
     Get.snackbar(
       "success".tr,

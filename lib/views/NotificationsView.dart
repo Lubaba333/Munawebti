@@ -1,17 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:studants/controllers/notification_controller.dart';
+import 'package:studants/controllers/notification_controller%20.dart';
+
 import 'package:studants/utlis/app_colors.dart';
 
-class NotificationsView extends StatelessWidget {
-  NotificationsView({super.key});
+class NotificationsView extends StatefulWidget {
+  const NotificationsView({super.key});
 
+  @override
+  State<NotificationsView> createState() => _NotificationsViewState();
+}
+
+class _NotificationsViewState extends State<NotificationsView> {
   final NotificationController controller =
       Get.find<NotificationController>();
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.getNotifications();
+    });
+  }
+  @override
+void dispose(){
+
+  controller.getNotifications();
+
+  super.dispose();
+
+}
+
+  @override
   Widget build(BuildContext context) {
-    controller.getNotifications();
+ 
 
     final isDark = Get.isDarkMode;
 

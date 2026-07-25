@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studants/controllers/notification_controller%20.dart';
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/views/dormitory_attendance_view.dart';
 import 'package:studants/views/housing_complaints_view.dart';
@@ -20,7 +21,8 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
+class _HomeViewState extends State<HomeView>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final HomeController controller = Get.put(HomeController());
   final profileController = Get.put(ProfileController());
 
@@ -33,7 +35,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+WidgetsBinding.instance.addObserver(this);
     animController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -43,7 +45,17 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 1900),
     );
+@override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
 
+    // 🔔 لما التطبيق يرجع يفتح من الخلفية، نجدد الإشعارات
+    if (state == AppLifecycleState.resumed) {
+      if (Get.isRegistered<NotificationController>()) {
+        Get.find<NotificationController>().getNotifications();
+      }
+    }
+  }
     _generateRandomOffsets(20);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,6 +81,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     animController.dispose();
     entryController.dispose();
     super.dispose();
