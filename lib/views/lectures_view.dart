@@ -75,17 +75,30 @@ class LecturesView extends StatelessWidget {
                     }
 
                     return RefreshIndicator(
-                      color: AppColors.mauve,
-                      onRefresh: controller.refreshLectures,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(14, 22, 14, 24),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: _weeklyTable(context),
-                        ),
-                      ),
-                    );
+  color: AppColors.mauve,
+  onRefresh: () async {
+    await controller.refreshLectures();
+  },
+  child: LayoutBuilder(
+    builder: (context, constraints) {
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: constraints.maxHeight,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 22, 14, 24),
+              child: _weeklyTable(context),
+            ),
+          ),
+        ),
+      );
+    },
+  ),
+);
                   }),
                 ),
               ),

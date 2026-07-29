@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:studants/controllers/auth_controller.dart';
+import 'package:studants/controllers/lecture_attendance_controller.dart';
 import 'package:studants/controllers/notification_controller%20.dart';
 
 import 'package:studants/controllers/profile_controller.dart';
@@ -41,6 +42,7 @@ void main() async {
     () => NotificationController(),
     fenix: true,
   );
+  Get.put(LectureAttendanceController());
   Get.lazyPut<ResetPasswordController>(
     () => ResetPasswordController(),
     fenix: true,
