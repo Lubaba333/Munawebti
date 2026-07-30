@@ -37,17 +37,112 @@ class StudentsView extends GetView<StudentsController> {
               const SizedBox(height: 16),
 
               /// Filters
-              SizedBox(
-                height: 40,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _chip(context, 'all'.tr, 'all'),
-                    _chip(context, 'resident'.tr, 'resident'),
-                    _chip(context, 'non_resident'.tr, 'non_resident'),
-                  ],
-                ),
+              // SizedBox(
+              //   height: 40,
+              //   child: ListView(
+              //     scrollDirection: Axis.horizontal,
+              //     children: [
+              //       _chip(context, 'all'.tr, 'all'),
+              //       _chip(context, 'resident'.tr, 'resident'),
+              //       _chip(context, 'non_resident'.tr, 'non_resident'),
+              //     ],
+              //   ),
+              // ),
+              //
+              //
+              //
+              // const SizedBox(height: 10),
+              //
+              // SizedBox(
+              //   height: 40,
+              //   child: ListView(
+              //     scrollDirection: Axis.horizontal,
+              //     children: [
+              //       _yearChip(context, 'all'.tr, 'all'),
+              //       _yearChip(context, 'first_year'.tr, '1'),
+              //       _yearChip(context, 'second_year'.tr, '2'),
+              //       _yearChip(context, 'third_year'.tr, '3'),
+              //       _yearChip(context, 'fourth_year'.tr, '4'),
+              //     ],
+              //   ),
+              // ),
+
+              Row(
+                children: [
+
+                  Expanded(
+                    child: Obx(() => DropdownButtonFormField<String>(
+                      value: controller.selectedFilter.value,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        isDense: true,
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: "all",
+                          child: Text("all".tr),
+                        ),
+                        DropdownMenuItem(
+                          value: "resident",
+                          child: Text("resident".tr),
+                        ),
+                        DropdownMenuItem(
+                          value: "non_resident",
+                          child: Text("non_resident".tr),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        controller.changeFilter(value!);
+                      },
+                    )),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  Expanded(
+                    child: Obx(() => DropdownButtonFormField<String>(
+                      value: controller.selectedYear.value,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        isDense: true,
+                      ),
+                      items: [
+                        DropdownMenuItem(value: "all", child: Text("All_Years".tr)),
+                        DropdownMenuItem(value: "1", child: Text('first_year'.tr)),
+                        DropdownMenuItem(value: "2", child: Text('second_year'.tr)),
+                        DropdownMenuItem(value: "3", child: Text('third_year'.tr)),
+                        DropdownMenuItem(value: "4", child: Text('fourth_year'.tr)),
+                      ],
+                      onChanged: controller.selectedFilter.value == "all"
+                          ? null
+                          : (value) {
+                        controller.changeYear(value!);
+                      },
+                    )),
+                  ),
+
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      controller.changeFilter("all");
+                      controller.changeYear("all");
+                    },
+                  ),
+                ],
               ),
+
 
               const SizedBox(height: 18),
 
@@ -116,7 +211,30 @@ class StudentsView extends GetView<StudentsController> {
       }),
     );
   }
+
+
+  Widget _yearChip(BuildContext context, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Obx(() {
+        final selected = controller.selectedYear.value == value;
+
+        return ChoiceChip(
+          label: Text(title),
+          selected: selected,
+          selectedColor: AppColors.primary,
+          labelStyle: TextStyle(
+            color: selected
+                ? Colors.white
+                : Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+          onSelected: (_) => controller.changeYear(value),
+        );
+      }),
+    );
+  }
 }
+
 
 
 class StudentCard extends StatefulWidget {

@@ -6,7 +6,8 @@ import 'package:supervisors/view/emergency_details_view.dart';
 
 class EmergencyView extends StatefulWidget {
 
-  const EmergencyView({super.key});
+  // final controller = Get.put(EmergencyController());
+   EmergencyView({super.key});
 
 
   @override

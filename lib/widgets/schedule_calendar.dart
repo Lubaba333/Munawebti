@@ -5,6 +5,8 @@ import 'package:supervisors/controller/supervisor_shift_controller.dart';
 import 'package:supervisors/models/supervisor_shift_model.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../view/RequestsView.dart';
+
 
 class ScheduleCalendar extends StatelessWidget {
   const ScheduleCalendar({super.key});
@@ -460,10 +462,10 @@ class ShiftBottomSheet extends StatelessWidget {
                             child: ElevatedButton.icon(
                               onPressed: () {
 
-                                Get.back();
-
-                                print(
-                                    "Shift ${shift.id}");
+                                Get.to(
+                                      () => RequestsView(),
+                                  arguments: shift,
+                                );
 
                               },
                               icon: const Icon(
@@ -471,7 +473,7 @@ class ShiftBottomSheet extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               label:  Text(
-                                "take_attendance".tr,
+                                "creat_request".tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight:

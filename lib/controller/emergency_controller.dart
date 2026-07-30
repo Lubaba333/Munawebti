@@ -7,6 +7,7 @@ import 'package:supervisors/services/api_service.dart';
 
 class EmergencyController extends GetxController {
 
+  // final EmergencyController emergencyController = Get.find<EmergencyController>();
 
   final ApiService api = ApiService();
 

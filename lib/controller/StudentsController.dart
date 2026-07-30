@@ -11,6 +11,7 @@ class StudentsController extends GetxController {
 
   RxBool isLoading = true.obs;
   RxString selectedFilter = 'all'.obs;
+  RxString selectedYear = 'all'.obs;
 
   RxList<StudentModel> students = <StudentModel>[].obs;
   RxList<StudentModel> filteredStudents = <StudentModel>[].obs;
@@ -50,7 +51,7 @@ class StudentsController extends GetxController {
 
       students.addAll(newStudents);
 
-      filteredStudents.assignAll(students);
+      applyFilters();
 
       currentPage = data['current_page'] + 1;
       hasMore = data['next_page_url'] != null;
@@ -66,40 +67,47 @@ class StudentsController extends GetxController {
 
   void changeFilter(String filter) {
     selectedFilter.value = filter;
+    applyFilters();
+  }
 
-    if (filter == 'all') {
-      filteredStudents.assignAll(students);
-    }
-    else if (filter == 'resident') {
-      filteredStudents.assignAll(
-        students.where((s) => s.isResident),
-      );
-    }
-    else if (filter == 'non_resident') {
-      filteredStudents.assignAll(
-        students.where((s) => !s.isResident),
-      );
-    }
+  void changeYear(String year) {
+    selectedYear.value = year;
+    applyFilters();
   }
 
 
-
-
   void searchStudents(String value) {
-    final query = value.toLowerCase();
+    applyFilters();
+  }
 
-    if (query.isEmpty) {
-      filteredStudents.assignAll(students);
-      return;
+  void applyFilters() {
+    List<StudentModel> temp = List<StudentModel>.from(students);
+
+    // البحث
+    final query = searchController.text.trim().toLowerCase();
+
+    if (query.isNotEmpty) {
+      temp = temp.where((student) {
+        return student.fullName.toLowerCase().contains(query) ||
+            student.studentIdentifier.toLowerCase().contains(query) ||
+            student.email.toLowerCase().contains(query);
+      }).toList();
     }
 
-    filteredStudents.assignAll(
-      students.where(
-            (student) =>
-        student.fullName.toLowerCase().contains(query) ||
-            student.studentIdentifier.contains(query) ||
-            student.email.toLowerCase().contains(query),
-      ),
-    );
+    // فلترة الإقامة
+    if (selectedFilter.value == 'resident') {
+      temp = temp.where((s) => s.isResident).toList();
+    } else if (selectedFilter.value == 'non_resident') {
+      temp = temp.where((s) => !s.isResident).toList();
+    }
+
+    // فلترة السنة
+    if (selectedYear.value != 'all') {
+      temp = temp.where((s) {
+        return s.year.toString() == selectedYear.value;
+      }).toList();
+    }
+
+    filteredStudents.assignAll(temp);
   }
 }

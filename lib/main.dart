@@ -19,6 +19,7 @@ import 'controller/AuthController.dart';
 import 'controller/ChatController.dart';
 import 'controller/SettingsController.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'controller/attendance_controller.dart';
 import 'controller/notifications_controller.dart';
 import 'firebase_options.dart';
 
@@ -52,7 +53,31 @@ void main() async {
   AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initSettings =
   InitializationSettings(android: androidSettings);
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
+  await flutterLocalNotificationsPlugin.initialize(
+    initSettings,
+    onDidReceiveNotificationResponse: (NotificationResponse response) {
+
+      if (response.payload == null) return;
+
+      final data = response.payload!.split("|");
+
+      if (data.first == "chat") {
+
+        Get.to(
+              () => ChatView(
+            conversationId: int.parse(data[1]),
+            receiverId: int.parse(data[2]),
+            receiverName: data[3],
+          ),
+        );
+
+      } else {
+
+        Get.to(() => NotificationsView());
+
+      }
+    },
+  );
   
   /// طلب صلاحية الإشعارات صراحة (Android 13+)
   final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
@@ -92,6 +117,9 @@ void main() async {
             priority: Priority.high,
           ),
         ),
+        payload: message.data["type"] == "chat_message"
+            ? "chat|${message.data["conversation_id"]}|${message.data["sender_id"]}|${message.notification?.title ?? "Chat"}"
+            : "notification",
       );
     }
 
@@ -102,7 +130,7 @@ void main() async {
   });
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
+    print("🔥 onMessageOpenedApp");
     final data = message.data;
 
     if (data["click_action"] == "OPEN_CHAT") {
@@ -115,7 +143,7 @@ void main() async {
         ),
       );
 
-    } else {
+    }  else {
 
       Get.to(() => NotificationsView());
 
@@ -132,10 +160,12 @@ void main() async {
   Get.put(SettingsController());
   Get.put(ApiService());
   Get.put(StudentsController());
-  Get.put(EmergencyController());
-  Get.put(RequestController());
+ Get.put(EmergencyController());
+ Get.put(RequestController());
   Get.put(SupervisorShiftsController());
   Get.put(ProfileController());
+
+  Get.put(AttendanceController());
 
   runApp(
     MyApp(),
@@ -143,7 +173,7 @@ void main() async {
 
   /// إذا التطبيق فتح بسبب ضغطة على إشعار (كان مقفول تماماً)
   FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-
+    print("🔥 getInitialMessage");
     if (message == null) return;
 
     final data = message.data;

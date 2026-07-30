@@ -5,6 +5,8 @@ import 'package:supervisors/services/api_service.dart';
 
 
 class RequestController extends GetxController {
+
+  // final RequestController requestController = Get.find<RequestController>();
   final ApiService api = ApiService();
 
   var requests = <RequestModel>[].obs;

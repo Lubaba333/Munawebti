@@ -7,6 +7,8 @@ import 'package:supervisors/view/complaints_view.dart';
 
 import '../controller/HomeController.dart';
 import '../const/app_colors.dart';
+import 'upcoming_shift_view.dart';
+
 
 
 class HomeView extends StatelessWidget {
@@ -197,6 +199,14 @@ class HomeView extends StatelessWidget {
                       icon:Icons.check_circle,
 
                       title:"attendance".tr,
+
+                      onTap:(){
+
+                        Get.to(
+                                ()=>UpcomingShiftView()
+                        );
+
+                      },
 
                     ),
 
