@@ -165,7 +165,7 @@ void main() async {
   Get.put(SupervisorShiftsController());
   Get.put(ProfileController());
 
-  Get.put(AttendanceController());
+ // Get.put(AttendanceController());
 
   runApp(
     MyApp(),

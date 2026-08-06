@@ -192,22 +192,103 @@ class HomeView extends StatelessWidget {
 
 
 
+                    // _actionCard(
+                    //
+                    //   context: context,
+                    //
+                    //   icon:Icons.check_circle,
+                    //
+                    //   title:"attendance".tr,
+                    //
+                    //   onTap:(){
+                    //
+                    //     Get.to(
+                    //             ()=>UpcomingShiftView()
+                    //     );
+                    //
+                    //   },
+                    //
+                    // ),
+
+
+
                     _actionCard(
-
                       context: context,
+                      icon: Icons.check_circle,
+                      title: "attendance".tr,
+                      onTap: () {
 
-                      icon:Icons.check_circle,
+                        Get.bottomSheet(
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration:  BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(25),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
 
-                      title:"attendance".tr,
+                                const Text(
+                                  "اختر نوع الحضور",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
 
-                      onTap:(){
+                                const SizedBox(height: 20),
 
-                        Get.to(
-                                ()=>UpcomingShiftView()
+
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.menu_book,
+                                  ),
+                                  title: const Text(
+                                    "حضور المحاضرات",
+                                  ),
+                                  onTap: () {
+
+                                    Get.back();
+
+                                    Get.to(
+                                          () => UpcomingShiftView(
+                                        shiftType: "lecture",
+                                      ),
+                                    );
+
+                                  },
+                                ),
+
+
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.home_work,
+                                  ),
+                                  title: const Text(
+                                    "حضور السكن",
+                                  ),
+                                  onTap: () {
+
+                                    Get.back();
+
+                                    Get.to(
+                                          () => UpcomingShiftView(
+                                        shiftType: "housing",
+                                      ),
+                                    );
+
+                                  },
+                                ),
+
+                              ],
+                            ),
+                          ),
                         );
 
                       },
-
                     ),
 
 

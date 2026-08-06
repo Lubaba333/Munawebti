@@ -36,43 +36,13 @@ class StudentsView extends GetView<StudentsController> {
 
               const SizedBox(height: 16),
 
-              /// Filters
-              // SizedBox(
-              //   height: 40,
-              //   child: ListView(
-              //     scrollDirection: Axis.horizontal,
-              //     children: [
-              //       _chip(context, 'all'.tr, 'all'),
-              //       _chip(context, 'resident'.tr, 'resident'),
-              //       _chip(context, 'non_resident'.tr, 'non_resident'),
-              //     ],
-              //   ),
-              // ),
-              //
-              //
-              //
-              // const SizedBox(height: 10),
-              //
-              // SizedBox(
-              //   height: 40,
-              //   child: ListView(
-              //     scrollDirection: Axis.horizontal,
-              //     children: [
-              //       _yearChip(context, 'all'.tr, 'all'),
-              //       _yearChip(context, 'first_year'.tr, '1'),
-              //       _yearChip(context, 'second_year'.tr, '2'),
-              //       _yearChip(context, 'third_year'.tr, '3'),
-              //       _yearChip(context, 'fourth_year'.tr, '4'),
-              //     ],
-              //   ),
-              // ),
-
               Row(
                 children: [
 
                   Expanded(
                     child: Obx(() => DropdownButtonFormField<String>(
                       value: controller.selectedFilter.value,
+                      isExpanded: true,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -86,15 +56,18 @@ class StudentsView extends GetView<StudentsController> {
                       items: [
                         DropdownMenuItem(
                           value: "all",
-                          child: Text("all".tr),
+                         // child: Text("all".tr),
+                          child: Text("all".tr, overflow: TextOverflow.ellipsis),
                         ),
                         DropdownMenuItem(
                           value: "resident",
-                          child: Text("resident".tr),
+                         // child: Text("resident".tr),
+                          child: Text("resident".tr, overflow: TextOverflow.ellipsis),
                         ),
                         DropdownMenuItem(
                           value: "non_resident",
-                          child: Text("non_resident".tr),
+                         // child: Text("non_resident".tr),
+                          child: Text("non_resident".tr, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                       onChanged: (value) {
@@ -108,6 +81,7 @@ class StudentsView extends GetView<StudentsController> {
                   Expanded(
                     child: Obx(() => DropdownButtonFormField<String>(
                       value: controller.selectedYear.value,
+                      isExpanded: true,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -119,11 +93,11 @@ class StudentsView extends GetView<StudentsController> {
                         isDense: true,
                       ),
                       items: [
-                        DropdownMenuItem(value: "all", child: Text("All_Years".tr)),
-                        DropdownMenuItem(value: "1", child: Text('first_year'.tr)),
-                        DropdownMenuItem(value: "2", child: Text('second_year'.tr)),
-                        DropdownMenuItem(value: "3", child: Text('third_year'.tr)),
-                        DropdownMenuItem(value: "4", child: Text('fourth_year'.tr)),
+                        DropdownMenuItem(value: "all", child: Text("All_Years".tr, overflow: TextOverflow.ellipsis)),
+                        DropdownMenuItem(value: "1", child: Text('first_year'.tr, overflow: TextOverflow.ellipsis)),
+                        DropdownMenuItem(value: "2", child: Text('second_year'.tr, overflow: TextOverflow.ellipsis)),
+                        DropdownMenuItem(value: "3", child: Text('third_year'.tr, overflow: TextOverflow.ellipsis)),
+                        DropdownMenuItem(value: "4", child: Text('fourth_year'.tr, overflow: TextOverflow.ellipsis)),
                       ],
                       onChanged: controller.selectedFilter.value == "all"
                           ? null
