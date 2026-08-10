@@ -1,528 +1,363 @@
-// import 'package:get/get.dart';
-//
-// import '../models/attendance_history_model.dart';
-// import '../services/api_service.dart';
-//
-//
-// class AttendanceHistoryController extends GetxController {
-//   final ApiService apiService;
-//
-//   AttendanceHistoryController(this.apiService);
-//
-//   final RxList<AttendanceHistoryModel> history =
-//       <AttendanceHistoryModel>[].obs;
-//
-//   final RxBool isLoading = false.obs;
-//
-//   final RxString errorMessage = ''.obs;
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     loadHistory();
-//   }
-//
-//   Future<void> loadHistory({
-//     int page = 1,
-//     int perPage = 15,
-//     String? shiftType,
-//     String? dateFrom,
-//     String? dateTo,
-//   }) async {
-//     try {
-//       isLoading.value = true;
-//       errorMessage.value = '';
-//
-//       final Map<String, dynamic> query = {
-//         "page": page,
-//         "per_page": perPage,
-//       };
-//
-//       if (shiftType != null) {
-//         query["shift_type"] = shiftType;
-//       }
-//
-//       if (dateFrom != null) {
-//         query["date_from"] = dateFrom;
-//       }
-//
-//       if (dateTo != null) {
-//         query["date_to"] = dateTo;
-//       }
-//
-//       final response = await apiService.get(
-//         "/supervisor/attendance/history",
-//         queryParameters: query,
-//       );
-//
-//       final List data = response["data"]["data"];
-//
-//       history.assignAll(
-//         data
-//             .map(
-//               (e) => AttendanceHistoryModel.fromJson(e),
-//         )
-//             .toList(),
-//       );
-//     } catch (e) {
-//       errorMessage.value =
-//           e.toString().replaceFirst("Exception: ", "");
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-//
-//   Future<void> refresh() async {
-//     await loadHistory();
-//   }
-// }
-
-
 import 'package:get/get.dart';
 
 import '../models/attendance_history_model.dart';
 import '../services/api_service.dart';
 
-
 class AttendanceHistoryController extends GetxController {
-
-
   final ApiService apiService;
 
-
-  // النوع القادم من صفحة الحضور
   final String? shiftType;
 
-
   AttendanceHistoryController(
-      this.apiService,
-      {
+      this.apiService, {
         this.shiftType,
-      }
-      );
+      });
 
+  // ============================================================
+  // STATE
+  // ============================================================
 
-
-  // القائمة
   final RxList<AttendanceHistoryModel> history =
       <AttendanceHistoryModel>[].obs;
 
+  final RxBool isLoading = false.obs;
 
+  final RxString errorMessage = ''.obs;
 
-  final RxBool isLoading =
-      false.obs;
+  // ============================================================
+  // PAGINATION
+  // ============================================================
 
+  final RxInt currentPage = 1.obs;
 
+  final RxInt lastPage = 1.obs;
 
-  final RxString errorMessage =
-      ''.obs;
+  final RxInt total = 0.obs;
 
+  final RxBool hasMore = true.obs;
 
+  // ============================================================
+  // FILTERS
+  // ============================================================
 
-  // Pagination
+  /// lecture / housing
+  final RxString selectedType = ''.obs;
 
-  final RxInt currentPage =
-      1.obs;
+  /// present / absent
+  final RxString selectedStatus = ''.obs;
 
+  /// yyyy-MM-dd
+  final RxString dateFrom = ''.obs;
 
-  final RxInt lastPage =
-      1.obs;
+  /// yyyy-MM-dd
+  final RxString dateTo = ''.obs;
 
-
-  final RxBool hasMore =
-      true.obs;
-
-
-
-  // الفلاتر
-
-  final RxString selectedType =
-      ''.obs;
-
-
-  final RxString dateFrom =
-      ''.obs;
-
-
-  final RxString dateTo =
-      ''.obs;
-
-
-
+  // ============================================================
+  // INIT
+  // ============================================================
 
   @override
   void onInit() {
-
     super.onInit();
 
-
-    // إذا جاء النوع من صفحة الشفت نضعه مباشرة
-    if(shiftType != null){
-
-      selectedType.value =
-      shiftType!;
-
+    if (shiftType != null && shiftType!.trim().isNotEmpty) {
+      selectedType.value = shiftType!.trim();
     }
 
-
     loadHistory();
-
   }
 
-
-
-
-
-
+  // ============================================================
+  // LOAD HISTORY
+  // ============================================================
 
   Future<void> loadHistory({
-
     int page = 1,
-
     bool refresh = false,
-
   }) async {
+    if (isLoading.value) {
+      return;
+    }
 
-
+    if (!refresh && !hasMore.value && page != 1) {
+      return;
+    }
 
     try {
-
-
-
-      if(refresh){
-
+      if (refresh) {
         history.clear();
 
         currentPage.value = 1;
-
+        lastPage.value = 1;
+        total.value = 0;
         hasMore.value = true;
 
+        page = 1;
       }
-
-
-
-
-      if(!hasMore.value){
-
-        return;
-
-      }
-
-
-
 
       isLoading.value = true;
-
-
-
       errorMessage.value = '';
 
+      // ========================================================
+      // QUERY
+      // ========================================================
 
-
-
-      final Map<String,dynamic> query = {
-
-
-        "page": page,
-
-
-        "per_page": 15,
-
-
+      final Map<String, dynamic> query = {
+        'page': page,
+        'per_page': 15,
       };
 
+      // Shift type
+      final String type = selectedType.value.trim();
 
-
-
-
-
-
-      // نوع الحضور
-      if(selectedType.value.isNotEmpty){
-
-
-        query["shift_type"] =
-            selectedType.value;
-
-
+      if (type.isNotEmpty) {
+        query['shift_type'] = type;
       }
 
+      // Status
+      final String status = selectedStatus.value.trim();
 
-
-
-
-
-
-      // التاريخ
-
-      if(dateFrom.value.isNotEmpty){
-
-
-        query["date_from"] =
-            dateFrom.value;
-
-
+      if (status.isNotEmpty) {
+        query['status'] = status;
       }
 
+      // Date from
+      final String from = dateFrom.value.trim();
 
-
-
-
-      if(dateTo.value.isNotEmpty){
-
-
-        query["date_to"] =
-            dateTo.value;
-
-
+      if (from.isNotEmpty) {
+        query['date_from'] = from;
       }
 
+      // Date to
+      final String to = dateTo.value.trim();
 
+      if (to.isNotEmpty) {
+        query['date_to'] = to;
+      }
 
+      // ========================================================
+      // API
+      // ========================================================
 
-
-
-
-
-      final response =
-      await apiService.get(
-
-
-        "/supervisor/attendance/history",
-
-
+      final response = await apiService.get(
+        '/supervisor/attendance/history',
         queryParameters: query,
-
-
       );
 
+      // ========================================================
+      // RESPONSE VALIDATION
+      // ========================================================
 
-
-
-
-
-
-      final data =
-      response["data"];
-
-
-
-
-
-
-      final List list =
-          data["data"] ?? [];
-
-
-
-
-
-
-      final newData =
-      list.map(
-
-              (e)=>
-
-              AttendanceHistoryModel
-                  .fromJson(e)
-
-      ).toList();
-
-
-
-
-
-
-
-      history.addAll(newData);
-
-
-
-
-
-
-
-      currentPage.value =
-          data["current_page"] ?? 1;
-
-
-
-
-
-      lastPage.value =
-          data["last_page"] ?? 1;
-
-
-
-
-
-
-      if(currentPage.value >=
-          lastPage.value){
-
-
-        hasMore.value=false;
-
-
+      if (response is! Map<String, dynamic>) {
+        throw Exception(
+          'Invalid server response',
+        );
       }
 
+      final dynamic responseData = response['data'];
 
+      if (responseData is! Map<String, dynamic>) {
+        throw Exception(
+          'Invalid attendance history data',
+        );
+      }
 
+      // ========================================================
+      // LIST
+      // ========================================================
 
-    }
+      final dynamic rawList = responseData['data'];
 
-    catch(e){
+      if (rawList is! List) {
+        throw Exception(
+          'Invalid attendance history list',
+        );
+      }
 
+      final List<AttendanceHistoryModel> newData = [];
 
-      errorMessage.value =
-          e.toString()
-              .replaceFirst(
-              "Exception: ",
-              ""
+      for (final item in rawList) {
+        if (item is Map<String, dynamic>) {
+          newData.add(
+            AttendanceHistoryModel.fromJson(item),
           );
+        }
+      }
 
+      // ========================================================
+      // UPDATE LIST
+      // ========================================================
 
+      if (page == 1) {
+        history.assignAll(newData);
+      } else {
+        history.addAll(newData);
+      }
+
+      // ========================================================
+      // PAGINATION
+      // ========================================================
+
+      currentPage.value = _toInt(
+        responseData['current_page'],
+        fallback: page,
+      );
+
+      lastPage.value = _toInt(
+        responseData['last_page'],
+        fallback: currentPage.value,
+      );
+
+      total.value = _toInt(
+        responseData['total'],
+        fallback: history.length,
+      );
+
+      hasMore.value =
+          currentPage.value < lastPage.value;
+    } catch (e) {
+      errorMessage.value = e
+          .toString()
+          .replaceFirst(
+        'Exception: ',
+        '',
+      );
+    } finally {
+      isLoading.value = false;
     }
-
-    finally{
-
-
-      isLoading.value=false;
-
-
-    }
-
-
   }
 
+  // ============================================================
+  // CHANGE TYPE
+  // ============================================================
 
+  Future<void> changeType(String type) async {
+    selectedType.value = type.trim();
 
-
-
-
-
-
-
-  // تغيير النوع من الواجهة
-
-  void changeType(String type){
-
-
-    selectedType.value =
-        type;
-
-
-
-    loadHistory(
-
-        refresh:true
-
+    await loadHistory(
+      refresh: true,
     );
-
-
   }
 
+  // ============================================================
+  // CHANGE STATUS
+  // ============================================================
 
+  Future<void> changeStatus(String status) async {
+    selectedStatus.value = status.trim();
 
+    await loadHistory(
+      refresh: true,
+    );
+  }
 
+  // ============================================================
+  // CHANGE DATE
+  // ============================================================
 
-
-
-
-
-  // تغيير التاريخ
-
-  void changeDate({
-
+  Future<void> changeDate({
     String? from,
-
     String? to,
+  }) async {
+    dateFrom.value = from?.trim() ?? '';
+    dateTo.value = to?.trim() ?? '';
 
-  }){
-
-
-
-    dateFrom.value =
-        from ?? '';
-
-
-
-    dateTo.value =
-        to ?? '';
-
-
-
-
-    loadHistory(
-
-        refresh:true
-
+    await loadHistory(
+      refresh: true,
     );
-
-
-
   }
 
+  // ============================================================
+  // CLEAR FILTERS
+  // ============================================================
 
+  Future<void> clearFilters() async {
+    selectedType.value = '';
+    selectedStatus.value = '';
+    dateFrom.value = '';
+    dateTo.value = '';
 
+    await loadHistory(
+      refresh: true,
+    );
+  }
 
-
-
-
-
+  // ============================================================
+  // NEXT PAGE
+  // ============================================================
 
   Future<void> loadNextPage() async {
-
-
-
-    if(isLoading.value ||
-        !hasMore.value){
-
-
+    if (isLoading.value) {
       return;
-
-
     }
 
-
-
-
-    await loadHistory(
-
-
-      page:
-      currentPage.value + 1,
-
-
-    );
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  Future<void> refresh() async {
-
-
+    if (!hasMore.value) {
+      return;
+    }
 
     await loadHistory(
-
-
-        refresh:true
-
+      page: currentPage.value + 1,
     );
-
-
-
   }
 
+  // ============================================================
+  // REFRESH
+  // ============================================================
 
+  Future<void> refreshHistory() async {
+    await loadHistory(
+      refresh: true,
+    );
+  }
 
+  // ============================================================
+  // HELPERS
+  // ============================================================
+
+  int _toInt(
+      dynamic value, {
+        int fallback = 0,
+      }) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    if (value is String) {
+      return int.tryParse(value) ?? fallback;
+    }
+
+    return fallback;
+  }
+
+  // ============================================================
+  // GETTERS
+  // ============================================================
+
+  int get presentCount {
+    return history
+        .where(
+          (item) => item.status == 'present',
+    )
+        .length;
+  }
+
+  int get absentCount {
+    return history
+        .where(
+          (item) => item.status == 'absent',
+    )
+        .length;
+  }
+
+  bool get hasData {
+    return history.isNotEmpty;
+  }
+
+  bool get hasError {
+    return errorMessage.value.isNotEmpty;
+  }
 }
