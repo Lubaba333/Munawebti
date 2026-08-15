@@ -4,10 +4,11 @@ import 'package:get/get.dart';
 import 'package:supervisors/view/EmergencyView.dart';
 import 'package:supervisors/view/RequestsView.dart';
 import 'package:supervisors/view/complaints_view.dart';
+import 'package:supervisors/view/upcoming_shift_view%20.dart';
 
 import '../controller/HomeController.dart';
 import '../const/app_colors.dart';
-import 'upcoming_shift_view.dart';
+
 
 
 
@@ -231,9 +232,9 @@ class HomeView extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
 
-                                const Text(
-                                  "اختر نوع الحضور",
-                                  style: TextStyle(
+                                Text(
+                                  "choose_attendance_type".tr,
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -246,8 +247,8 @@ class HomeView extends StatelessWidget {
                                   leading: const Icon(
                                     Icons.menu_book,
                                   ),
-                                  title: const Text(
-                                    "حضور المحاضرات",
+                                  title: Text(
+                                    "lecture_attendance".tr,
                                   ),
                                   onTap: () {
 
@@ -267,8 +268,8 @@ class HomeView extends StatelessWidget {
                                   leading: const Icon(
                                     Icons.home_work,
                                   ),
-                                  title: const Text(
-                                    "حضور السكن",
+                                  title: Text(
+                                    "housing_attendance".tr,
                                   ),
                                   onTap: () {
 

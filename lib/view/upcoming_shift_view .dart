@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supervisors/view/qr_scanner_view.dart';
+
 import '../const/app_colors.dart';
+
 import '../controller/attendance_controller.dart';
 import '../models/shift_check_ins_model.dart';
 import '../models/upcoming_shift_model.dart';
 import '../services/api_service.dart';
 import 'attendance_history_view.dart';
-import 'qr_scanner_view.dart';
 
 class _StatusColors {
   _StatusColors._();
@@ -36,7 +38,7 @@ class UpcomingShiftView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -178,8 +180,8 @@ class _Header extends StatelessWidget {
               children: [
                 Text(
                   isLecture
-                      ? "شيفت المحاضرات"
-                      : "شيفت السكن",
+                      ? "lecture_shift".tr
+                      : "housing_shift".tr,
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge
@@ -192,8 +194,8 @@ class _Header extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   isLecture
-                      ? "تسجيل حضور الطلاب للمحاضرات"
-                      : "تسجيل حضور الطلاب للسكن",
+                      ? "record_lecture_attendance".tr
+                      : "record_housing_attendance".tr,
                   style: TextStyle(
                     color: Colors.white
                         .withOpacity(.85),
@@ -296,7 +298,7 @@ class _ShiftCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).cardColor,
         borderRadius:
         BorderRadius.circular(20),
         border: Border.all(
@@ -315,10 +317,6 @@ class _ShiftCard extends StatelessWidget {
         crossAxisAlignment:
         CrossAxisAlignment.start,
         children: [
-
-          //-----------------------------------
-          // Header
-          //-----------------------------------
 
           Row(
             children: [
@@ -351,15 +349,17 @@ class _ShiftCard extends StatelessWidget {
 
                     Text(
                       isLecture
-                          ? "محاضرة"
-                          : "سكن",
+                          ? "lecture".tr
+                          : "housing".tr,
                       style:
-                      const TextStyle(
+                      TextStyle(
                         fontWeight:
                         FontWeight.bold,
                         fontSize: 17,
-                        color: AppColors
-                            .textPrimaryLight,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color,
                       ),
                     ),
 
@@ -370,9 +370,11 @@ class _ShiftCard extends StatelessWidget {
                         shift.shiftDate,
                       ),
                       style:
-                      const TextStyle(
-                        color: AppColors
-                            .textSecondaryLight,
+                      TextStyle(
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color,
                       ),
                     ),
                   ],
@@ -388,10 +390,6 @@ class _ShiftCard extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          //-----------------------------------
-          // Time
-          //-----------------------------------
-
           Container(
             padding:
             const EdgeInsets.symmetric(
@@ -399,7 +397,7 @@ class _ShiftCard extends StatelessWidget {
               vertical: 12,
             ),
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius:
               BorderRadius.circular(14),
             ),
@@ -417,11 +415,13 @@ class _ShiftCard extends StatelessWidget {
                 Text(
                   "${_formatTime(shift.fromHour)} - ${_formatTime(shift.toHour)}",
                   style:
-                  const TextStyle(
+                  TextStyle(
                     fontWeight:
                     FontWeight.w600,
-                    color: AppColors
-                        .textPrimaryLight,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.color,
                   ),
                 ),
               ],
@@ -443,10 +443,10 @@ class _StatusBadge extends StatelessWidget {
   String get label {
     switch (status) {
       case "assigned":
-        return "مسند";
+        return "assigned".tr;
 
       case "completed":
-        return "منتهي";
+        return "completed".tr;
 
       default:
         return status;
@@ -496,7 +496,7 @@ class _SummaryRow extends StatelessWidget {
 
         Expanded(
           child: _StatPill(
-            label: "تم تسجيله",
+            label: "recorded".tr,
             value: summary.attendanceRecorded,
             color: _StatusColors.success,
             icon: Icons.check_circle_rounded,
@@ -507,7 +507,7 @@ class _SummaryRow extends StatelessWidget {
 
         Expanded(
           child: _StatPill(
-            label: "بانتظار المسح",
+            label: "pending_scan".tr,
             value: summary.pendingScan,
             color: _StatusColors.pending,
             icon: Icons.hourglass_bottom_rounded,
@@ -518,7 +518,7 @@ class _SummaryRow extends StatelessWidget {
 
         Expanded(
           child: _StatPill(
-            label: "إجمالي الحضور",
+            label: "total_attendance".tr,
             value: summary.totalCheckedIn,
             color: AppColors.primary,
             icon: Icons.groups_rounded,
@@ -550,7 +550,7 @@ class _StatPill extends StatelessWidget {
         horizontal: 8,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: color.withOpacity(.25),
@@ -569,10 +569,10 @@ class _StatPill extends StatelessWidget {
 
           Text(
             value.toString(),
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: AppColors.textPrimaryLight,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
 
@@ -581,9 +581,9 @@ class _StatPill extends StatelessWidget {
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: AppColors.textSecondaryLight,
+              color: Theme.of(context).textTheme.bodySmall?.color,
             ),
           ),
         ],
@@ -606,12 +606,12 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text(
-          "الطلاب",
+        Text(
+          "students".tr,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: AppColors.textPrimaryLight,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         const SizedBox(width: 8),
@@ -651,7 +651,7 @@ class _StudentTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: AppColors.light.withOpacity(.5),
@@ -666,10 +666,6 @@ class _StudentTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-
-          //------------------------------------
-          // Avatar
-          //------------------------------------
 
           CircleAvatar(
             radius: 22,
@@ -688,10 +684,6 @@ class _StudentTile extends StatelessWidget {
 
           const SizedBox(width: 14),
 
-          //------------------------------------
-          // Student Info
-          //------------------------------------
-
           Expanded(
             child: Column(
               crossAxisAlignment:
@@ -700,11 +692,11 @@ class _StudentTile extends StatelessWidget {
 
                 Text(
                   checkIn.student.fullName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color:
-                    AppColors.textPrimaryLight,
+                    Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
 
@@ -712,29 +704,29 @@ class _StudentTile extends StatelessWidget {
 
                 Text(
                   checkIn.student.studentIdentifier,
-                  style: const TextStyle(
-                    color: AppColors
-                        .textSecondaryLight,
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color,
                   ),
                 ),
 
                 const SizedBox(height: 4),
 
                 Text(
-                  "Check In : ${_formatTime(_timeFromDateTime(checkIn.checkInAt))}",
-                  style: const TextStyle(
+                  "${"check_in_label".tr} : ${_formatTime(_timeFromDateTime(checkIn.checkInAt))}",
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors
-                        .textSecondaryLight,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color,
                   ),
                 ),
               ],
             ),
           ),
-
-          //------------------------------------
-          // Status
-          //------------------------------------
 
           Container(
             padding:
@@ -770,8 +762,8 @@ class _StudentTile extends StatelessWidget {
 
                 Text(
                   recorded
-                      ? "Recorded"
-                      : "Pending",
+                      ? "recorded".tr
+                      : "pending".tr,
                   style: TextStyle(
                     fontWeight:
                     FontWeight.bold,
@@ -850,22 +842,22 @@ class _EmptyState extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            const Text(
-              "لا يوجد شيفت حالي",
+            Text(
+              "no_current_shift".tr,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 17,
-                color: AppColors.textPrimaryLight,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
 
             const SizedBox(height: 8),
 
-            const Text(
-              "سيظهر أول شيفت يحتوي على طلاب قاموا بعملية Check-In.",
+            Text(
+              "shift_will_appear_hint".tr,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.textSecondaryLight,
+                color: Theme.of(context).textTheme.bodySmall?.color,
               ),
             ),
 
@@ -874,7 +866,7 @@ class _EmptyState extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRefresh,
               icon: const Icon(Icons.refresh),
-              label: const Text("تحديث"),
+              label: Text("refresh".tr),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -901,11 +893,11 @@ class _NoStudentsCheckedIn extends StatelessWidget {
         vertical: 28,
       ),
       alignment: Alignment.center,
-      child: const Text(
-        "لا يوجد طلاب قاموا بعملية Check-In لهذا الشيفت.",
+      child: Text(
+        "no_students_checked_in".tr,
         style: TextStyle(
           fontSize: 14,
-          color: AppColors.textSecondaryLight,
+          color: Theme.of(context).textTheme.bodySmall?.color,
         ),
       ),
     );
@@ -941,8 +933,8 @@ class _ErrorState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.textPrimaryLight,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
 
@@ -951,7 +943,7 @@ class _ErrorState extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text("إعادة المحاولة"),
+              label: Text("retry".tr),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -984,7 +976,7 @@ String _formatTime(String hhmmss) {
   final minute = parts[1];
 
   final period =
-  hour >= 12 ? "م" : "ص";
+  hour >= 12 ? "PM" : "AM";
 
   final hour12 =
   hour % 12 == 0 ? 12 : hour % 12;
@@ -994,11 +986,6 @@ String _formatTime(String hhmmss) {
 
 
 String _timeFromDateTime(String dateTime) {
-
-  // مثال:
-  // 2026-07-29 09:45:09
-  // يرجع:
-  // 09:45:09
 
   final parts =
   dateTime.split(' ');
@@ -1014,13 +1001,6 @@ String _timeFromDateTime(String dateTime) {
 
 String _formatDate(String date) {
 
-  /*
-    يدعم:
-    2026-07-29
-    أو
-    2026-07-29T21:00:00.000000Z
-  */
-
   final cleanDate =
       date.split('T').first;
 
@@ -1035,4 +1015,3 @@ String _formatDate(String date) {
 
   return "${parts[2]}/${parts[1]}/${parts[0]}";
 }
-

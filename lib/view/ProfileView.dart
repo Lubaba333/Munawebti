@@ -18,21 +18,6 @@ class ProfileView extends StatelessWidget {
           .of(context)
           .scaffoldBackgroundColor,
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        elevation: 8,
-        onPressed: controller.toggleEdit,
-        child: Obx(
-              () =>
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: Icon(
-                  controller.isEdit.value ? Icons.check : Icons.edit,
-                  key: ValueKey(controller.isEdit.value),
-                ),
-              ),
-        ),
-      ),
 
       body: SafeArea(
         child: SingleChildScrollView(

@@ -146,10 +146,10 @@ class StudentDetailsView extends StatelessWidget {
                     "info_tab".tr,
                   ),
 
-                  Tab(
-                    text:
-                    "attendance".tr,
-                  ),
+                  // Tab(
+                  //   text:
+                  //   "attendance".tr,
+                  // ),
 
                   Tab(
                     text:
@@ -171,11 +171,11 @@ class StudentDetailsView extends StatelessWidget {
             StudentInfoTab(
               student: student,
             ),
-
-            StudentAttendanceTab(
-              studentId:
-              student.id,
-            ),
+            //
+            // StudentAttendanceTab(
+            //   studentId:
+            //   student.id,
+            // ),
 
             const StudentHistoryTab(),
           ],

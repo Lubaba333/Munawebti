@@ -276,14 +276,14 @@ class _QrScannerViewState extends State<QrScannerView>
                       const Spacer(),
 
 
-                      const Text(
+                      Text(
 
 
-                        "Scan QR",
+                        "scan_qr".tr,
 
 
                         style:
-                        TextStyle(
+                        const TextStyle(
 
 
                           color:
@@ -345,13 +345,13 @@ class _QrScannerViewState extends State<QrScannerView>
 
 
                     child:
-                    const Row(
+                    Row(
 
 
                       children: [
 
 
-                        Icon(
+                        const Icon(
 
                           Icons.qr_code_scanner,
 
@@ -363,7 +363,7 @@ class _QrScannerViewState extends State<QrScannerView>
                         ),
 
 
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
 
@@ -375,11 +375,11 @@ class _QrScannerViewState extends State<QrScannerView>
                           Text(
 
 
-                            "Place QR code inside the frame.\nScanning starts automatically.",
+                            "qr_scan_hint".tr,
 
 
                             style:
-                            TextStyle(
+                            const TextStyle(
 
 
                               color:
@@ -603,11 +603,11 @@ class _QrScannerViewState extends State<QrScannerView>
 
                             ?
 
-                        "Processing attendance..."
+                        "processing_attendance".tr
 
                             :
 
-                        "Ready to scan student QR",
+                        "ready_to_scan".tr,
 
 
                         style:
@@ -782,7 +782,7 @@ class _QrScannerViewState extends State<QrScannerView>
 
 
           Get.snackbar(
-            "Error",
+            "error".tr,
             e.toString()
                 .replaceFirst(
                 "Exception: ",

@@ -49,7 +49,7 @@ super.dispose();
 @override
 Widget build(BuildContext context) {
 return Scaffold(
-backgroundColor: const Color(0xFFF6F7FB),
+backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 appBar: _buildAppBar(),
 body: Obx(
 () {
@@ -132,9 +132,9 @@ bottom: 10,
 ),
 child: Center(
 child: Text(
-'تم عرض جميع السجلات',
+'all_records_shown'.tr,
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 13,
 ),
 ),
@@ -156,13 +156,13 @@ fontSize: 13,
 PreferredSizeWidget _buildAppBar() {
 return AppBar(
 elevation: 0,
-backgroundColor: Colors.white,
-surfaceTintColor: Colors.white,
+backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+surfaceTintColor: Theme.of(context).appBarTheme.backgroundColor,
 centerTitle: false,
-title: const Text(
-'سجل الحضور',
+title: Text(
+'attendance_history'.tr,
 style: TextStyle(
-color: Color(0xFF171A21),
+color: Theme.of(context).appBarTheme.foregroundColor,
 fontSize: 22,
 fontWeight: FontWeight.bold,
 ),
@@ -211,17 +211,17 @@ offset: const Offset(0, 8),
 child: Column(
 crossAxisAlignment: CrossAxisAlignment.start,
 children: [
-const Row(
+Row(
 children: [
-Icon(
+const Icon(
 Icons.fact_check_rounded,
 color: Colors.white,
 size: 25,
 ),
-SizedBox(width: 10),
+const SizedBox(width: 10),
 Text(
-'ملخص الحضور',
-style: TextStyle(
+'attendance_summary'.tr,
+style: const TextStyle(
 color: Colors.white,
 fontSize: 18,
 fontWeight: FontWeight.bold,
@@ -236,7 +236,7 @@ Row(
 children: [
 Expanded(
 child: _summaryItem(
-title: 'الحاضرون',
+title: 'present_label'.tr,
 value: '$present',
 icon: Icons.check_circle_rounded,
 ),
@@ -244,7 +244,7 @@ icon: Icons.check_circle_rounded,
 const SizedBox(width: 10),
 Expanded(
 child: _summaryItem(
-title: 'الغائبون',
+title: 'absent_label'.tr,
 value: '$absent',
 icon: Icons.cancel_rounded,
 ),
@@ -252,7 +252,7 @@ icon: Icons.cancel_rounded,
 const SizedBox(width: 10),
 Expanded(
 child: _summaryItem(
-title: 'السجلات',
+title: 'records_label'.tr,
 value: '$total',
 icon: Icons.list_alt_rounded,
 ),
@@ -328,15 +328,15 @@ horizontal: 14,
 vertical: 12,
 ),
 decoration: BoxDecoration(
-color: Colors.white,
+color: Theme.of(context).cardColor,
 borderRadius: BorderRadius.circular(15),
 border: Border.all(
-color: Colors.grey.shade200,
+color: Theme.of(context).dividerColor,
 ),
 ),
 child: Row(
 children: [
-Icon(
+const Icon(
 Icons.filter_alt_outlined,
 size: 20,
 color: AppColors.primary,
@@ -347,8 +347,8 @@ child: Text(
 _filterText(),
 style: TextStyle(
 color: hasFilters
-? const Color(0xFF20242D)
-    : Colors.grey.shade600,
+? Theme.of(context).textTheme.bodyLarge?.color
+    : Theme.of(context).textTheme.bodySmall?.color,
 fontWeight: FontWeight.w600,
 fontSize: 13,
 ),
@@ -387,21 +387,21 @@ final parts = <String>[];
 if (controller.selectedType.value.isNotEmpty) {
 parts.add(
 controller.selectedType.value == 'lecture'
-? 'محاضرات'
-    : 'سكن',
+? 'lecture'.tr
+    : 'housing'.tr,
 );
 }
 
 if (controller.selectedStatus.value.isNotEmpty) {
 parts.add(
 controller.selectedStatus.value == 'present'
-? 'حاضر'
-    : 'غائب',
+? 'present'.tr
+    : 'absent'.tr,
 );
 }
 
 if (parts.isEmpty) {
-return 'جميع سجلات الحضور';
+return 'all_attendance_records'.tr;
 }
 
 return parts.join(' • ');
@@ -414,20 +414,20 @@ return parts.join(' • ');
 Widget _buildHistoryHeader() {
 return Row(
 children: [
-const Expanded(
+Expanded(
 child: Text(
-'السجلات',
+'records_label'.tr,
 style: TextStyle(
 fontSize: 18,
 fontWeight: FontWeight.bold,
-color: Color(0xFF181B22),
+color: Theme.of(context).textTheme.bodyLarge?.color,
 ),
 ),
 ),
 Text(
-'${controller.total.value} سجل',
+'${controller.total.value} ${"record_singular".tr}',
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 13,
 ),
 ),
@@ -455,10 +455,10 @@ final details = item.shiftDetails;
 return Container(
 padding: const EdgeInsets.all(16),
 decoration: BoxDecoration(
-color: Colors.white,
+color: Theme.of(context).cardColor,
 borderRadius: BorderRadius.circular(22),
 border: Border.all(
-color: Colors.grey.shade200,
+color: Theme.of(context).dividerColor,
 ),
 boxShadow: [
 BoxShadow(
@@ -502,11 +502,11 @@ crossAxisAlignment:
 CrossAxisAlignment.start,
 children: [
 Text(
-student?.fullName ?? 'طالب غير معروف',
+student?.fullName ?? 'unknown_student'.tr,
 maxLines: 1,
 overflow: TextOverflow.ellipsis,
-style: const TextStyle(
-color: Color(0xFF171A21),
+style: TextStyle(
+color: Theme.of(context).textTheme.bodyLarge?.color,
 fontSize: 16,
 fontWeight: FontWeight.bold,
 ),
@@ -515,9 +515,9 @@ fontWeight: FontWeight.bold,
 const SizedBox(height: 4),
 
 Text(
-'الرقم الجامعي: ${student?.studentIdentifier ?? '-'}',
+'${"student_id".tr}: ${student?.studentIdentifier ?? '-'}',
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 12,
 ),
 ),
@@ -541,14 +541,14 @@ _smallTag(
 icon: isHousing
 ? Icons.apartment_rounded
     : Icons.school_rounded,
-text: isHousing ? 'سكن' : 'محاضرة',
+text: isHousing ? 'housing'.tr : 'lecture'.tr,
 ),
 
 if (details?.isPractical == true) ...[
 const SizedBox(width: 7),
 _smallTag(
 icon: Icons.science_rounded,
-text: 'عملي',
+text: 'practical'.tr,
 ),
 ],
 
@@ -557,7 +557,7 @@ if (details?.isPractical == false &&
 const SizedBox(width: 7),
 _smallTag(
 icon: Icons.menu_book_rounded,
-text: 'نظري',
+text: 'theoretical'.tr,
 ),
 ],
 ],
@@ -638,7 +638,7 @@ color: isPresent
 ),
 const SizedBox(width: 5),
 Text(
-isPresent ? 'حاضر' : 'غائب',
+isPresent ? 'present'.tr : 'absent'.tr,
 style: TextStyle(
 color: isPresent
 ? Colors.green.shade700
@@ -666,7 +666,7 @@ if (details?.subjectName != null &&
 details.subjectName.toString().isNotEmpty)
 _infoRow(
 Icons.menu_book_rounded,
-'المادة',
+'subject'.tr,
 details.subjectName.toString(),
 ),
 
@@ -674,7 +674,7 @@ if (details?.teacherName != null &&
 details.teacherName.toString().isNotEmpty)
 _infoRow(
 Icons.person_outline_rounded,
-'المدرس',
+'teacher'.tr,
 details.teacherName.toString(),
 ),
 
@@ -682,14 +682,14 @@ if (details?.location != null &&
 details.location.toString().isNotEmpty)
 _infoRow(
 Icons.location_on_outlined,
-'المكان',
+'location'.tr,
 details.location.toString(),
 ),
 
 if (details?.year != null)
 _infoRow(
 Icons.school_outlined,
-'السنة',
+'year'.tr,
 details.year.toString(),
 ),
 
@@ -699,7 +699,7 @@ details.specialization
     .isNotEmpty)
 _infoRow(
 Icons.category_outlined,
-'الاختصاص',
+'specialization'.tr,
 details.specialization.toString(),
 ),
 
@@ -707,7 +707,7 @@ if (details?.branch != null &&
 details.branch.toString().isNotEmpty)
 _infoRow(
 Icons.account_tree_outlined,
-'الشعبة',
+'branch'.tr,
 details.branch.toString(),
 ),
 ],
@@ -732,14 +732,14 @@ details.dormitoryName
     .isNotEmpty)
 _infoRow(
 Icons.apartment_rounded,
-'السكن',
+'dormitory'.tr,
 details.dormitoryName.toString(),
 ),
 
 if (room != null)
 _infoRow(
 Icons.meeting_room_outlined,
-'الغرفة',
+'room'.tr,
 room.roomNumber?.toString() ?? '-',
 ),
 ],
@@ -762,7 +762,7 @@ return const SizedBox.shrink();
 return Container(
 padding: const EdgeInsets.all(12),
 decoration: BoxDecoration(
-color: const Color(0xFFF7F8FA),
+color: Theme.of(context).scaffoldBackgroundColor,
 borderRadius: BorderRadius.circular(15),
 ),
 child: Row(
@@ -778,9 +778,10 @@ const SizedBox(width: 9),
 Expanded(
 child: Text(
 '${shift.shiftDate} • ${shift.day}',
-style: const TextStyle(
+style: TextStyle(
 fontSize: 12,
 fontWeight: FontWeight.w600,
+color: Theme.of(context).textTheme.bodyMedium?.color,
 ),
 ),
 ),
@@ -795,9 +796,10 @@ const SizedBox(width: 5),
 
 Text(
 '${_formatTime(shift.fromHour)} - ${_formatTime(shift.toHour)}',
-style: const TextStyle(
+style: TextStyle(
 fontSize: 11,
 fontWeight: FontWeight.w600,
+color: Theme.of(context).textTheme.bodyMedium?.color,
 ),
 ),
 ],
@@ -832,8 +834,8 @@ const SizedBox(width: 7),
 Expanded(
 child: Text(
 isPresent
-? 'وقت الحضور: ${_formatDateTime(item.checkInAt)}'
-    : 'لم يتم تسجيل حضور الطالب',
+? '${"attendance_time".tr} ${_formatDateTime(item.checkInAt)}'
+    : 'no_attendance_recorded'.tr,
 style: TextStyle(
 color: isPresent
 ? Colors.green.shade700
@@ -873,7 +875,7 @@ const SizedBox(width: 9),
 Text(
 '$title:',
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 12,
 ),
 ),
@@ -886,8 +888,8 @@ value,
 textAlign: TextAlign.end,
 maxLines: 2,
 overflow: TextOverflow.ellipsis,
-style: const TextStyle(
-color: Color(0xFF20242D),
+style: TextStyle(
+color: Theme.of(context).textTheme.bodyLarge?.color,
 fontSize: 12,
 fontWeight: FontWeight.w600,
 ),
@@ -951,9 +953,9 @@ padding: const EdgeInsets.fromLTRB(
 20,
 25,
 ),
-decoration: const BoxDecoration(
-color: Colors.white,
-borderRadius: BorderRadius.vertical(
+decoration: BoxDecoration(
+color: Theme.of(context).cardColor,
+borderRadius: const BorderRadius.vertical(
 top: Radius.circular(28),
 ),
 ),
@@ -971,20 +973,21 @@ borderRadius: BorderRadius.circular(20),
 
 const SizedBox(height: 20),
 
-const Align(
+Align(
 alignment: Alignment.centerRight,
 child: Text(
-'فلترة سجل الحضور',
+'filter_attendance'.tr,
 style: TextStyle(
 fontSize: 19,
 fontWeight: FontWeight.bold,
+color: Theme.of(context).textTheme.bodyLarge?.color,
 ),
 ),
 ),
 
 const SizedBox(height: 20),
 
-_filterSectionTitle('نوع الحضور'),
+_filterSectionTitle('attendance_type'.tr),
 
 const SizedBox(height: 10),
 
@@ -993,7 +996,7 @@ Obx(
 children: [
 Expanded(
 child: _filterChoice(
-title: 'الكل',
+title: 'all'.tr,
 selected:
 controller.selectedType.value.isEmpty,
 onTap: () {
@@ -1004,7 +1007,7 @@ controller.selectedType.value = '';
 const SizedBox(width: 8),
 Expanded(
 child: _filterChoice(
-title: 'محاضرات',
+title: 'lecture'.tr,
 selected:
 controller.selectedType.value ==
 'lecture',
@@ -1017,7 +1020,7 @@ controller.selectedType.value =
 const SizedBox(width: 8),
 Expanded(
 child: _filterChoice(
-title: 'سكن',
+title: 'housing'.tr,
 selected:
 controller.selectedType.value ==
 'housing',
@@ -1033,7 +1036,7 @@ controller.selectedType.value =
 
 const SizedBox(height: 20),
 
-_filterSectionTitle('حالة الحضور'),
+_filterSectionTitle('attendance_status'.tr),
 
 const SizedBox(height: 10),
 
@@ -1042,7 +1045,7 @@ Obx(
 children: [
 Expanded(
 child: _filterChoice(
-title: 'الكل',
+title: 'all'.tr,
 selected:
 controller.selectedStatus.value.isEmpty,
 onTap: () {
@@ -1053,7 +1056,7 @@ controller.selectedStatus.value = '';
 const SizedBox(width: 8),
 Expanded(
 child: _filterChoice(
-title: 'حاضر',
+title: 'present'.tr,
 selected:
 controller.selectedStatus.value ==
 'present',
@@ -1066,7 +1069,7 @@ controller.selectedStatus.value =
 const SizedBox(width: 8),
 Expanded(
 child: _filterChoice(
-title: 'غائب',
+title: 'absent'.tr,
 selected:
 controller.selectedStatus.value ==
 'absent',
@@ -1082,7 +1085,7 @@ controller.selectedStatus.value =
 
 const SizedBox(height: 20),
 
-_filterSectionTitle('التاريخ'),
+_filterSectionTitle('date'.tr),
 
 const SizedBox(height: 10),
 
@@ -1092,7 +1095,7 @@ children: [
 Expanded(
 child: _dateButton(
 title: controller.dateFrom.value.isEmpty
-? 'من تاريخ'
+? 'from_date'.tr
     : controller.dateFrom.value,
 onTap: () {
 _pickDate(
@@ -1107,7 +1110,7 @@ const SizedBox(width: 10),
 Expanded(
 child: _dateButton(
 title: controller.dateTo.value.isEmpty
-? 'إلى تاريخ'
+? 'to_date'.tr
     : controller.dateTo.value,
 onTap: () {
 _pickDate(
@@ -1138,8 +1141,8 @@ borderRadius:
 BorderRadius.circular(15),
 ),
 ),
-child: const Text(
-'مسح الفلاتر',
+child: Text(
+'clear_filters'.tr,
 ),
 ),
 ),
@@ -1167,9 +1170,9 @@ borderRadius:
 BorderRadius.circular(15),
 ),
 ),
-child: const Text(
-'تطبيق',
-style: TextStyle(
+child: Text(
+'apply'.tr,
+style: const TextStyle(
 fontWeight: FontWeight.bold,
 ),
 ),
@@ -1194,10 +1197,10 @@ return Align(
 alignment: Alignment.centerRight,
 child: Text(
 title,
-style: const TextStyle(
+style: TextStyle(
 fontSize: 14,
 fontWeight: FontWeight.bold,
-color: Color(0xFF20242D),
+color: Theme.of(context).textTheme.bodyLarge?.color,
 ),
 ),
 );
@@ -1223,12 +1226,12 @@ height: 46,
 decoration: BoxDecoration(
 color: selected
 ? AppColors.primary
-    : const Color(0xFFF5F6F8),
+    : Theme.of(context).scaffoldBackgroundColor,
 borderRadius: BorderRadius.circular(14),
 border: Border.all(
 color: selected
 ? AppColors.primary
-    : Colors.grey.shade200,
+    : Theme.of(context).dividerColor,
 ),
 ),
 child: Center(
@@ -1237,7 +1240,7 @@ title,
 style: TextStyle(
 color: selected
 ? Colors.white
-    : const Color(0xFF555A64),
+    : Theme.of(context).textTheme.bodyMedium?.color,
 fontSize: 12,
 fontWeight: FontWeight.w600,
 ),
@@ -1264,10 +1267,10 @@ padding: const EdgeInsets.symmetric(
 horizontal: 12,
 ),
 decoration: BoxDecoration(
-color: const Color(0xFFF5F6F8),
+color: Theme.of(context).scaffoldBackgroundColor,
 borderRadius: BorderRadius.circular(14),
 border: Border.all(
-color: Colors.grey.shade200,
+color: Theme.of(context).dividerColor,
 ),
 ),
 child: Row(
@@ -1282,9 +1285,10 @@ Expanded(
 child: Text(
 title,
 overflow: TextOverflow.ellipsis,
-style: const TextStyle(
+style: TextStyle(
 fontSize: 12,
 fontWeight: FontWeight.w600,
+color: Theme.of(context).textTheme.bodyMedium?.color,
 ),
 ),
 ),
@@ -1355,12 +1359,13 @@ color: Colors.red.shade300,
 
 const SizedBox(height: 15),
 
-const Text(
-'حدث خطأ أثناء تحميل سجل الحضور',
+Text(
+'error_loading_attendance'.tr,
 textAlign: TextAlign.center,
 style: TextStyle(
 fontSize: 17,
 fontWeight: FontWeight.bold,
+color: Theme.of(context).textTheme.bodyLarge?.color,
 ),
 ),
 
@@ -1370,7 +1375,7 @@ Text(
 controller.errorMessage.value,
 textAlign: TextAlign.center,
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 13,
 ),
 ),
@@ -1381,8 +1386,8 @@ ElevatedButton(
 onPressed: () {
 controller.refreshHistory();
 },
-child: const Text(
-'إعادة المحاولة',
+child: Text(
+'retry'.tr,
 ),
 ),
 ],
@@ -1413,12 +1418,13 @@ color: Colors.grey.shade300,
 
 const SizedBox(height: 18),
 
-const Center(
+Center(
 child: Text(
-'لا توجد سجلات حضور',
+'no_attendance_records'.tr,
 style: TextStyle(
 fontSize: 18,
 fontWeight: FontWeight.bold,
+color: Theme.of(context).textTheme.bodyLarge?.color,
 ),
 ),
 ),
@@ -1427,10 +1433,10 @@ const SizedBox(height: 8),
 
 Center(
 child: Text(
-'لم يتم العثور على سجلات حسب الفلاتر الحالية',
+'no_records_for_filters'.tr,
 textAlign: TextAlign.center,
 style: TextStyle(
-color: Colors.grey.shade600,
+color: Theme.of(context).textTheme.bodySmall?.color,
 fontSize: 13,
 ),
 ),
@@ -1468,4 +1474,3 @@ return value.substring(0, 5);
 return value;
 }
 }
-

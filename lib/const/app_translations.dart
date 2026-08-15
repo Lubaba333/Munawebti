@@ -19,6 +19,11 @@ class AppTranslations extends Translations {
     'loading': 'Loading...',
     'back': 'Back',
     'password': 'Password',
+    'close': 'Close',
+    'retry': 'Retry',
+    'refresh': 'Refresh',
+    'day': 'Day',
+    'unknown': 'Unknown',
 
     // ===== Onboarding =====
     'skip': 'Skip',
@@ -34,7 +39,7 @@ class AppTranslations extends Translations {
         'Monitor students training and progress in hospitals in real-time.',
 
     // ===== Auth: Login =====
-    'Munawebti':'Munawebti',
+    'Munawebti': 'Munawebti',
     'welcome_login': 'Welcome',
     'remember': 'Remember',
     'forgot_password': 'Forgot password?',
@@ -70,9 +75,10 @@ class AppTranslations extends Translations {
     'home': 'Home',
     'schedule': 'Schedule',
     'chat': 'Chat',
-    'No Conversations':'No Conversations',
-    'start chat':'start chat👋',
-    'write message':'write message....',
+    'chats': 'Chats',
+    'no_conversations': 'No Conversations',
+    'start_conversation': 'Start the conversation 👋',
+    'type_message': 'Type a message...',
 
     // ===== Home =====
     'welcome': 'Welcome 👋',
@@ -96,18 +102,18 @@ class AppTranslations extends Translations {
     'class_label': 'Class',
     'dormitory': 'Dormitory',
     'take_attendance': 'Take Attendance',
-    'creat_request':'creat_request',
+    'create_request': 'Create Request',
 
     // ===== Students =====
     'students': 'Students',
     'all': 'All',
     'resident': 'Resident',
     'non_resident': 'Non Resident',
-    'first_year':'first_year',
-    'second_year':'second_year',
-    'third_year':'third_year',
-    'fourth_year':'fourth_year',
-    'All_Years':'All_Years',
+    'first_year': 'First Year',
+    'second_year': 'Second Year',
+    'third_year': 'Third Year',
+    'fourth_year': 'Fourth Year',
+    'all_years': 'All Years',
     'search_student': 'Search for a student...',
     'no_students': 'No students found',
     'student_id': 'Student ID',
@@ -197,7 +203,6 @@ class AppTranslations extends Translations {
     'request_details': 'Request Details',
     'admin_response': 'Admin Response',
     'additional_information': 'Additional Information',
-    'create_request': 'Create Request',
     'my_requests': 'My Requests',
     'new_request': 'New Request',
     'leave_request': 'Leave Request',
@@ -231,7 +236,6 @@ class AppTranslations extends Translations {
     'approved': 'APPROVED',
     'rejected': 'REJECTED',
 
-
     // ===== Profile =====
     'profile': 'Profile',
     'logout': 'Logout',
@@ -240,9 +244,68 @@ class AppTranslations extends Translations {
     'university': 'University',
     'certificate_date': 'Certificate Date',
 
+    // ===== Notifications =====
+    'notifications': 'Notifications',
+    'no_notifications': 'No notifications',
 
-    'Notifications':'Notifications',
-    'No notifications':'No notifications',
+    // ===== Attendance History =====
+    'no_attendance_records': 'No attendance records',
+    'student_attendance_history': 'Student attendance history',
+    'attendance_records': 'attendance records',
+    'academic': 'Academic',
+    'attendance_type': 'Attendance Type',
+    'recorded_at': 'Recorded At',
+    'recorded': 'Recorded',
+
+    // ===== Upcoming Shift =====
+    'record_lecture_attendance': 'Record students attendance for lectures',
+    'record_housing_attendance': 'Record students attendance for housing',
+    'pending_scan': 'Pending Scan',
+    'total_attendance': 'Total Attendance',
+    'no_current_shift': 'No current shift',
+    'shift_will_appear_hint':
+        'It will appear once students check in',
+    'no_students_checked_in':
+        'No students have checked in for this shift',
+    'check_in_label': 'Check In',
+
+    // ===== Attendance History (detail screen) =====
+    'all_records_shown': 'All records shown',
+    'attendance_history': 'Attendance History',
+    'attendance_summary': 'Attendance Summary',
+    'present_label': 'Present',
+    'absent_label': 'Absent',
+    'records_label': 'Records',
+    'all_attendance_records': 'All attendance records',
+    'record_singular': 'record',
+    'unknown_student': 'Unknown student',
+    'practical': 'Practical',
+    'theoretical': 'Theoretical',
+    'subject': 'Subject',
+    'teacher': 'Teacher',
+    'room': 'Room',
+    'attendance_time': 'Attendance time:',
+    'no_attendance_recorded': 'Attendance not recorded',
+    'filter_attendance': 'Filter Attendance Records',
+    'attendance_status': 'Attendance Status',
+    'from_date': 'From Date',
+    'to_date': 'To Date',
+    'clear_filters': 'Clear Filters',
+    'apply': 'Apply',
+    'error_loading_attendance':
+        'An error occurred while loading attendance records',
+    'no_records_for_filters':
+        'No records found for the current filters',
+
+    // ===== QR Scanner =====
+    'scan_qr': 'Scan QR',
+    'qr_scan_hint':
+        'Place QR code inside the frame.\nScanning starts automatically.',
+    'processing_attendance': 'Processing attendance...',
+    'ready_to_scan': 'Ready to scan student QR',
+    'choose_attendance_type': 'Choose Attendance Type',
+    'lecture_attendance': 'Lecture Attendance',
+    'housing_attendance': 'Housing Attendance',
   };
 
   static const Map<String, String> _ar = {
@@ -256,6 +319,11 @@ class AppTranslations extends Translations {
     'loading': 'جاري التحميل...',
     'back': 'رجوع',
     'password': 'كلمة المرور',
+    'close': 'إغلاق',
+    'retry': 'إعادة المحاولة',
+    'refresh': 'تحديث',
+    'day': 'اليوم',
+    'unknown': 'غير معروف',
 
     // ===== Onboarding =====
     'skip': 'تخطي',
@@ -271,7 +339,7 @@ class AppTranslations extends Translations {
         'متابعة تدريب الطلاب وتقدمهم بالمستشفيات بشكل لحظي.',
 
     // ===== Auth: Login =====
-    'Munawebti':'مناوبتي',
+    'Munawebti': 'مناوبتي',
     'welcome_login': 'أهلاً بك',
     'remember': 'تذكرني',
     'forgot_password': 'نسيت كلمة المرور؟',
@@ -307,9 +375,10 @@ class AppTranslations extends Translations {
     'home': 'الرئيسية',
     'schedule': 'الجدول',
     'chat': 'الدردشة',
-    'No Conversations':'لا يوجد محادثة',
-    'start chat':'ابدأ المحادثة👋',
-    'write message':'اكتب رسالة...',
+    'chats': 'الدردشات',
+    'no_conversations': 'لا توجد محادثات',
+    'start_conversation': 'ابدأ المحادثة 👋',
+    'type_message': 'اكتب رسالة...',
 
     // ===== Home =====
     'welcome': 'أهلاً 👋',
@@ -333,18 +402,18 @@ class AppTranslations extends Translations {
     'class_label': 'الشعبة',
     'dormitory': 'السكن',
     'take_attendance': 'تسجيل الحضور',
-    'creat_request':'إنشاء طلب',
+    'create_request': 'إنشاء طلب',
 
     // ===== Students =====
     'students': 'الطلاب',
     'all': 'الكل',
     'resident': 'مقيم',
     'non_resident': 'غير مقيم',
-    'first_year':'السنة الأولى',
-    'second_year':'السنةالثانيه',
-    'third_year':'السنة الثالثة',
-    'fourth_year':'السنة الرابعة',
-    'All_Years':'كل السنوات',
+    'first_year': 'السنة الأولى',
+    'second_year': 'السنة الثانية',
+    'third_year': 'السنة الثالثة',
+    'fourth_year': 'السنة الرابعة',
+    'all_years': 'كل السنوات',
     'search_student': 'ابحث عن طالب...',
     'no_students': 'لا يوجد طلاب',
     'student_id': 'الرقم الجامعي',
@@ -434,7 +503,6 @@ class AppTranslations extends Translations {
     'request_details': 'تفاصيل الطلب',
     'admin_response': 'رد الإدارة',
     'additional_information': 'معلومات إضافية',
-    'create_request': 'إنشاء طلب',
     'my_requests': 'طلباتي',
     'new_request': 'طلب جديد',
     'leave_request': 'طلب إجازة',
@@ -467,7 +535,6 @@ class AppTranslations extends Translations {
     'approved': 'مقبولة',
     'rejected': 'مرفوضة',
 
-
     // ===== Profile =====
     'profile': 'الملف الشخصي',
     'logout': 'تسجيل الخروج',
@@ -476,7 +543,66 @@ class AppTranslations extends Translations {
     'university': 'الجامعة',
     'certificate_date': 'تاريخ الشهادة',
 
-    'Notifications':'الإشعارات',
-    'No notifications':'لا توجد إشعارات',
+    // ===== Notifications =====
+    'notifications': 'الإشعارات',
+    'no_notifications': 'لا توجد إشعارات',
+
+    // ===== Attendance History =====
+    'no_attendance_records': 'لا توجد سجلات حضور',
+    'student_attendance_history': 'سجل حضور الطلاب',
+    'attendance_records': 'سجل حضور',
+    'academic': 'أكاديمي',
+    'attendance_type': 'نوع الحضور',
+    'recorded_at': 'وقت التسجيل',
+    'recorded': 'مسجل',
+
+    // ===== Upcoming Shift =====
+    'record_lecture_attendance': 'تسجيل حضور الطلاب للمحاضرات',
+    'record_housing_attendance': 'تسجيل حضور الطلاب للسكن',
+    'pending_scan': 'بانتظار المسح',
+    'total_attendance': 'إجمالي الحضور',
+    'no_current_shift': 'لا يوجد شيفت حالي',
+    'shift_will_appear_hint':
+        'سيظهر أول شيفت يحتوي على طلاب قاموا بعملية تسجيل الدخول',
+    'no_students_checked_in':
+        'لا يوجد طلاب قاموا بعملية تسجيل الدخول لهذا الشيفت',
+    'check_in_label': 'تسجيل الحضور',
+
+    // ===== Attendance History (detail screen) =====
+    'all_records_shown': 'تم عرض جميع السجلات',
+    'attendance_history': 'سجل الحضور',
+    'attendance_summary': 'ملخص الحضور',
+    'present_label': 'الحاضرون',
+    'absent_label': 'الغائبون',
+    'records_label': 'السجلات',
+    'all_attendance_records': 'جميع سجلات الحضور',
+    'record_singular': 'سجل',
+    'unknown_student': 'طالب غير معروف',
+    'practical': 'عملي',
+    'theoretical': 'نظري',
+    'subject': 'المادة',
+    'teacher': 'المدرس',
+    'room': 'الغرفة',
+    'attendance_time': 'وقت الحضور:',
+    'no_attendance_recorded': 'لم يتم تسجيل حضور الطالب',
+    'filter_attendance': 'فلترة سجل الحضور',
+    'attendance_status': 'حالة الحضور',
+    'from_date': 'من تاريخ',
+    'to_date': 'إلى تاريخ',
+    'clear_filters': 'مسح الفلاتر',
+    'apply': 'تطبيق',
+    'error_loading_attendance': 'حدث خطأ أثناء تحميل سجل الحضور',
+    'no_records_for_filters':
+        'لم يتم العثور على سجلات حسب الفلاتر الحالية',
+
+    // ===== QR Scanner =====
+    'scan_qr': 'مسح رمز QR',
+    'qr_scan_hint':
+        'ضعي رمز QR داخل الإطار.\nسيبدأ المسح تلقائيًا.',
+    'processing_attendance': 'جاري معالجة الحضور...',
+    'ready_to_scan': 'جاهز لمسح رمز الطالب',
+    'choose_attendance_type': 'اختر نوع الحضور',
+    'lecture_attendance': 'حضور المحاضرات',
+    'housing_attendance': 'حضور السكن',
   };
 }
