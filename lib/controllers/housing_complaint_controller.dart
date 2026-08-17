@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/housing_complaint.dart';
 import '../services/service.dart';
@@ -23,7 +22,10 @@ class HousingComplaintController extends GetxController {
 
       final response = await _api.get(
         '/student/housing-complaints',
-        queryParameters: {'per_page': 15, 'page': 1},
+        queryParameters: {
+          'per_page': 15,
+          'page': 1,
+        },
       );
 
       final data = response['data'];
@@ -35,9 +37,11 @@ class HousingComplaintController extends GetxController {
       } else {
         complaints.clear();
       }
-
     } catch (e) {
-      Get.snackbar("error".tr, e.toString());
+      Get.snackbar(
+        "error".tr,
+        e.toString(),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -48,17 +52,23 @@ class HousingComplaintController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await _api.get('/student/housing-complaints/$id');
+      final response = await _api.get(
+        '/student/housing-complaints/$id',
+      );
 
       final data = response['data'];
 
       if (data != null) {
         selectedComplaint.value =
-            HousingComplaint.fromJson(data.cast<String, dynamic>());
+            HousingComplaint.fromJson(
+          data.cast<String, dynamic>(),
+        );
       }
-
     } catch (e) {
-      Get.snackbar("error".tr, "failed_load_complaint_details".tr);
+      Get.snackbar(
+        "error".tr,
+        "failed_load_complaint_details".tr,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -72,19 +82,27 @@ class HousingComplaintController extends GetxController {
     try {
       isLoading.value = true;
 
-      await _api.post('/student/housing-complaints', {
-        "title": title,
-        "description": description,
-      });
+      await _api.post(
+        '/student/housing-complaints',
+        {
+          "title": title,
+          "description": description,
+        },
+      );
 
       Get.back();
 
-      Get.snackbar("success".tr, "complaint_sent".tr);
+      Get.snackbar(
+        "success".tr,
+        "complaint_sent".tr,
+      );
 
       fetchComplaints();
-
     } catch (e) {
-      Get.snackbar("error".tr, e.toString());
+      Get.snackbar(
+        "error".tr,
+        e.toString(),
+      );
     } finally {
       isLoading.value = false;
     }

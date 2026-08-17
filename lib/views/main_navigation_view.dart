@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:studants/views/EmergencyListView.dart';
 import 'package:studants/views/SettingsDrawerview.dart';
 import 'package:studants/views/home_view.dart';
+import 'package:studants/views/lecture_attendance_view.dart';
 import 'package:studants/views/lectures_view.dart';
+
+
 import 'package:studants/views/my_requests_view.dart';
 import 'package:studants/widgets/widgets_home/bottom_nav.dart';
 
@@ -48,7 +51,7 @@ void initState() {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          LecturesView(showBackButton: false),
+          LecturesView(),
           const HomeView(),
           const MyRequestsView(showBackButton: false),
           const EmergencyListView(showBackButton: false),

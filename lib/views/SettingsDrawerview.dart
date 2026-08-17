@@ -203,12 +203,6 @@ class _SettingsDrawerState extends State<SettingsDrawer>
         children: [
           _languagePopupItem(),
           _themeToggleItem(),
-          _menuItem(
-            Icons.info_outline,
-            "about_app".tr,
-            "app_version".tr,
-            () => _goTo('/about'),
-          ),
         ],
       ),
     );
@@ -504,11 +498,6 @@ class _SettingsDrawerState extends State<SettingsDrawer>
         },
       ),
     );
-  }
-
-  void _goTo(String route) {
-    Get.back();
-    Get.toNamed(route);
   }
 
   void _handleLogout() {

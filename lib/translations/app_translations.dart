@@ -27,7 +27,7 @@ class AppTranslations extends Translations {
       'friday': 'الجمعة',
       'saturday': 'السبت',
       'sunday': 'الأحد',
-
+'total':'الاجمالي',
       // السكن
       'building_1': 'مبنى الطالبات الأول',
       'building_2': 'مبنى الطالبات الثاني',
@@ -56,7 +56,6 @@ class AppTranslations extends Translations {
       'new_report': 'بلاغ جديد',
       'processing': 'قيد المعالجة',
       'resolved': 'تم الحل',
-        // ================= Authentication =================
   'welcome': 'مرحباً بك',
   'welcome_back': 'أهلاً بعودتك',
   'login': 'تسجيل الدخول',
@@ -79,8 +78,6 @@ class AppTranslations extends Translations {
   'remember_me': 'تذكرني',
   'dont_have_account': 'ليس لديك حساب؟',
   'already_have_account': 'لديك حساب بالفعل؟',
-  'Sign in': 'تسجيل الدخول',
-  'Sign up': 'إنشاء حساب',
   'verify': 'تحقق',
   'verification_code': 'رمز التحقق',
   'resend_code': 'إعادة إرسال الرمز',
@@ -95,13 +92,9 @@ class AppTranslations extends Translations {
   'invalid_email': 'البريد الإلكتروني غير صالح',
   'required_field': 'هذا الحقل مطلوب',
   'create_account': 'إنشاء حساب',
-
-  // ================= Welcome =================
   'Welcome to Studants App': 'مرحباً بك في تطبيق الطالبات',
-  
 'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.':
 'منصة مصممة لمساعدة الطلاب على الوصول إلى خدماتهم بسهولة.\nابقَ على اطلاع، وأدر طلباتك، واجعل تجربتك الأكاديمية أكثر سهولة.\nكل ما تحتاجه، في مكان واحد.',
-  // ================= Profile =================
   'profile': 'الملف الشخصي',
   'edit_profile': 'تعديل الملف الشخصي',
   'personal_information': 'المعلومات الشخصية',
@@ -117,8 +110,6 @@ class AppTranslations extends Translations {
   'nationality': 'الجنسية',
   'male': 'ذكر',
   'female': 'أنثى',
-
-  // ================= Settings =================
   'settings': 'الإعدادات',
   'language': 'اللغة',
   'change_language': 'تغيير اللغة',
@@ -143,317 +134,183 @@ class AppTranslations extends Translations {
   'pending': 'قيد الانتظار',
   'approved': 'مقبول',
   'rejected': 'مرفوض',
-
   'current_room': 'غرفتك الحالية',
   'current_room_loading': 'لم يتم تحميل الغرفة الحالية بعد',
   'room': 'الغرفة',
   'unit': 'الوحدة',
-
   'reason': 'السبب',
   'write_reason': 'اكتبي السبب',
   'reason_required': 'السبب مطلوب',
-
   'choose_room': 'اختاري الغرفة',
   'choose_unit': 'اختاري الوحدة السكنية',
   'choose_student': 'اختاري الطالبة',
-
   'available_rooms': 'الغرف المتاحة',
-
   'send': 'إرسال',
    'room_transfer': 'نقل بدون بديلة',
-
   'room_transfer_desc':
       'سيتم إرسال طلب نقل للإدارة، والإدارة تحدد الغرفة المناسبة حسب الشواغر.',
-
   'room_transfer_reason':
       'سبب طلب النقل',
-
   'send_room_transfer':
       'إرسال طلب النقل',
-
   'specific_room_change':
       'تبديل لغرفة محددة',
-
   'specific_room_change_desc':
       'اختاري الوحدة السكنية أولاً ثم الغرفة المطلوبة.',
-
   'specific_room_reason':
       'سبب تبديل الغرفة',
-
   'send_room_change':
       'إرسال الطلب',
-
   'choose_building_first':
       'اختاري الوحدة أولاً لعرض الغرف',
-
   'no_rooms':
       'لا توجد غرف متاحة',
-
   'no_rooms_in_building':
       'لا توجد غرف متاحة في هذه الوحدة',
       'exchange_request':'طلب تبديل',
-
 'exchange_student':'الطالبة الأخرى',
-
 'choose_exchange_student':'اختاري الطالبة',
-
 'exchange_reason':'سبب التبديل',
-
 'send_exchange_request':'إرسال طلب التبديل',
-
 'waiting_other_student':
 'بانتظار موافقة الطالبة الأخرى',
 'complaints':'الشكاوى',
-
 'complaint':'شكوى',
-
 'new_complaint':'إضافة شكوى',
-
 'create_complaint':'إنشاء شكوى',
-
 'complaint_title':'عنوان الشكوى',
-
 'complaint_description':'تفاصيل الشكوى',
-
 'complaint_type':'نوع الشكوى',
-
 'submit_complaint':'إرسال الشكوى',
-
 'complaint_details':'تفاصيل الشكوى',
-
 'complaint_status':'حالة الشكوى',
-
 'complaint_created':'تاريخ الشكوى',
-
 'my_complaints':'شكاواي',
-
 'no_complaints':'لا توجد شكاوى',
-
 'complaint_sent':'تم إرسال الشكوى بنجاح',
-
 'complaint_closed':'تم حل الشكوى',
-
 'complaint_open':'مفتوحة',
-
 'complaint_processing':'قيد المعالجة',
-
 'complaint_resolved':'تم الحل',
-
 'complaint_rejected':'مرفوضة',
 'warnings':'تنبيهاتي',
-
-
-
 'warning_details':'تفاصيل التنبيه',
-
 'official_warning':'تنبيه رسمي',
-
 'warning_description':'الوصف',
-
 'warning_date':'تاريخ التنبيه',
-
 'possible_penalty':'العقوبة المحتملة',
-
 'supervisor':'المشرف',
-
 'no_warnings':'لا توجد تنبيهات',
-
 'no_warning_message':'لا يوجد أي تنبيه مسجل حالياً',
-
 'view_details':'تفاصيل',
 'violations':'مخالفاتي',
-
 'violation':'مخالفة',
-
 'violation_details':'تفاصيل المخالفة',
-
 'official_violation':'مخالفة رسمية',
-
 'violation_description':'الوصف',
-
 'violation_category':'التصنيف',
-
 'violation_date':'تاريخ المخالفة',
-
 'penalty':'العقوبة',
-
 'creator':'المشرف',
-
 'no_violations':'لا توجد مخالفات',
-
 'no_violation_message':'حسابك لا يحتوي على أي مخالفات حالياً',
 'home':'الرئيسية',
-
 'next_lecture':'المحاضرة القادمة',
-
 'hospital':'المشفى',
-
 'location':'الموقع',
-
 'time':'الوقت',
-
 'day':'اليوم',
-
 'my_lectures':'محاضراتي',
-
 'my_requests': 'طلباتي',
-
 'services':'الخدمات',
-
 'notifications':'الإشعارات',
-
-
-
 'home_page':'الصفحة الرئيسية',
-
 'no_data':'لا توجد بيانات',
-
 'refresh':'تحديث',
 'lecture':'محاضرة',
-
 'lectures':'المحاضرات',
-
 'lecture_details':'تفاصيل المحاضرة',
-
 'lecture_type':'نوع المحاضرة',
-
 'attendance':'الحضور',
-
 'absence':'الغياب',
-
 'present':'حاضر',
-
 'absent':'غائب',
-
 'doctor':'الدكتور',
-
 'subject':'المادة',
-
 'section':'الشعبة',
 'notification':'إشعار',
-
-
-
 'mark_all_read':'تحديد الكل كمقروء',
-
 'no_notifications':'لا توجد إشعارات',
-
 'new_notification':'إشعار جديد',
 'service':'خدمة',
-
-
-
 'emergency_service':'الطوارئ',
-
 'complaint_service':'الشكاوى',
-
 'room_transfer_service':'نقل الغرف',
-
 'room_exchange_service':'تبديل الغرف',
-
 'warning_service':'التنبيهات',
-
 'violation_service':'المخالفات',
-
 'reward_service':'المكافآت',
 'about':'حول التطبيق',
-
 'app_version':'إصدار التطبيق',
-
-
-
 'light':'فاتح',
-
 'dark':'داكن',
-
-
-
 'logout_question':'هل تريد تسجيل الخروج؟',
-
 'yes':'نعم',
-
 'no':'لا',
 'rewards':'المكافآت',
-
 'reward':'مكافأة',
-
 'no_rewards':'لا توجد مكافآت',
-
 'reward_details':'تفاصيل المكافأة',
 'search':'بحث',
-
 'save':'حفظ',
-
 'edit':'تعديل',
-
 'delete':'حذف',
-
 'close':'إغلاق',
-
 'back':'رجوع',
-
 'next':'التالي',
-
 'finish':'إنهاء',
-
 'accept':'قبول',
-
 'reject':'رفض',
-
 'cancel':'إلغاء',
-
 'confirm':'تأكيد',
-
 'choose':'اختر',
-
 'student':'الطالبة',
-
 'students':'الطالبات',
-
 'building':'المبنى',
 'number': 'الرقم',
-// ar
 'inside_dormitory': 'داخل السكن',
 'dormitory_unit': 'الوحدة السكنية',
 'outside_dormitory': 'خارج السكن',
 'dormitory_attendance_details': 'تفاصيل حضور السكن',
 'view_attendance_record_details': 'عرض سجل الحضور بالتفصيل',
-// ar
 'dormitory_attendance': 'حضور السكن',
 'create_new_request': 'إنشاء طلب جديد',
 'dormitory_attendance_record': 'سجل حضور السكن',
 'lecture_attendance_record': 'سجل حضور المحاضرات',
 'dormitory_attendance_subtitle': 'سجل دخولك وخروجك من السكن',
 'no_dormitory_attendance_records': 'لا توجد سجلات حضور سكن',
-// ar
 'emergency_create_subtitle': 'يرجى وصف الحالة بدقة ليتم التعامل معها بسرعة',
 'emergency_notice': 'سيتم إشعار الإدارة فوراً. في الحالات الحرجة يرجى التواصل مباشرة مع المشرفة.',
-// ar
 'created_at': 'تاريخ الإنشاء',
 'report_status': 'حالة البلاغ',
 'emergency_details_subtitle': 'عرض معلومات بلاغ الطوارئ',
 'emergency_under_review_note': 'بلاغك قيد المراجعة من قبل الإدارة. سيتم التواصل معك فور توفر تحديث.',
-// ar
 'emergency_cases': 'حالات الطوارئ',
 'emergency_cases_subtitle': 'تابعي البلاغات وحالة المعالجة',
 'no_emergency_reports': 'لا توجد بلاغات طوارئ سابقة',
 'emergency_reports_hint': 'عند إرسال بلاغ جديد سيظهر هنا',
-// ar
 'complaint_details_subtitle': 'عرض معلومات الشكوى كاملة',
 'official_housing_complaint': 'شكوى سكن رسمية',
 'complaint_under_review_note': 'سيتم معالجة شكواك قريباً من قبل الإدارة',
-// ar
 'new_housing_complaint': 'إضافة شكوى جديدة',
 'housing_complaint_create_subtitle': 'اكتبي تفاصيل الشكوى بوضوح ليتم التعامل معها بشكل أسرع',
 'fill_title_and_description': 'يرجى تعبئة العنوان والوصف',
 'housing_complaint_notice': 'سيتم إرسال الشكوى للإدارة، ويمكنك متابعة حالتها من صفحة شكاوى السكن.',
-// ar
 'housing_complaints': 'شكاوى السكن',
 'housing_complaint': 'شكوى السكن',
 'housing_complaints_subtitle': 'تابعي الشكاوى وحالة معالجتها',
 'no_housing_complaints': 'لا يوجد شكاوى بعد',
 'housing_complaints_empty_hint': 'عند إضافة شكوى جديدة ستظهر هنا',
-// ar
 'no_incoming_requests': 'لا توجد طلبات واردة',
 'incoming_exchange_request': 'طلب تبديل وارد',
 'waiting_for_your_response': 'بانتظار ردك',
@@ -476,16 +333,13 @@ class AppTranslations extends Translations {
 'target_student': 'الطالبة البديلة',
 'unknown_room': 'غرفة غير معروفة',
 'requested_room': 'الغرفة المطلوبة',
-
 'admin_notes': 'ملاحظات الإدارة',
 'admin_response': 'رد الإدارة',
-
 'exit_permission': 'طلب إذن خروج',
 'exit_reason': 'سبب الخروج',
 'exit_date': 'تاريخ الخروج',
 'from_hour': 'من الساعة',
 'to_hour': 'حتى الساعة',
-
 'transfer_reason': 'سبب النقل',
 'target_student_rejection_reason':'سبب رفض الطالبة ',
 'target_student_approved_at':'وافقت الطالبة في',
@@ -498,14 +352,11 @@ class AppTranslations extends Translations {
 'failed_send_otp': 'فشل في إرسال الرمز',
 'email_verified_success': 'تم التحقق من البريد الإلكتروني! يمكنك الآن إكمال التسجيل',
 'verify_email_first': 'يرجى التحقق من بريدك الإلكتروني أولاً بإدخال رمز التحقق',
- 
 'failed_fetch_emergency_data': 'فشل في جلب بيانات الطوارئ',
 'failed_fetch_report_details': 'فشل في جلب تفاصيل البلاغ',
 'failed_load_details': 'فشل تحميل التفاصيل',
- 
 'please_select_student': 'يرجى اختيار الطالبة',
 'swap_request_sent': 'تم إرسال طلب التبديل',
- 
 'cannot_select_same_room': 'لا يمكن اختيار نفس غرفتك الحالية',
 'write_room_transfer_reason': 'اكتبي سبب طلب تبديل الغرفة',
 'write_transfer_reason': 'اكتبي سبب طلب النقل',
@@ -522,7 +373,6 @@ class AppTranslations extends Translations {
 'request_cancelled_success': 'تم إلغاء الطلب بنجاح',
 'cannot_cancel_request': 'تعذر إلغاء الطلب',
 'request_details_not_loaded': 'لم يتم تحميل تفاصيل الطلب',
- 
 'enter_email': 'الرجاء إدخال بريدك الإلكتروني',
 'enter_valid_email': 'الرجاء إدخال بريد إلكتروني صحيح',
 'email_not_found_retry': 'البريد الإلكتروني غير موجود، يرجى طلب رمز جديد',
@@ -533,29 +383,180 @@ class AppTranslations extends Translations {
 'verify_otp_first': 'يرجى التحقق من رمز التحقق أولاً',
 'password_changed_success': 'تم تغيير كلمة المرور بنجاح! يرجى تسجيل الدخول بكلمة المرور الجديدة',
 'reset_failed': 'فشل إعادة التعيين',
- 
 'weak_name': 'الاسم ضعيف',
 'invalid_email_format': 'إيميل غير صحيح',
 'failed_load_complaint_details': 'فشل تحميل التفاصيل',
+"attendance_history": "سجل  الحضور",
+  "attendance_history_subtitle": "سجل حضورك في المحاضرات السابقة",
+  "no_attendance_records": "لا يوجد سجل حضور",
+  "start_attendance_message": "ابدئي بتسجيل حضورك في المحاضرات",
+  "attendance  rate": "نسبة الحضور",
+  "january": "يناير",
+  "february": "فبراير",
+  "march": "مارس",
+  "april": "أبريل",
+  "may": "مايو",
+  "june": "يونيو",
+  "july": "يوليو",
+  "august": "أغسطس",
+  "september": "سبتمبر",
+  "october": "أكتوبر",
+  "november": "نوفمبر",
+  "december": "ديسمبر",
+  "upcoming_lecture": "المحاضرة القادمة",
+  "lecture_title": "عنوان المحاضرة",
+  "location_unknown": "غير محدد",
+  "teacher": "المدرس",
+  "teacher_unknown": "غير محدد",
+  "retry": "إعادة المحاولة",
+  "attendance_recorded": "تم تسجيل الحضور",
+  "attendance_recorded_message": "تم اعتماد حضورك في النظام بنجاح",
+  "waiting_for_supervisor": "بانتظار مسح المشرفة",
+  "waiting_for_supervisor_message": "اعرضي رمز QR للمشرفة، أو ألغي التسجيل",
+  "qr_expired": "انتهت صلاحية الرمز",
+  "qr_expired_message": "الرمز منتهي الصلاحية، يرجى التواصل مع المشرفة",
+  "not_recorded": "لم يتم تسجيل الحضور",
+  "not_recorded_message": "اضغطي على زر تسجيل الحضور أدناه",
+  "qr_expired_title": "انتهت صلاحية الرمز",
+  "record_attendance": " تسجيل الحضور",
+  "your_qr_code": "رمز QR الخاص بك",
+  "remaining_time": "الوقت المتبقي: @hours:@minutes:@seconds",
+  "cancelling": "جاري الإلغاء...",
+  "cancel_attendance": "إلغاء تسجيل الحضور",
+  "attendance_success": "تم تسجيل الحضور بنجاح!",
+  "attendance_success_message": "بالتوفيق في محاضرتك 🎓",
+ "record housing attendance":"تسجيل حضور السكن ",
+  "cannot_determine_lecture": "لا يمكن تحديد المحاضرة",
+  "confirm_attendance": "تأكيد الحضور",
+  "confirm_attendance_message": "هل أنت متأكدة من رغبتك في تسجيل الحضور لهذه المحاضرة؟",
+  "confirm_yes": "نعم، سجل حضور",
+  "confirm_cancel": "تأكيد الإلغاء",
+  "confirm_cancel_message": "هل أنت متأكدة من إلغاء تسجيل الحضور؟\nلا يمكن التراجع عن هذا الإجراء.",
+  "confirm_cancel_yes": "نعم، إلغاء الحضور",
+  "upcoming_housing_shift": "دوام السكن القادم",
+  "no_upcoming_housing_shift": "لا يوجد دوام سكن قادم",
+  "housing_shift": "دوام السكن",
+  "shift_details": "تفاصيل مناوبة اليوم",
+  "housing_unit": "الوحدة السكنية",
+  "housing_unit_unknown": "غير محدد",
+  "room_number": "رقم الغرفة",
+  "room_unknown": "غير محدد",
+  "today_date": "تاريخ اليوم",
+  "record_housing_attendance": " تسجيل حضور السكن",
+  "record_attendance": " تسجيل الحضور",
+  "confirm_housing_attendance_message": "هل أنت متأكدة من رغبتك في تسجيل حضور السكن؟",
+  "cannot_determine_shift": "لا يمكن تحديد الدوام",
+  "attendance_success_housing_message": "يوم موفق ",
+  "attendance_rate": "نسبة الحضور",
+  "attendance_present": "حاضرة",
+  "attendance_absent": "غائبة",
+  "attendance_total": "الإجمالي",
+  "attendance_status_present": "حاضرة",
+  "attendance_status_absent": "غائبة",
+    "housing_attendance_history": "سجل حضور السكن",
+  "housing_attendance_history_subtitle": "سجل حضورك في السكن",
+  "no_housing_attendance_records": "لا يوجد حضور سكن مسجل بعد",
+  "no_housing_attendance_message": "ابدئي بتسجيل حضورك في السكن",
+  "room_label": "غرفة @number",
+  "unknown": "غير محدد",
+  "restore_qr_error": "خطأ في استرجاع حالة QR",
+  "save_qr_error": "خطأ في حفظ QR",
+  "clear_qr_error": "خطأ في مسح QR",
+  "show_qr_to_supervisor": "قم بعرض الـ QR للمشرفة",
+  "registration_failed": "فشل التسجيل",
+  "cancelled_successfully": "تم الإلغاء",
+  "attendance_cancelled_successfully": "تم إلغاء تسجيل الحضور بنجاح",
+  "cancellation_failed": "فشل الإلغاء",
+  "restore_barcode_error": "خطأ في استرجاع حالة الباركود",
+  "save_barcode_state_error": "خطأ في حفظ حالة الباركود",
+  "clear_barcode_state_error": "خطأ في مسح حالة الباركود",
+  "empty_response": "الاستجابة فارغة",
+  "check_in_only_before_lecture":
+      "عذراً، لا يمكن تسجيل الحضور الآن.\nيسمح بتسجيل الحضور فقط قبل بدء المحاضرة بـ 15 دقيقة.",
+  "cannot_check_in_before_24_hours":
+      "لا يمكن تسجيل الحضور قبل 24 ساعة من بدء المحاضرة.",
 
+  // 🔥 مفاتيح كانت ناقصة من قسم ar وموجودة بقسم en فقط
+  // (هاد كان سبب ظهور نصوص إنجليزية رغم إنو التطبيق عربي - GetX بيسقط على fallbackLocale='en' لما المفتاح ناقص من ar)
+  'full_name': 'الاسم الكامل',
+  'phone number': 'رقم الهاتف',
+  'requests': 'طلباتي',
+  'sign in': 'تسجيل الدخول',
+  'sign up': 'إنشاء حساب',
+  'sign_in': 'تسجيل الدخول',
+  'sign_up': 'إنشاء حساب',
+  'welcome_title': 'مرحباً بك في تطبيق الطالبات',
+  'welcome_description': 'منصة مصممة لمساعدة الطلاب على الوصول إلى خدماتهم بسهولة.',
+
+  // 🔥 نفس مفتاح lecture_attendance _record / dormitory_attendance  _record لكن بدون المسافات الزايدة
+  // (المفتاح القديم فيه مسافات بالأول لا يطابق نفس المفتاح المستخدم بقسم en، فكان يسقط على الإنجليزي)
+  'lecture_attendance _record': 'سجل حضور المحاضرات',
+  'dormitory_attendance  _record': 'سجل حضور السكن',
+
+  // 🔥 مفاتيح جديدة من شاشات الحضور الأخيرة (AttendanceMainView, LectureAttendanceView, إلخ)
+  'check_in': 'تسجيل الحضور',
+  'history': 'السجل',
+  'lecture_attendance': 'حضور المحاضرات',
+  'lecture_attendance_subtitle': 'سجّلي حضورك بمسح QR بالقاعة',
+  'housing_attendance': 'حضور السكن',
+  'housing_attendance_subtitle': 'سجّلي حضورك بمسح QR بالسكن',
+  'default_lecture_title': 'عنوان المحاضرة',
+  'unspecified': 'غير محدد',
+  'no_details_found': 'لا توجد تفاصيل',
+  'no_name': 'بدون اسم',
+  'notes': 'ملاحظات',
+  "register_attendance_button":"تسجيل حضور المحاضرة",
+  "attendance_not_recorded_desc":"اضغطي على زر تسجيل الحضور ادناه",
+  "attendance_not_recorded":"لم يتم تسجيل الحضور",
     },
 
     'en': {
-
-      // General
+ "upcoming_lecture": "Upcoming Lecture",
+  "lecture_title": "Lecture Title",
+  "lecture_details": "Lecture Details",
+  "time": "Time",
+  "date": "Date",
+  "location": "Location",
+  "location_unknown": "Unknown",
+  "teacher": "Teacher",
+  "teacher_unknown": "Unknown",
+  "retry": "Retry",
+  "no_upcoming_lectures": "No upcoming lectures",
+  "attendance_recorded": "Attendance Recorded",
+  "attendance_recorded_message": "Your attendance has been successfully recorded",
+  "waiting_for_supervisor": "Waiting for Supervisor",
+  "waiting_for_supervisor_message": "Show QR code to supervisor, or cancel check-in",
+  "qr_expired": "QR Code Expired",
+  "qr_expired_message": "QR code expired, please contact supervisor",
+  "not_recorded": "Not Recorded",
+  "not_recorded_message": "Press the attendance button below",
+  "qr_expired_title": "QR Code Expired",
+  "record_attendance": " Record Attendance",
+  "your_qr_code": "Your QR Code",
+  "remaining_time": "Remaining Time: @hours:@minutes:@seconds",
+  "cancelling": "Cancelling...",
+  "cancel_attendance": "Cancel Attendance",
+  "attendance_success": "Attendance Recorded Successfully!",
+  "attendance_success_message": "Good luck in your lecture 🎓",
+  "error": "Error",
+  "cannot_determine_lecture": "Cannot determine lecture",
+  "confirm_attendance": "Confirm Attendance",
+  "confirm_attendance_message": "Are you sure you want to record attendance for this lecture?",
+  "confirm_yes": "Yes, Record",
+  "cancel": "Cancel",
+  "confirm_cancel": "Confirm Cancellation",
+  "confirm_cancel_message": "Are you sure you want to cancel attendance?\nThis action cannot be undone.",
+  "confirm_cancel_yes": "Yes, Cancel",
+  "back": "Back",
       'ok': 'Done',
-      'error': 'Error',
       'warning': 'Warning',
       'success': 'Success',
       'details': 'Details',
       'description': 'Description',
-      'date': 'Date',
       'status': 'Status',
       'note': 'Note',
       'loading': 'Loading...',
       'not_specified': 'Not specified',
-
-      // Days
       'monday': 'Monday',
       'tuesday': 'Tuesday',
       'wednesday': 'Wednesday',
@@ -563,21 +564,14 @@ class AppTranslations extends Translations {
       'friday': 'Friday',
       'saturday': 'Saturday',
       'sunday': 'Sunday',
-
-      // Dormitory
       'building_1': 'First Girls Building',
       'building_2': 'Second Girls Building',
       'building_3': 'Third Girls Building',
       'not_assigned': 'Not Assigned',
       'not_resident': 'Not Resident',
-
-      // Lectures
       'next_lecture_loading': 'Loading next lecture...',
-      'no_upcoming_lectures': 'No upcoming lectures',
       'theoretical': 'Theoretical',
       'practical': 'Practical',
-
-      // Emergency
       'emergency': 'Emergency',
       'emergency_report': 'Send Emergency Report',
       'emergency_title': 'Emergency Title (e.g. Electrical Failure)',
@@ -592,7 +586,6 @@ class AppTranslations extends Translations {
       'new_report': 'New Report',
       'processing': 'Under Processing',
       'resolved': 'Resolved',
-       // ================= Authentication =================
   'welcome': 'Welcome',
   'welcome_back': 'Welcome Back',
   'login': 'Login',
@@ -623,15 +616,11 @@ class AppTranslations extends Translations {
   'passwords_not_match': 'Passwords do not match',
   'invalid_email': 'Invalid Email',
   'required_field': 'Required Field',
-
-  // ================= Welcome =================
   'welcome_title': 'Welcome to Studants App',
   'welcome_description':
       'A platform designed for students to access their services easily.',
     'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.':
 'A platform designed for students to access their services with ease.\nStay informed, manage your requests, and simplify your academic experience.\nEverything you need, all in one place.',
-
-  // ================= Profile =================
   'profile': 'Profile',
   'edit_profile': 'Edit Profile',
   'personal_information': 'Personal Information',
@@ -647,8 +636,6 @@ class AppTranslations extends Translations {
   'nationality': 'Nationality',
   'male': 'Male',
   'female': 'Female',
-
-  // ================= Settings =================
   'settings': 'Settings',
   'language': 'Language',
   'change_language': 'Change Language',
@@ -668,322 +655,177 @@ class AppTranslations extends Translations {
   'request_date': 'Request Date',
   'send_request': 'Send Request',
   'cancel_request': 'Cancel Request',
-
   'no_requests': 'No Requests',
-
   'pending': 'Pending',
   'approved': 'Approved',
   'rejected': 'Rejected',
 'student_id': 'Student ID',
   'current_room': 'Current Room',
   'current_room_loading': 'Current room has not been loaded yet',
-
   'room': 'Room',
   'unit': 'Building',
-
   'reason': 'Reason',
   'write_reason': 'Write the reason',
   'reason_required': 'Reason is required',
-
   'choose_room': 'Choose Room',
   'choose_unit': 'Choose Building',
   'choose_student': 'Choose Student',
-
   'available_rooms': 'Available Rooms',
-
   'send': 'Send',
   'room_transfer': 'Transfer Without Replacement',
-
   'room_transfer_desc':
       'A transfer request will be sent to the administration. They will assign a suitable room based on availability.',
-
   'room_transfer_reason':
       'Transfer Reason',
-
   'send_room_transfer':
       'Send Transfer Request',
-
   'specific_room_change':
       'Specific Room Change',
-
   'specific_room_change_desc':
       'Choose the building first, then choose the desired room.',
-
   'specific_room_reason':
       'Reason for Room Change',
-
   'send_room_change':
       'Send Request',
-
   'choose_building_first':
       'Choose a building first',
-
   'no_rooms':
       'No Available Rooms',
-
   'no_rooms_in_building':
       'No available rooms in this building',
       'exchange_request':'Exchange Request',
-
 'exchange_student':'Other Student',
-
 'choose_exchange_student':'Choose Student',
-
 'exchange_reason':'Exchange Reason',
-
 'send_exchange_request':'Send Exchange Request',
-
 'waiting_other_student':
 'Waiting for the other students approval',
 'complaints':'Complaints',
-
 'complaint':'Complaint',
-
 'new_complaint':'New Complaint',
-
 'create_complaint':'Create Complaint',
-
 'complaint_title':'Complaint Title',
-
 'complaint_description':'Complaint Description',
-
 'complaint_type':'Complaint Type',
-
 'submit_complaint':'Submit Complaint',
-
 'complaint_details':'Complaint Details',
-
 'complaint_status':'Complaint Status',
-
 'complaint_created':'Complaint Date',
-
 'my_complaints':'My Complaints',
-
 'no_complaints':'No Complaints',
-
 'complaint_sent':'Complaint submitted successfully',
-
 'complaint_closed':'Complaint Resolved',
-
 'complaint_open':'Open',
-
 'complaint_processing':'Under Processing',
-
 'complaint_resolved':'Resolved',
-
 'complaint_rejected':'Rejected',
 'warnings':'My Warnings',
-
-
-
 'warning_details':'Warning Details',
-
 'official_warning':'Official Warning',
-
 'warning_description':'Description',
-
 'warning_date':'Warning Date',
-
 'possible_penalty':'Possible Penalty',
-
 'supervisor':'Supervisor',
-
 'no_warnings':'No Warnings',
-
 'no_warning_message':'No warnings found',
-
 'view_details':'Details',
 'violations':'My Violations',
-
 'violation':'Violation',
-
 'violation_details':'Violation Details',
-
 'official_violation':'Official Violation',
-
 'violation_description':'Description',
-
 'violation_category':'Category',
-
 'violation_date':'Violation Date',
-
 'penalty':'Penalty',
-
 'creator':'Supervisor',
-
 'no_violations':'No Violations',
-
 'no_violation_message':'Your account has no violations',
 'home':'Home',
-
 'next_lecture':'Next Lecture',
-
 'hospital':'Hospital',
-
-'location':'Location',
-
-'time':'Time',
-
 'day':'Day',
-
 'my_lectures':'My Lectures',
-
 'my_requests':'My Requests',
-
 'services':'Services',
-
 'notifications':'Notifications',
-
-
-
 'home_page':'Home',
-
 'no_data':'No Data',
-
 'refresh':'Refresh',
 'lecture':'Lecture',
-
 'lectures':'Lectures',
-
-'lecture_details':'Lecture Details',
-
 'lecture_type':'Lecture Type',
-
 'attendance':'Attendance',
-
 'absence':'Absence',
-
 'present':'Present',
-
 'absent':'Absent',
-
 'doctor':'Doctor',
-
 'subject':'Subject',
-
 'section':'Section',
 'notification':'Notification',
-
-
-
 'mark_all_read':'Mark all as read',
-
 'no_notifications':'No Notifications',
-
 'new_notification':'New Notification',
 'service':'Service',
-
-
-
 'emergency_service':'Emergency',
-
 'complaint_service':'Complaints',
-
 'room_transfer_service':'Room Transfer',
-
 'room_exchange_service':'Room Exchange',
-
 'warning_service':'Warnings',
-
 'violation_service':'Violations',
-
 'reward_service':'Rewards',
 'about':'About',
-
 'app_version':'App Version',
-
-
-
-
-
 'light':'Light',
-
 'dark':'Dark',
-
-
-
 'logout_question':'Do you want to logout?',
-
 'yes':'Yes',
-
 'no':'No',
 'rewards':'Rewards',
-
 'reward':'Reward',
-
 'no_rewards':'No Rewards',
-
 'reward_details':'Reward Details',
 'search':'Search',
-
 'save':'Save',
-
 'edit':'Edit',
-
 'delete':'Delete',
-
 'close':'Close',
-
-'back':'Back',
-
 'next':'Next',
-
 'finish':'Finish',
-
 'accept':'Accept',
-
 'reject':'Reject',
-
-'cancel':'Cancel',
-
 'confirm':'Confirm',
-
 'choose':'Choose',
-
 'student':'Student',
-
 'students':'Students',
-
 'building':'Building',
-
-
-// en
 'lecture_attendance _record': 'Lecture Attendance Record',
   'dormitory_attendance  _record': 'Dormitory Attendance Record',
 'dormitory_attendance': 'Dormitory Attendance',
 'dormitory_attendance_subtitle': 'Your dormitory check-in and check-out record',
 'no_dormitory_attendance_records': 'No dormitory attendance records',
 'number':'Number',
-// en
 'inside_dormitory': 'Inside Dormitory',
 'outside_dormitory': 'Outside Dormitory',
 'dormitory_attendance_details': 'Dormitory Attendance Details',
 'view_attendance_record_details': 'View attendance record details',
-// en
 'emergency_cases': 'Emergency Cases',
 'emergency_cases_subtitle': 'Track your reports and their status',
 'no_emergency_reports': 'No emergency reports yet',
 'emergency_reports_hint': 'New reports will appear here',
-
-// en
 'created_at': 'Created At',
 'report_status': 'Report Status',
 'emergency_details_subtitle': 'View emergency report information',
 'emergency_under_review_note': 'Your report is under review by the administration. You will be contacted once an update is available.',
-// en
 'emergency_create_subtitle': 'Please describe the situation accurately so it can be handled quickly',
 'emergency_notice': 'The administration will be notified immediately. In critical cases, please contact the supervisor directly.',
-// en
 'complaint_details_subtitle': 'View full complaint information',
 'official_housing_complaint': 'Official Housing Complaint',
 'complaint_under_review_note': 'Your complaint will be handled soon by the administration',
-// en
 'housing_complaints': 'Housing Complaints',
 'housing_complaint': 'Housing Complaint',
 'housing_complaints_subtitle': 'Track complaints and their processing status',
 'no_housing_complaints': 'No complaints yet',
 'housing_complaints_empty_hint': 'New complaints will appear here',
-// en
 'no_incoming_requests': 'No Incoming Requests',
 'incoming_exchange_request': 'Incoming Exchange Request',
 'waiting_for_your_response': 'Waiting for Your Response',
@@ -1027,14 +869,11 @@ class AppTranslations extends Translations {
 'failed_send_otp': 'Failed to Send OTP',
 'email_verified_success': 'Email verified! You can now complete registration.',
 'verify_email_first': 'Please verify your email first by entering the OTP code',
- 
 'failed_fetch_emergency_data': 'Failed to fetch emergency data',
 'failed_fetch_report_details': 'Failed to fetch report details',
 'failed_load_details': 'Failed to load details',
- 
 'please_select_student': 'Please select a student',
 'swap_request_sent': 'Swap request sent',
- 
 'cannot_select_same_room': 'Cannot select your current room',
 'write_room_transfer_reason': 'Please write the reason for room change',
 'write_transfer_reason': 'Please write the reason for transfer',
@@ -1051,7 +890,6 @@ class AppTranslations extends Translations {
 'request_cancelled_success': 'Request cancelled successfully',
 'cannot_cancel_request': 'Unable to cancel request',
 'request_details_not_loaded': 'Request details could not be loaded',
- 
 'enter_email': 'Please enter your email',
 'enter_valid_email': 'Please enter a valid email',
 'email_not_found_retry': 'Email not found. Please request OTP again.',
@@ -1062,10 +900,82 @@ class AppTranslations extends Translations {
 'verify_otp_first': 'Please verify your OTP code first',
 'password_changed_success': 'Password changed successfully! Please login with your new password.',
 'reset_failed': 'Reset Failed',
- 
 'weak_name': 'Name is too weak',
 'invalid_email_format': 'Invalid email',
 'failed_load_complaint_details': 'Failed to load details',
+ "attendance_history": "Attendance History",
+  "attendance_history_subtitle": "Your attendance record for previous lectures",
+  "no_attendance_records": "No attendance records",
+  "start_attendance_message": "Start recording your attendance in lectures",
+  "attendance_rate": "Attendance Rate",
+  "january": "January",
+  "february": "February",
+  "march": "March",
+  "april": "April",
+  "may": "May",
+  "june": "June",
+  "july": "July",
+  "august": "August",
+  "september": "September",
+  "october": "October",
+  "november": "November",
+  "december": "December",
+    "housing_attendance_history": "Housing Attendance History",
+  "housing_attendance_history_subtitle": "Your housing attendance record",
+  "no_housing_attendance_records": "No housing attendance records yet",
+  "no_housing_attendance_message": "Start recording your housing attendance",
+  "room_label": "Room @number",
+  "unknown": "Unknown",
+  "attendance_present": "Present",
+  "attendance_absent": "Absent",
+  "attendance_total": "Total",
+  "attendance_status_present": "Present",
+  "attendance_status_absent": "Absent",
+  "upcoming_housing_shift": "Upcoming Housing Shift",
+  "no_upcoming_housing_shift": "No upcoming housing shift",
+  "housing_shift": "Housing Shift",
+  "shift_details": "Today's Shift Details",
+  "housing_unit": "Housing Unit",
+  "housing_unit_unknown": "Unknown",
+  "room_number": "Room Number",
+  "room_unknown": "Unknown",
+  "today_date": "Today's Date",
+  "record_housing_attendance": " Record Housing Attendance",
+  "confirm_housing_attendance_message": "Are you sure you want to record housing attendance?",
+  "cannot_determine_shift": "Cannot determine shift",
+  "attendance_success_housing_message": "Have a great day ",
+    "restore_qr_error": "Error restoring QR state",
+  "save_qr_error": "Error saving QR",
+  "clear_qr_error": "Error clearing QR",
+  "show_qr_to_supervisor": "Show the QR code to the supervisor",
+  "registration_failed": "Check-in failed",
+  "cancelled_successfully": "Cancelled successfully",
+  "attendance_cancelled_successfully":
+      "Attendance check-in was cancelled successfully",
+  "cancellation_failed": "Cancellation failed",
+  "restore_barcode_error": "Error restoring barcode state",
+  "save_barcode_state_error": "Error saving barcode state",
+  "clear_barcode_state_error": "Error clearing barcode state",
+  "empty_response": "Empty response",
+  "check_in_only_before_lecture":
+      "Sorry, you cannot check in now.\nCheck-in is only allowed 15 minutes before the lecture starts.",
+  "cannot_check_in_before_24_hours":
+      "You cannot check in before 24 hours prior to the lecture.",
+
+  // 🔥 مفاتيح جديدة من شاشات الحضور الأخيرة (AttendanceMainView, LectureAttendanceView, إلخ)
+  'check_in': 'Check In',
+  'history': 'History',
+  'lecture_attendance': 'Lecture Attendance',
+  'lecture_attendance_subtitle': 'Check in by scanning the QR code in the classroom',
+  'housing_attendance': 'Housing Attendance',
+  'housing_attendance_subtitle': 'Check in by scanning the QR code at the dormitory',
+  'default_lecture_title': 'Lecture Title',
+  'unspecified': 'Not specified',
+  'no_details_found': 'No details found',
+  'no_name': 'No Name',
+  'notes': 'Notes',
+  "record_attendance":" Record Attendance",
+  "register_attendance_button":"Register Lecture Attendance"
     },
   };
 }

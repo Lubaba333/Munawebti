@@ -20,21 +20,17 @@ class LecturesView extends StatelessWidget {
     "Tuesday",
     "Wednesday",
     "Thursday",
-    "Friday",
-    "Saturday",
   ];
 
   final List<String> timeSlots = const [
     "08:30:00",
     "10:30:00",
     "12:30:00",
-    "14:30:00",
   ];
 
   @override
   Widget build(BuildContext context) {
     final isDark = Get.isDarkMode;
-
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
@@ -69,36 +65,34 @@ class LecturesView extends StatelessWidget {
                         ),
                       );
                     }
-
                     if (controller.lectures.isEmpty) {
                       return _emptyState(context);
                     }
-
                     return RefreshIndicator(
-  color: AppColors.mauve,
-  onRefresh: () async {
-    await controller.refreshLectures();
-  },
-  child: LayoutBuilder(
-    builder: (context, constraints) {
-      return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: constraints.maxHeight,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 22, 14, 24),
-              child: _weeklyTable(context),
-            ),
-          ),
-        ),
-      );
-    },
-  ),
-);
+                      color: AppColors.mauve,
+                      onRefresh: () async {
+                        await controller.refreshLectures();
+                      },
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(14, 22, 14, 24),
+                                  child: _weeklyTable(context),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
                   }),
                 ),
               ),
@@ -178,7 +172,6 @@ class LecturesView extends StatelessWidget {
 
   Widget _weeklyTable(BuildContext context) {
     final isDark = Get.isDarkMode;
-
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -224,7 +217,6 @@ class LecturesView extends StatelessWidget {
           ...days.asMap().entries.map((entry) {
             final index = entry.key;
             final day = entry.value;
-
             return TableRow(
               decoration: BoxDecoration(
                 color: isDark
@@ -261,7 +253,6 @@ class LecturesView extends StatelessWidget {
 
   Widget _headerCell(BuildContext context, String text) {
     final isDark = Get.isDarkMode;
-
     return Container(
       height: 48,
       alignment: Alignment.center,
@@ -280,7 +271,6 @@ class LecturesView extends StatelessWidget {
 
   Widget _dayCell(BuildContext context, String day, int index) {
     final isDark = Get.isDarkMode;
-
     return Container(
       height: 82,
       alignment: Alignment.center,
@@ -302,7 +292,6 @@ class LecturesView extends StatelessWidget {
 
   Widget _lectureCell(BuildContext context, LectureModel? lecture) {
     final isDark = Get.isDarkMode;
-
     if (lecture == null) {
       return Container(
         height: 82,
@@ -318,13 +307,11 @@ class LecturesView extends StatelessWidget {
         ),
       );
     }
-
     final color = lecture.isPractical
         ? Colors.orange
         : isDark
             ? AppColors.mauve
             : AppColors.darkPurple;
-
     return InkWell(
       onTap: () => _showLectureSheet(context, lecture),
       borderRadius: BorderRadius.circular(10),
@@ -396,7 +383,6 @@ class LecturesView extends StatelessWidget {
         : isDark
             ? AppColors.mauve
             : AppColors.darkPurple;
-
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.fromLTRB(22, 14, 22, 22),
@@ -511,7 +497,6 @@ class LecturesView extends StatelessWidget {
     bool isLast = false,
   }) {
     final isDark = Get.isDarkMode;
-
     return Column(
       children: [
         Padding(
@@ -570,7 +555,6 @@ class LecturesView extends StatelessWidget {
     bool fullWidth = false,
   }) {
     final isDark = Get.isDarkMode;
-
     return Container(
       width: fullWidth ? double.infinity : null,
       padding: const EdgeInsets.all(14),
@@ -626,7 +610,6 @@ class LecturesView extends StatelessWidget {
 
   Widget _sheetRow(IconData icon, String label, String value) {
     final isDark = Get.isDarkMode;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -695,10 +678,6 @@ class LecturesView extends StatelessWidget {
         return "wednesday".tr;
       case "Thursday":
         return "thursday".tr;
-      case "Friday":
-        return "friday".tr;
-      case "Saturday":
-        return "saturday".tr;
       default:
         return day;
     }

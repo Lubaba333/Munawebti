@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studants/controllers/notification_controller%20.dart';
+
 import 'package:studants/controllers/profile_controller.dart';
 import 'package:studants/utlis/app_colors.dart';
+import 'package:studants/views/attendance_main_view.dart';
 import 'package:studants/views/housing_complaints_view.dart';
-import 'package:studants/views/lecture_attendance_detail_view.dart';
-
 import 'package:studants/views/rewards_view.dart';
 import 'package:studants/views/violations_view.dart';
 import 'package:studants/views/warnings_view.dart';
@@ -109,16 +109,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
   final Random _random = Random();
   final List<Offset> _randomOffsets = [];
 
-  // 🔥 مؤقّت التحديث التلقائي الدوري
-  Timer? _autoRefreshTimer;
-  static const Duration _autoRefreshInterval = Duration(seconds: 30);
+  // 🔥 تم حذف متغيرات المؤقت (Timer) الخاصة بالتحديث كل 30 ثانية
 
   // 🔥 قياسات ثابتة تتحكم بشكل الدائرة والقص — عدّليهم هون لو بدك تكبري/تصغري
   static const double _circleDiameter = 117;
   static const double _cardCornerRadius = 18; // نفس قيمة الزوايا بـ ServiceItem
   static const double _gridSpacing = 12; // 🔥 المسافة بين الكاردات — زيديها/نقصيها زي ما بدك
-  static const double _circleGap = 13; // 🔥 الفراغ المطلوب بين حدود الدائرة وحواف القصّة
-  // 🔥 نصف قطر القصّة = نصف قطر الدائرة + الفراغ المطلوب - نص المسافة بين الكاردات
+  static const double _circleGap = 10; 
   static const double _notchRadius =
       (_circleDiameter / 2) + _circleGap - (_gridSpacing / 2);
 
@@ -145,10 +142,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
       }
     });
 
-    // 🔥 تشغيل التحديث التلقائي الدوري (كل 30 ثانية)
-    _autoRefreshTimer = Timer.periodic(_autoRefreshInterval, (_) {
-      _refreshHome();
-    });
+    // 🔥 تم حذف تشغيل التحديث التلقائي الدوري (كل 30 ثانية) بناءً على طلبك
   }
 
   // ✅ عند الرجوع للتطبيق من الخلفية → تحديث فوري لكل شي بالهوم
@@ -161,14 +155,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
     }
   }
 
-  // 🔥 الدالة المركزية للتحديث — كل عناصر الهوم (المين كارد + الإشعارات) بتتحدث من هون
+  // 🔥 الدالة المركزية للتحديث — تُستخدم الآن فقط عند السحب للتحديث أو العودة للتطبيق
   Future<void> _refreshHome() async {
     await Future.wait([
       controller.loadNextLecture(), // 👈 تحديث بيانات المحاضرة القادمة (المين كارد)
       if (Get.isRegistered<NotificationController>())
         Get.find<NotificationController>().getNotifications(),
-      // 🔥 لو عندك دالة تحديث بروفايل الطالبة بالـ ProfileController، فعّلي السطر التالي:
-       profileController.getProfile(),
+      profileController.getProfile(),
     ]);
   }
 
@@ -187,7 +180,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
     WidgetsBinding.instance.removeObserver(this);
     animController.dispose();
     entryController.dispose();
-    _autoRefreshTimer?.cancel(); // 🔥 إيقاف المؤقّت عند إغلاق الشاشة
+    // 🔥 تم حذف إلغاء المؤقت لأنه لم يعد موجوداً
     super.dispose();
   }
 
@@ -250,16 +243,30 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
     );
   }
 
-  // ⚠️ الترتيب البصري بالتطبيق (RTL): تنبيهاتي أعلى-يمين / مكافآتي أعلى-يسار
-  // مخالفاتي أسفل-يسار / شكوى السكن أسفل-يمين — لذلك الزاوية الداخلية لكل
-  // كارد محسوبة حسب موضعه الفعلي على الشاشة وليس ترتيبه بالقائمة.
-  List<Widget> _services() {
+  // 🔥 (إضافة) تحويل الزاوية المطلوبة حسب اتجاه اللغة (RTL/LTR)
+  // الشكل الأساسي مصمم على اعتبار RTL، فإذا كانت اللغة LTR
+  // نعكس الزاوية يمين/يسار بحيث تبقى الزاوية الداخلية مطابقة لموقع الكارد الفعلي
+  _NotchCorner _resolveCorner(_NotchCorner corner, bool isRtl) {
+    if (isRtl) return corner;
+    switch (corner) {
+      case _NotchCorner.topLeft:
+        return _NotchCorner.topRight;
+      case _NotchCorner.topRight:
+        return _NotchCorner.topLeft;
+      case _NotchCorner.bottomLeft:
+        return _NotchCorner.bottomRight;
+      case _NotchCorner.bottomRight:
+        return _NotchCorner.bottomLeft;
+    }
+  }
+
+  List<Widget> _services(bool isRtl) {
     return [
       // تنبيهاتي — أعلى اليمين → الزاوية الداخلية: أسفل اليسار
       _randomEntry(
         index: 5,
         child: _notchedServiceItem(
-          notchCorner: _NotchCorner.bottomLeft,
+          notchCorner: _resolveCorner(_NotchCorner.bottomLeft, isRtl),
           child: ServiceItem(
             icon: Icons.warning_amber_rounded,
             title: "warnings".tr,
@@ -271,7 +278,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
       _randomEntry(
         index: 6,
         child: _notchedServiceItem(
-          notchCorner: _NotchCorner.bottomRight,
+          notchCorner: _resolveCorner(_NotchCorner.bottomRight, isRtl),
           child: ServiceItem(
             icon: Icons.emoji_events,
             title: "rewards".tr,
@@ -283,7 +290,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
       _randomEntry(
         index: 7,
         child: _notchedServiceItem(
-          notchCorner: _NotchCorner.topLeft,
+          notchCorner: _resolveCorner(_NotchCorner.topLeft, isRtl),
           child: ServiceItem(
             icon: Icons.report_problem,
             title: "housing_complaint".tr,
@@ -295,7 +302,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
       _randomEntry(
         index: 8,
         child: _notchedServiceItem(
-          notchCorner: _NotchCorner.topRight,
+          notchCorner: _resolveCorner(_NotchCorner.topRight, isRtl),
           child: ServiceItem(
             icon: Icons.gavel,
             title: "violations".tr,
@@ -306,14 +313,14 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
     ];
   }
 
-  // 🔥 الدائرة الوسطى — بنفس ستايل ولون كاردات ServiceItem بالضبط (بدون بنفسجي)
+  // 🔥 الدائرة الوسطى
   Widget _attendanceFloatingCircle(BuildContext context) {
     final isDark = Get.isDarkMode;
 
     return _randomEntry(
       index: 10,
       child: GestureDetector(
-        onTap: () => Get.to(() => LectureAttendanceView()),
+        onTap: () => Get.to(() => AttendanceMainView()),
         child: Container(
           width: _circleDiameter,
           height: _circleDiameter,
@@ -359,7 +366,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Text(
-                  "تسجيل الحضور",
+                  "record_attendance".tr,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   style: TextStyle(
@@ -378,10 +385,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
 
   @override
   Widget build(BuildContext context) {
+    // 🔥 (إضافة) تحديد اتجاه اللغة الحالي لاستخدامه في تصحيح زوايا القص
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
-        // 🔥 سحب للتحديث اليدوي — بينادي نفس دالة التحديث المركزية
+        // 🔥 السحب للتحديث اليدوي فقط (يعمل عبر استدعاء _refreshHome)
         child: RefreshIndicator(
           onRefresh: _refreshHome,
           color: AppColors.darkPurple,
@@ -425,7 +435,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
                 ),
                 const SizedBox(height: 15),
 
-                // 🔥 الشبكة (4 كاردات مقصوصة من زاويتها الداخلية) + الدائرة بالمنتصف بالضبط
+                // 🔥 الشبكة (4 كاردات مقصوصة من زاويتها الداخلية) + الدائرة بالمنتصف
                 Stack(
                   alignment: Alignment.center,
                   clipBehavior: Clip.none,
@@ -437,7 +447,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin, Widg
                       crossAxisSpacing: _gridSpacing,
                       mainAxisSpacing: _gridSpacing,
                       childAspectRatio: 1.1,
-                      children: _services(),
+                      children: _services(isRtl),
                     ),
                     _attendanceFloatingCircle(context),
                   ],

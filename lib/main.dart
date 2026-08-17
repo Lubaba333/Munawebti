@@ -16,8 +16,9 @@ import 'package:studants/services/local_notification_service.dart';
 import 'package:studants/translations/app_translations.dart';
 import 'package:studants/utlis/app_colors.dart';
 import 'package:studants/utlis/theme_helper.dart';
-import 'package:studants/views/welcome_view.dart';
 import 'package:studants/views/main_navigation_view.dart';
+import 'package:studants/views/welcome_view.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
