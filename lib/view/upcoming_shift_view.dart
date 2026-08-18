@@ -217,8 +217,6 @@ class _Header extends StatelessWidget {
                         () => const QrScannerView(),
                   );
 
-                  Get.find<AttendanceController>().refresh();
-
                 },
               ),
 

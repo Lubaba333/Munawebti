@@ -19,7 +19,6 @@ import 'controller/AuthController.dart';
 import 'controller/ChatController.dart';
 import 'controller/SettingsController.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'controller/attendance_controller.dart';
 import 'controller/notifications_controller.dart';
 import 'firebase_options.dart';
 

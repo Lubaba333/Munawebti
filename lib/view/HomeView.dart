@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:supervisors/view/EmergencyView.dart';
 import 'package:supervisors/view/RequestsView.dart';
 import 'package:supervisors/view/complaints_view.dart';
-import 'package:supervisors/view/upcoming_shift_view%20.dart';
-
+import 'package:supervisors/view/upcoming_shift_view.dart';
 import '../controller/HomeController.dart';
 import '../const/app_colors.dart';
 

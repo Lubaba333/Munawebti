@@ -6,7 +6,6 @@ import 'package:supervisors/view/emergency_details_view.dart';
 
 class EmergencyView extends StatefulWidget {
 
-  // final controller = Get.put(EmergencyController());
    EmergencyView({super.key});
 
 
@@ -428,16 +427,13 @@ class _EmergencyViewState extends State<EmergencyView>{
          Text("new_emergency".tr),
 
 
+        onPressed: () async {
 
-        onPressed:() async {
-
+          controller.clearCreateForm();
 
           await controller.fetchStudents();
 
-
           _showCreateSheet(context);
-
-
         },
 
 
