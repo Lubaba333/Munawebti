@@ -13,8 +13,16 @@ class ChatListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text("chat".tr),
+        title: Text("chat".tr),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              controller.getConversations();
+            },
+          ),
+        ],
       ),
 
       body: Obx(() {
@@ -26,87 +34,106 @@ class ChatListView extends StatelessWidget {
         }
 
         if (controller.conversations.isEmpty) {
-          return  Center(
-            child: Text("No Conversations".tr),
+          return RefreshIndicator(
+            onRefresh: () async {
+              await controller.getConversations();
+            },
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Center(
+                    child: Text("No Conversations".tr),
+                  ),
+                ),
+              ],
+            ),
           );
         }
 
-        return ListView.separated(
-          padding: const EdgeInsets.all(16),
+        return RefreshIndicator(
+          onRefresh: () async {
+            await controller.getConversations();
+          },
+          child: ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
 
-          itemCount: controller.conversations.length,
+            itemCount: controller.conversations.length,
 
-          separatorBuilder: (_, __) =>
-          const Divider(height: 1),
+            separatorBuilder: (_, __) =>
+            const Divider(height: 1),
 
-          itemBuilder: (_, index) {
+            itemBuilder: (_, index) {
 
-            final conversation =
-            controller.conversations[index];
+              final conversation =
+              controller.conversations[index];
 
-            return ListTile(
+              return ListTile(
 
-              leading: const CircleAvatar(
-                radius: 25,
-                child: Icon(Icons.person),
-              ),
-
-              title: Text(
-                conversation.otherUserName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                leading: const CircleAvatar(
+                  radius: 25,
+                  child: Icon(Icons.person),
                 ),
-              ),
 
-              subtitle: Text(
-                conversation.lastMessage,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              trailing: Column(
-                mainAxisAlignment:
-                MainAxisAlignment.center,
-
-                crossAxisAlignment:
-                CrossAxisAlignment.end,
-
-                children: [
-
-                  Text(
-                      conversation.lastMessageAt == null
-                          ? ""
-                          : "${conversation.lastMessageAt!.hour.toString().padLeft(2, '0')}:${conversation.lastMessageAt!.minute.toString().padLeft(2, '0')}"
+                title: Text(
+                  conversation.otherUserName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
 
-                  const SizedBox(height: 6),
+                subtitle: Text(
+                  conversation.lastMessage,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-                  if (conversation.unreadCount > 0)
-                    CircleAvatar(
-                      radius: 10,
-                      child: Text(
-                        conversation.unreadCount.toString(),
-                        style: const TextStyle(
-                          fontSize: 11,
+                trailing: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
+
+                  crossAxisAlignment:
+                  CrossAxisAlignment.end,
+
+                  children: [
+
+                    Text(
+                        conversation.lastMessageAt == null
+                            ? ""
+                            : "${conversation.lastMessageAt!.hour.toString().padLeft(2, '0')}:${conversation.lastMessageAt!.minute.toString().padLeft(2, '0')}"
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    if (conversation.unreadCount > 0)
+                      CircleAvatar(
+                        radius: 10,
+                        child: Text(
+                          conversation.unreadCount.toString(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
+                  ],
+                ),
 
-              onTap: () {
+                onTap: () {
 
-                Get.to(
-                      () => ChatView(
+                  Get.to(
+                          () => ChatView(
                         conversationId: conversation.id,
                         receiverId: conversation.otherUserId,
                         receiverName: conversation.otherUserName,
                       )
-                );
+                  );
 
-              },
-            );
-          },
+                },
+              );
+            },
+          ),
         );
       }),
 
@@ -184,7 +211,5 @@ class ChatListView extends StatelessWidget {
       ),
     );
   }
-
-
 
 }

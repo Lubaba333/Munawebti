@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../const/app_colors.dart';
 import '../controller/attendance_history_controller.dart';
 import '../models/attendance_history_model.dart';
@@ -1035,95 +1034,6 @@ controller.selectedType.value =
 ),
 
 const SizedBox(height: 20),
-
-_filterSectionTitle('attendance_status'.tr),
-
-const SizedBox(height: 10),
-
-Obx(
-() => Row(
-children: [
-Expanded(
-child: _filterChoice(
-title: 'all'.tr,
-selected:
-controller.selectedStatus.value.isEmpty,
-onTap: () {
-controller.selectedStatus.value = '';
-},
-),
-),
-const SizedBox(width: 8),
-Expanded(
-child: _filterChoice(
-title: 'present'.tr,
-selected:
-controller.selectedStatus.value ==
-'present',
-onTap: () {
-controller.selectedStatus.value =
-'present';
-},
-),
-),
-const SizedBox(width: 8),
-Expanded(
-child: _filterChoice(
-title: 'absent'.tr,
-selected:
-controller.selectedStatus.value ==
-'absent',
-onTap: () {
-controller.selectedStatus.value =
-'absent';
-},
-),
-),
-],
-),
-),
-
-const SizedBox(height: 20),
-
-_filterSectionTitle('date'.tr),
-
-const SizedBox(height: 10),
-
-Obx(
-() => Row(
-children: [
-Expanded(
-child: _dateButton(
-title: controller.dateFrom.value.isEmpty
-? 'from_date'.tr
-    : controller.dateFrom.value,
-onTap: () {
-_pickDate(
-isFrom: true,
-);
-},
-),
-),
-
-const SizedBox(width: 10),
-
-Expanded(
-child: _dateButton(
-title: controller.dateTo.value.isEmpty
-? 'to_date'.tr
-    : controller.dateTo.value,
-onTap: () {
-_pickDate(
-isFrom: false,
-);
-},
-),
-),
-],
-),
-),
-
-const SizedBox(height: 24),
 
 Row(
 children: [

@@ -159,12 +159,12 @@ void main() async {
   Get.put(SettingsController());
   Get.put(ApiService());
   Get.put(StudentsController());
- Get.put(EmergencyController());
- Get.put(RequestController());
+  Get.put(EmergencyController());
+  Get.put(RequestController());
   Get.put(SupervisorShiftsController());
   Get.put(ProfileController());
 
- // Get.put(AttendanceController());
+
 
   runApp(
     MyApp(),

@@ -7,7 +7,6 @@ import 'package:supervisors/models/supervisor_shift_model.dart';
 import 'package:supervisors/view/request_details_view.dart';
 
 class RequestsView extends StatefulWidget {
-  // final controller = Get.put(RequestController());
   RequestsView({super.key});
 
   @override

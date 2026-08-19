@@ -189,29 +189,6 @@ class HomeView extends StatelessWidget {
 
                     ),
 
-
-
-
-                    // _actionCard(
-                    //
-                    //   context: context,
-                    //
-                    //   icon:Icons.check_circle,
-                    //
-                    //   title:"attendance".tr,
-                    //
-                    //   onTap:(){
-                    //
-                    //     Get.to(
-                    //             ()=>UpcomingShiftView()
-                    //     );
-                    //
-                    //   },
-                    //
-                    // ),
-
-
-
                     _actionCard(
                       context: context,
                       icon: Icons.check_circle,
