@@ -736,86 +736,125 @@ class _QrScannerViewState extends State<QrScannerView>
     );
   }
 
+  // void _onQRViewCreated(
+  //     QRViewController controllerQR,
+  //     ) {
+  //
+  //   qrViewController = controllerQR;
+  //
+  //
+  //   controllerQR.scannedDataStream.listen(
+  //         (scanData) async {
+  //
+  //
+  //       if(scanned){
+  //         return;
+  //       }
+  //
+  //
+  //
+  //       final code = scanData.code;
+  //
+  //
+  //
+  //       if(code == null || code.isEmpty){
+  //         return;
+  //       }
+  //
+  //
+  //
+  //       scanned = true;
+  //
+  //
+  //
+  //       await qrViewController?.pauseCamera();
+  //
+  //
+  //
+  //       try {
+  //
+  //
+  //         await controller.scanQr(code);
+  //
+  //
+  //
+  //       } catch(e){
+  //
+  //
+  //         Get.snackbar(
+  //           "error".tr,
+  //           e.toString()
+  //               .replaceFirst(
+  //               "Exception: ",
+  //               ""
+  //           ),
+  //           backgroundColor: Colors.red,
+  //           colorText: Colors.white,
+  //         );
+  //
+  //
+  //       } finally {
+  //
+  //
+  //
+  //         await Future.delayed(
+  //           const Duration(seconds:1),
+  //         );
+  //
+  //
+  //         scanned = false;
+  //
+  //
+  //
+  //         await qrViewController
+  //             ?.resumeCamera();
+  //
+  //
+  //       }
+  //
+  //
+  //
+  //     },
+  //   );
+  //
+  // }
+
   void _onQRViewCreated(
       QRViewController controllerQR,
       ) {
-
     qrViewController = controllerQR;
-
 
     controllerQR.scannedDataStream.listen(
           (scanData) async {
-
-
-        if(scanned){
+        if (scanned) {
           return;
         }
-
-
 
         final code = scanData.code;
 
-
-
-        if(code == null || code.isEmpty){
+        if (code == null || code.isEmpty) {
           return;
         }
 
-
-
         scanned = true;
 
-
-
-        await qrViewController?.pauseCamera();
-
-
-
         try {
-
+          await qrViewController?.pauseCamera();
 
           await controller.scanQr(code);
 
+          // لا يوجد resumeCamera هنا
+          // لأن scanQr() عند النجاح يعمل Get.back()
+        } catch (e) {
+          if (!mounted) return;
 
-
-        } catch(e){
-
-
-          Get.snackbar(
-            "error".tr,
-            e.toString()
-                .replaceFirst(
-                "Exception: ",
-                ""
-            ),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-
-
-        } finally {
-
-
-
-          await Future.delayed(
-            const Duration(seconds:1),
-          );
-
+          try {
+            await qrViewController?.resumeCamera();
+          } catch (_) {}
 
           scanned = false;
-
-
-
-          await qrViewController
-              ?.resumeCamera();
-
-
         }
-
-
-
       },
     );
-
   }
 }

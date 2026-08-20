@@ -446,33 +446,17 @@ class HomeView extends StatelessWidget {
                   const SizedBox(height:8),
 
 
-
-                  Obx(()=>Text(
-
-
-                    controller.currentShift['title']
-                        ??"no_shift".tr,
-
-
-
-                    style: TextStyle(
-
-
-                      color:Colors.white,
-
-
-                      fontSize:
-                      screenWidth * .055,
-
-
-                      fontWeight:
-                      FontWeight.bold,
-
-
+                  Obx(
+                        () => Text(
+                      controller.currentShift["title"] ??
+                          "لا توجد محاضرة حالياً",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * .055,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-
-
-                  )),
+                  ),
 
 
                 ],
@@ -581,37 +565,18 @@ class HomeView extends StatelessWidget {
                 Expanded(
 
 
-                  child: Obx(()=>Text(
-
-
-                    controller.currentShift['time']
-                        ?? "no_time_available".tr,
-
-
-
-                    overflow:
-                    TextOverflow.ellipsis,
-
-
-                    style: TextStyle(
-
-                      color:
-                      Colors.white,
-
-
-                      fontSize:
-                      screenWidth * .035,
-
-
-                      fontWeight:
-                      FontWeight.w500,
-
-
+                  child: Obx(
+                        () => Text(
+                      controller.currentShift["time"] ??
+                          "--",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * .035,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-
-
-                  )),
-
+                  ),
 
                 )
 
