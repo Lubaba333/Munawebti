@@ -32,21 +32,49 @@ class LectureAttendanceView extends StatelessWidget {
                     color: Theme.of(context).cardColor,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(36)),
                   ),
-                  child: Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator(color: AppColors.mauve));
-                    }
-                    if (controller.errorMessage.value.isNotEmpty) return _errorState(context);
-                    if (!controller.hasUpcomingLecture) return _emptyState(context);
+                  // 🔽 سحب لتحت للتحديث بدل زر الريفرش
+                  child: RefreshIndicator(
+                    color: AppColors.mauve,
+                    onRefresh: () => controller.getUpcomingLecture(),
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return _refreshableScroll(
+                          context,
+                          const Center(child: CircularProgressIndicator(color: AppColors.mauve)),
+                        );
+                      }
+                      if (controller.errorMessage.value.isNotEmpty) {
+                        return _refreshableScroll(context, _errorState(context));
+                      }
+                      if (!controller.hasUpcomingLecture) {
+                        return _refreshableScroll(context, _emptyState(context));
+                      }
 
-                    return _buildCleanContent(context, controller.upcomingLecture.value!);
-                  }),
+                      return _buildCleanContent(context, controller.upcomingLecture.value!);
+                    }),
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// يلف أي محتوى (لودينج/خطأ/فاضي) بـ ScrollView قابل للسحب حتى لو
+  /// المحتوى أصغر من الشاشة، عشان RefreshIndicator يقدر يشتغل بالسحب دايماً.
+  Widget _refreshableScroll(BuildContext context, Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -138,6 +166,7 @@ class LectureAttendanceView extends StatelessWidget {
     String teacher = lecture['teacher_name'] ?? 'unspecified'.tr;
 
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +247,7 @@ class LectureAttendanceView extends StatelessWidget {
 
     if (isCheckedIn && isRecorded) {
       statusText = 'attendance_recorded'.tr;
-      statusMessage = 'attendance_recorded_desc'.tr;
+      statusMessage = 'good_luck_lecture'.tr;
       statusColor = Colors.green;
       statusIcon = Icons.check_circle;
     } else if (isCheckedIn && !isRecorded && !isExpired) {
@@ -353,47 +382,18 @@ class LectureAttendanceView extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.green.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        children: [
-          const Icon(Icons.check_circle, color: Colors.green, size: 32),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('success_attendance'.tr, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)),
-                const SizedBox(height: 4),
-                Text('good_luck_lecture'.tr, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+   
+    return const SizedBox.shrink();
   }
 
+  /// ✅ بدون رسالة تأكيد: كبسة الزر بتسجل الحضور مباشرة.
   void _handleCheckIn(BuildContext context, Map<String, dynamic> lecture) {
     final shiftId = lecture['id'] as int?;
     if (shiftId == null) {
       Get.snackbar('error'.tr, 'unable_to_identify_lecture'.tr, backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
-    Get.defaultDialog(
-      title: 'confirm_attendance_title'.tr,
-      middleText: 'confirm_attendance_message'.tr,
-      textConfirm: 'yes_register'.tr,
-      textCancel: 'cancel'.tr,
-      confirmTextColor: Colors.white,
-      buttonColor: AppColors.darkPurple,
-      cancelTextColor: AppColors.darkPurple,
-      onConfirm: () {
-        Get.back();
-        Get.find<LectureAttendanceController>().checkIn(shiftId);
-      },
-    );
+    Get.find<LectureAttendanceController>().checkIn(shiftId);
   }
 
   void _handleCancelCheckIn(BuildContext context, int shiftId) {

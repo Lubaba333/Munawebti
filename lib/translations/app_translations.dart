@@ -508,6 +508,11 @@ class AppTranslations extends Translations {
   "register_attendance_button":"تسجيل حضور المحاضرة",
   "attendance_not_recorded_desc":"اضغطي على زر تسجيل الحضور ادناه",
   "attendance_not_recorded":"لم يتم تسجيل الحضور",
+  "waiting_for_supervisor_desc":"عرض الـ QR للمشرفة أو إلغاء تسجيل الحضور",
+  'good_luck_lecture':"بالتوفيق في محاضرتك ",
+  "yes_cancel_attendance":"نعم، إلغاء تسجيل الحضور",
+  "confirm_cancel_title":"تأكيد إلغاء تسجيل الحضور",
+"cancel_check_in":"إلغاء تسجيل الحضور",
     },
 
     'en': {
@@ -975,7 +980,8 @@ class AppTranslations extends Translations {
   'no_name': 'No Name',
   'notes': 'Notes',
   "record_attendance":" Record Attendance",
-  "register_attendance_button":"Register Lecture Attendance"
+  "register_attendance_button":"Register Lecture Attendance",
+  "waiting_for_supervisor_desc":"Show the QR code to the supervisor or cancel attendance check-in",
     },
   };
 }

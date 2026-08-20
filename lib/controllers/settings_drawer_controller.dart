@@ -23,31 +23,31 @@ Future<void> logout() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     print("🔴 LOGOUT FCM TOKEN: $fcmToken");
 
-    // 🟡 خبرّي الباك
-    await _apiService.post(
-      '/auth/student/logout',
-      {
-        "fcm_token": fcmToken,
-      },
-      authRequired: true,
-    );
+    try {
+      await _apiService.post(
+        '/auth/student/logout',
+        {
+          "fcm_token": fcmToken,
+        },
+        authRequired: true,
+      );
+    } catch (e) {
+      print("⚠️ Logout API failed (ignored): $e");
+    }
 
-    // 🔥 أهم سطر (أنتِ ناقصك هذا)
     await FirebaseMessaging.instance.deleteToken();
+    print("🗑️ FCM Token DELETED");
 
-    print("🗑️ FCM Token DELETED from device");
-
-    // 🧹 احذفي التوكن المحلي
     await _apiService.setToken(null);
 
-    // 🧹 تنظيف Controllers
     Get.delete<ProfileController>(force: true);
 
-    // 🔁 رجوع لواجهة البداية
-    Get.offAll(() =>  LoginView());
-
+    Get.offAll(() => LoginView());
   } catch (e) {
     print("❌ Logout Error: $e");
+
+    // 🔥 حتى لو فشل كل شي → رجعي للوغن
+    Get.offAll(() => LoginView());
   } finally {
     isLoading.value = false;
   }

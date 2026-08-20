@@ -115,7 +115,7 @@ class WarningsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "تنبيهاتي".tr,
+                  'warnings'.tr,  // ✅ استخدام المفتاح الموجود
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -124,7 +124,7 @@ class WarningsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "راجعي التنبيهات الموجهة إليك".tr,
+                  'review_warnings'.tr,  // ✅ مفتاح جديد
                   style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
@@ -164,7 +164,7 @@ class WarningsView extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Text(
-            "لا توجد تنبيهات".tr,
+            'no_warnings'.tr,  // ✅ استخدام المفتاح الموجود
             style: TextStyle(
               color: Theme.of(context).textTheme.titleLarge?.color,
               fontSize: 16,
@@ -173,7 +173,7 @@ class WarningsView extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            "لا يوجد أي تنبيه مسجل حالياً".tr,
+            'no_warning_message'.tr,  // ✅ استخدام المفتاح الموجود
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: 13,
@@ -270,7 +270,7 @@ class WarningsView extends StatelessWidget {
               Get.to(() => WarningDetailsView(id: warning.id));
             },
             icon: const Icon(Icons.visibility_outlined, size: 18),
-            label: Text("تفاصيل".tr),
+            label: Text('details'.tr),  
             style: TextButton.styleFrom(
               foregroundColor: isDark ? AppColors.mauve : AppColors.darkPurple,
               padding: const EdgeInsets.symmetric(horizontal: 8),

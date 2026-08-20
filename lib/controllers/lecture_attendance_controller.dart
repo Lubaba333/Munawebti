@@ -110,8 +110,11 @@ class LectureAttendanceController extends GetxController {
     }
   }
 
-  void startQrTimer() {
-    if (qrCreatedAt.value == null) {
+  /// [forceReset] لما تكون true بتجبر تصفير وقت الإنشاء للحظة الحالية،
+  /// حتى لو كان فيه وقت قديم متخزن مسبقاً (مثلاً من تسجيل حضور سابق
+  /// منتهي). هاد ضروري عند كل تسجيل حضور جديد فعلي.
+  void startQrTimer({bool forceReset = false}) {
+    if (forceReset || qrCreatedAt.value == null) {
       qrCreatedAt.value = DateTime.now();
     }
 
@@ -231,7 +234,12 @@ class LectureAttendanceController extends GetxController {
       isCheckedIn.value = true;
       checkInTime.value = DateTime.now().toString();
 
-      startQrTimer();
+      // ✅ الإصلاح: هاد تسجيل حضور جديد فعلياً، فلازم نصفّر وقت الإنشاء
+      // للحظة الحالية دايماً - حتى لو كان فيه وقت قديم (منتهي) متخزن
+      // من قبل بالـ SharedPreferences. بدون forceReset، كان الكود
+      // يتجاهل تحديث الوقت لأنو الشرط كان "إذا كانت null بس"، فكان
+      // الـ QR الجديد يورث تاريخ الانتهاء القديم ويطلع "منتهي" بعد ثانية.
+      startQrTimer(forceReset: true);
 
       await _saveQrState();
       await getUpcomingLecture();

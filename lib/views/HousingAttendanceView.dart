@@ -32,21 +32,48 @@ class HousingAttendanceView extends StatelessWidget {
                     color: Theme.of(context).cardColor,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(36)),
                   ),
-                  child: Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator(color: AppColors.mauve));
-                    }
-                    if (controller.errorMessage.value.isNotEmpty) return _errorState(context);
-                    if (!controller.hasUpcomingShift) return _emptyState(context);
+                  child: RefreshIndicator(
+                    color: AppColors.mauve,
+                    onRefresh: () => controller.getUpcomingShift(),
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return _refreshableScroll(
+                          context,
+                          const Center(child: CircularProgressIndicator(color: AppColors.mauve)),
+                        );
+                      }
+                      if (controller.errorMessage.value.isNotEmpty) {
+                        return _refreshableScroll(context, _errorState(context));
+                      }
+                      if (!controller.hasUpcomingShift) {
+                        return _refreshableScroll(context, _emptyState(context));
+                      }
 
-                    return _buildCleanContent(context, controller.upcomingShift.value!);
-                  }),
+                      return _buildCleanContent(context, controller.upcomingShift.value!);
+                    }),
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// يلف أي محتوى (لودينج/خطأ/فاضي) بـ ScrollView قابل للسحب حتى لو
+  /// المحتوى أصغر من الشاشة، عشان RefreshIndicator يقدر يشتغل بالسحب دايماً.
+  Widget _refreshableScroll(BuildContext context, Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -142,6 +169,7 @@ class HousingAttendanceView extends StatelessWidget {
     String dateFormatted = _formatDate(shift['shift_date'] ?? '');
 
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +251,12 @@ class HousingAttendanceView extends StatelessWidget {
             children: [
               Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500)),
               const SizedBox(height: 2),
-              Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              Text(
+                value,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
             ],
           ),
         ),
@@ -264,8 +297,8 @@ class HousingAttendanceView extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-            child: Icon(statusIcon, color: statusColor, size: 20),
+            decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
+            child: Icon(statusIcon, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -301,26 +334,79 @@ class HousingAttendanceView extends StatelessWidget {
       );
     }
 
+    // نفس مكان وشكل زر الإلغاء الموجود بالمحاضرات:
+    // QR الكارت الأبيض بظل + زر outlined أحمر تحته لإلغاء الحضور،
+    // بس لما يكون محسوب حضور ولسا ما انسجل من المشرف.
     if (isCheckedIn && !isRecorded) {
       return Column(
         children: [
           Text('your_qr_code'.tr, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          QrImageView(
-            data: controller.qrToken.value,
-            size: 220,
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 8))],
+            ),
+            child: QrImageView(
+              data: controller.qrToken.value,
+              size: 220,
+              backgroundColor: Colors.white,
+              padding: const EdgeInsets.all(8),
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: isCancelling ? null : () => _handleCancelCheckIn(context, shiftId!),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red,
+                side: const BorderSide(color: Colors.red, width: 1.5),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: isCancelling
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.red, strokeWidth: 2))
+                  : const Icon(Icons.cancel_outlined, size: 20),
+              label: Text(
+                isCancelling ? 'cancelling'.tr : 'cancel_check_in'.tr,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       );
     }
 
-    return const SizedBox();
+    return const SizedBox.shrink();
   }
 
   void _handleCheckIn(BuildContext context, Map<String, dynamic> shift) {
     final shiftId = shift['id'] as int?;
-    if (shiftId == null) return;
+    if (shiftId == null) {
+      Get.snackbar('error'.tr, 'unable_to_identify_lecture'.tr, backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
     controller.checkIn(shiftId);
+  }
+
+  void _handleCancelCheckIn(BuildContext context, int shiftId) {
+    Get.defaultDialog(
+      title: 'confirm_cancel_title'.tr,
+      titleStyle: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      middleText: 'confirm_cancel_message'.tr,
+      textConfirm: 'yes_cancel_attendance'.tr,
+      textCancel: 'back'.tr,
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.red,
+      cancelTextColor: Colors.grey,
+      onConfirm: () {
+        Get.back();
+        controller.cancelCheckIn(shiftId);
+      },
+    );
   }
 
   String _formatDate(String date) {
