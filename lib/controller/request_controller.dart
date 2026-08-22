@@ -1,158 +1,3 @@
-// import 'package:get/get.dart';
-// import 'package:supervisors/models/request_model.dart';
-// import 'package:supervisors/models/supervisor_model.dart';
-// import 'package:supervisors/services/api_service.dart';
-//
-//
-// class RequestController extends GetxController {
-//
-//
-//   final ApiService api = ApiService();
-//
-//   var requests = <RequestModel>[].obs;
-//   var isLoading = false.obs;
-//
-//   var supervisors = <SupervisorModel>[].obs;
-//   var isLoadingSupervisors = false.obs;
-//
-//
-//   int currentUserId = 0;
-//
-//
-//   @override
-//   void onInit() {
-//     print("Controller ready only");
-//     fetchRequests();
-//     fetchSupervisors();
-//     super.onInit();
-//
-//   }
-//
-//   Future<void> fetchSupervisors() async {
-//     try {
-//       isLoadingSupervisors.value = true;
-//
-//       print("Loaded => ${supervisors.length}");
-//       final response = await api.get('/supervisor/supervisors');
-//
-//       final List data = response['data']['data'];
-//
-//       supervisors.value =
-//           data.map((e) => SupervisorModel.fromJson(e)).toList();
-//
-//     } catch (e) {
-//       Get.snackbar('Error', e.toString());
-//     } finally {
-//       isLoadingSupervisors.value = false;
-//     }
-//   }
-//
-//   Future<void> fetchRequests() async {
-//     try {
-//       isLoading.value = true;
-//
-//       final response = await api.get('/supervisor/requests');
-//
-//       final List data = response['data']['data'];
-//
-//       requests.value =
-//           data.map((e) => RequestModel.fromJson(e)).toList();
-//
-//     } catch (e) {
-//       Get.snackbar('Error', e.toString());
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-//
-//   Future<void> createLeaveRequest({
-//     required String date,
-//     required String reason,
-//     required String description,
-//   }) async {
-//     await api.post('/supervisor/requests', {
-//       "request_type": "supervisor_leave",
-//       "title": "Leave Request",
-//       "description": description,
-//       "metadata": {
-//         "leave_date": date,
-//         "reason": reason
-//       }
-//     });
-//
-//     await fetchRequests();
-//   }
-//
-//   Future<void> createShiftExchange({
-//     required int targetSupervisorId,
-//     required int shiftId,
-//     required String date,
-//     required String fromHour,
-//     required String toHour,
-//     required String description,
-//   }) async {
-//     await api.post('/supervisor/requests', {
-//       "request_type": "supervisor_shift_exchange",
-//       "title": "Shift Exchange Request",
-//       "description": description,
-//       "metadata": {
-//         "target_supervisor_id": targetSupervisorId,
-//         "original_shift_id": shiftId,
-//         "requested_shift_date": date,
-//         "requested_from_hour": fromHour,
-//         "requested_to_hour": toHour,
-//       }
-//     });
-//     await fetchRequests();
-//   }
-//
-//   Future<void> cancelRequest(int id) async {
-//     try {
-//       final response = await api.post(
-//         '/supervisor/requests/$id/cancel',
-//         {},
-//       );
-//
-//       if (response['status_code'] == 200) {
-//         Get.snackbar("Success", response['message']);
-//         fetchRequests();
-//       }
-//     } catch (e) {
-//       Get.snackbar("Error", e.toString());
-//     }
-//   }
-//
-//   Future<RequestModel?> getRequestDetails(int id) async {
-//
-//     try {
-//
-//       final response =
-//       await api.get('/supervisor/requests/$id');
-//
-//
-//       if(response['status_code']==200){
-//
-//         return RequestModel.fromJson(
-//           response['data'],
-//         );
-//
-//       }
-//
-//
-//     }catch(e){
-//
-//       Get.snackbar(
-//         "Error",
-//         e.toString(),
-//       );
-//
-//     }
-//
-//
-//     return null;
-//    }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supervisors/models/request_model.dart';
@@ -180,19 +25,6 @@ class RequestController extends GetxController {
 
   final RxBool isLoadingSupervisors = false.obs;
 
-  /// Loading الصفحة التالية
-  final RxBool isLoadingMoreSupervisors = false.obs;
-
-  /// رقم الصفحة الحالية
-  final RxInt supervisorsPage = 1.obs;
-
-  /// هل يوجد صفحات إضافية؟
-  final RxBool hasMoreSupervisors = true.obs;
-
-  /// ScrollController لقائمة المشرفين
-  final ScrollController supervisorsScrollController =
-  ScrollController();
-
   int currentUserId = 0;
 
   // ============================================================
@@ -207,111 +39,121 @@ class RequestController extends GetxController {
 
     fetchSupervisors();
 
-    // مراقبة Scroll المشرفين
-    supervisorsScrollController.addListener(() {
-      if (!supervisorsScrollController.hasClients) {
-        return;
-      }
-
-      final position =
-          supervisorsScrollController.position;
-
-      // عندما نقترب من نهاية القائمة
-      if (position.pixels >=
-          position.maxScrollExtent - 100) {
-        loadMoreSupervisors();
-      }
-    });
-
     super.onInit();
   }
 
   // ============================================================
-  // Fetch Supervisors - First Page
+  // Fetch Supervisors - كل الصفحات دفعة وحدة
+  // ============================================================
+  //
+  // ملاحظة مهمة:
+  // الـ API عندنا ثابتة على 15 عنصر بالصفحة بغض النظر
+  // عن قيمة per_page المرسلة، فبدل ما نعتمد على تكبير
+  // per_page، منعمل لوب يمشي على كل الصفحات (page 1, 2, 3...)
+  // لحد ما نوصل لآخر صفحة (last_page) ونجمعهم كلهم بقائمة وحدة.
   // ============================================================
 
   Future<void> fetchSupervisors() async {
     try {
       isLoadingSupervisors.value = true;
 
-      // إعادة pagination من البداية
-      supervisorsPage.value = 1;
+      List<SupervisorModel> allSupervisors = [];
 
-      hasMoreSupervisors.value = true;
+      int page = 1;
+      bool hasMore = true;
 
-      print("Loading supervisors page 1");
+      while (hasMore) {
+        print("Loading supervisors page $page");
 
-      final response = await api.get(
-        '/supervisor/supervisors',
-        queryParameters: {
-          "page": 1,
-          "per_page": 15,
-        },
-      );
+        final response = await api.get(
+          '/supervisor/supervisors',
+          queryParameters: {
+            "page": page,
+            "per_page": 15,
+          },
+        );
 
-      print("SUPERVISORS RESPONSE:");
-      print(response);
+        final data = response['data'];
 
-      final data = response['data'];
+        final List list = data['data'] ?? [];
 
-      final List list = data['data'] ?? [];
+        print("Page $page returned ${list.length} supervisors");
 
-      print(
-        "FIRST PAGE SUPERVISORS = ${list.length}",
-      );
+        allSupervisors.addAll(
+          list
+              .map(
+                (e) => SupervisorModel.fromJson(e),
+          )
+              .toList(),
+        );
 
-      supervisors.assignAll(
-        list
-            .map(
-              (e) => SupervisorModel.fromJson(e),
-        )
-            .toList(),
-      );
+        // ========================================================
+        // Pagination Meta
+        // ========================================================
 
-      // ========================================================
-      // Pagination Meta
-      // ========================================================
+        final meta = data['meta'];
 
-      final meta = data['meta'];
+        if (meta != null) {
+          final currentPage =
+              int.tryParse(
+                meta['current_page']
+                    ?.toString() ??
+                    '',
+              ) ??
+                  page;
 
-      if (meta != null) {
-        final currentPage =
-            int.tryParse(
-              meta['current_page']
-                  ?.toString() ??
-                  '',
-            ) ??
-                1;
+          final lastPage =
+              int.tryParse(
+                meta['last_page']
+                    ?.toString() ??
+                    '',
+              ) ??
+                  currentPage;
 
-        final lastPage =
-            int.tryParse(
-              meta['last_page']
-                  ?.toString() ??
-                  '',
-            ) ??
-                currentPage;
+          print(
+            "current_page = $currentPage , last_page = $lastPage",
+          );
 
-        supervisorsPage.value =
-            currentPage;
+          hasMore = currentPage < lastPage;
 
-        hasMoreSupervisors.value =
-            currentPage < lastPage;
-      } else {
-        // Fallback
-        hasMoreSupervisors.value =
-            list.length == 15;
+          page = currentPage + 1;
+        } else {
+          // Fallback: لو ما في meta، نوقف لما تجي صفحة
+          // فيها أقل من 15 عنصر (يعني وصلنا آخر صفحة)
+          hasMore = list.length == 15;
+
+          page++;
+        }
+
+        // ========================================================
+        // حماية من اللوب اللانهائي
+        // (بحال صار خلل بحساب hasMore لأي سبب)
+        // ========================================================
+
+        if (page > 50) {
+          print(
+            "Stopped pagination after 50 pages - safety limit",
+          );
+
+          break;
+        }
       }
 
-      print(
-        "CURRENT PAGE = ${supervisorsPage.value}",
+      // ==============================================================
+      // إزالة أي تكرار محتمل حسب id قبل التخزين
+      // (مهم جداً: القيم المكررة بتكسر DropdownButtonFormField)
+      // ==============================================================
+
+      final Map<int, SupervisorModel> uniqueMap = {
+        for (final sup in allSupervisors) sup.id: sup,
+      };
+
+      supervisors.assignAll(
+        uniqueMap.values.toList(),
       );
 
       print(
-        "HAS MORE = ${hasMoreSupervisors.value}",
-      );
-
-      print(
-        "TOTAL SUPERVISORS = ${supervisors.length}",
+        "TOTAL UNIQUE SUPERVISORS = ${supervisors.length}",
       );
     } catch (e) {
       print(
@@ -324,144 +166,6 @@ class RequestController extends GetxController {
       );
     } finally {
       isLoadingSupervisors.value = false;
-    }
-  }
-
-  // ============================================================
-  // Load More Supervisors
-  // ============================================================
-
-  Future<void> loadMoreSupervisors() async {
-    // منع الطلبات المتكررة
-    if (isLoadingMoreSupervisors.value) {
-      return;
-    }
-
-    // إذا لا يوجد صفحات إضافية
-    if (!hasMoreSupervisors.value) {
-      return;
-    }
-
-    try {
-      isLoadingMoreSupervisors.value = true;
-
-      final nextPage =
-          supervisorsPage.value + 1;
-
-      print(
-        "Loading supervisors page $nextPage",
-      );
-
-      final response = await api.get(
-        '/supervisor/supervisors',
-        queryParameters: {
-          "page": nextPage,
-          "per_page": 15,
-        },
-      );
-
-      print(
-        "SUPERVISORS PAGE $nextPage RESPONSE:",
-      );
-
-      print(response);
-
-      final data = response['data'];
-
-      final List list =
-          data['data'] ?? [];
-
-      print(
-        "NEW SUPERVISORS = ${list.length}",
-      );
-
-      // لا يوجد بيانات إضافية
-      if (list.isEmpty) {
-        hasMoreSupervisors.value =
-        false;
-
-        return;
-      }
-
-      final newSupervisors = list
-          .map(
-            (e) =>
-            SupervisorModel.fromJson(e),
-      )
-          .toList();
-
-      // ========================================================
-      // مهم جداً
-      //
-      // addAll وليس assignAll
-      //
-      // حتى تبقى الصفحات السابقة
-      // ========================================================
-
-      supervisors.addAll(
-        newSupervisors,
-      );
-
-      supervisorsPage.value =
-          nextPage;
-
-      // ========================================================
-      // Pagination Meta
-      // ========================================================
-
-      final meta = data['meta'];
-
-      if (meta != null) {
-        final currentPage =
-            int.tryParse(
-              meta['current_page']
-                  ?.toString() ??
-                  '',
-            ) ??
-                nextPage;
-
-        final lastPage =
-            int.tryParse(
-              meta['last_page']
-                  ?.toString() ??
-                  '',
-            ) ??
-                currentPage;
-
-        supervisorsPage.value =
-            currentPage;
-
-        hasMoreSupervisors.value =
-            currentPage < lastPage;
-      } else {
-        // Fallback
-        hasMoreSupervisors.value =
-            list.length == 15;
-      }
-
-      print(
-        "TOTAL SUPERVISORS = ${supervisors.length}",
-      );
-
-      print(
-        "CURRENT PAGE = ${supervisorsPage.value}",
-      );
-
-      print(
-        "HAS MORE = ${hasMoreSupervisors.value}",
-      );
-    } catch (e) {
-      print(
-        "LOAD MORE SUPERVISORS ERROR: $e",
-      );
-
-      Get.snackbar(
-        'Error',
-        e.toString(),
-      );
-    } finally {
-      isLoadingMoreSupervisors.value =
-      false;
     }
   }
 
@@ -622,17 +326,5 @@ class RequestController extends GetxController {
     }
 
     return null;
-  }
-
-  // ============================================================
-  // Dispose
-  // ============================================================
-
-  @override
-  void onClose() {
-    supervisorsScrollController
-        .dispose();
-
-    super.onClose();
   }
 }
