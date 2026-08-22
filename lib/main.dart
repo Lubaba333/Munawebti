@@ -37,7 +37,7 @@ void main() async {
   await LocalNotificationService.init();
 
   Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
-  Get.lazyPut<ProfileController>(() => ProfileController(), fenix: true);
+Get.put(ProfileController());
   Get.put(ThemeController());
   Get.lazyPut<NotificationController>(
     () => NotificationController(),
@@ -59,6 +59,16 @@ void main() async {
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
+// 🔥 لازم تكون top-level function أو static method، برا أي state
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+   await LocalNotificationService.init();
+  await LocalNotificationService.showBasicNotification(message);
+}
+
 Future<void> initFCM() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -67,11 +77,15 @@ Future<void> initFCM() async {
   String? token = await messaging.getToken();
   print('🟢 TOKEN: $token');
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('📩 Message arrived');
-    LocalNotificationService.showBasicNotification(message);
+  // ✅ الإشعارات وقت الآب مفتوح وشغال
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print('📩 Message arrived (foreground)');
+    await LocalNotificationService.showBasicNotification(message);
     Get.find<NotificationController>().getNotifications();
   });
+
+  // 🔥 هاد السطر كان ناقص بالكامل — أهم سطر لإشعارات الباك غراوند
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
 class MyApp extends StatelessWidget {

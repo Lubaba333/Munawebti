@@ -513,6 +513,22 @@ class AppTranslations extends Translations {
   "yes_cancel_attendance":"نعم، إلغاء تسجيل الحضور",
   "confirm_cancel_title":"تأكيد إلغاء تسجيل الحضور",
 "cancel_check_in":"إلغاء تسجيل الحضور",
+// لازم تُكتب هون بالضبط بنفس الحالة (Capitalization) يلي بالكود
+'Exit Permission': 'طلب إذن خروج',
+'Request Title': 'عنوان الطلب',
+'Description': 'الوصف',
+'Exit Date (YYYY-MM-DD)': 'تاريخ الخروج (YYYY-MM-DD)',
+'From (HH:MM)': 'من الساعة (HH:MM)',
+'To (HH:MM)': 'حتى الساعة (HH:MM)',
+'Reason for exit': 'سبب الخروج',
+'Submitting...': 'جاري الإرسال...',
+'Submit Request': 'إرسال الطلب',
+'Error': 'خطأ',
+'Please enter title': 'يرجى إدخال العنوان',
+'Please enter exit date': 'يرجى إدخال تاريخ الخروج',
+"choose_room_first_for_students": "اختاري الغرفة أولاً لعرض الطالبات",
+"room_exchange_desc": "تم إرسال طلب تبديل الغرفة بنجاح",
+ 
     },
 
     'en': {
@@ -982,6 +998,18 @@ class AppTranslations extends Translations {
   "record_attendance":" Record Attendance",
   "register_attendance_button":"Register Lecture Attendance",
   "waiting_for_supervisor_desc":"Show the QR code to the supervisor or cancel attendance check-in",
+  'Exit Permission': 'Exit Permission',
+'Request Title': 'Request Title',
+'Description': 'Description',
+'Exit Date (YYYY-MM-DD)': 'Exit Date (YYYY-MM-DD)',
+'From (HH:MM)': 'From (HH:MM)',
+'To (HH:MM)': 'To (HH:MM)',
+'Reason for exit': 'Reason for exit',
+'Submitting...': 'Submitting...',
+'Submit Request': 'Submit Request',
+'Error': 'Error',
+'Please enter title': 'Please enter title',
+'Please enter exit date': 'Please enter exit date',
     },
   };
 }
