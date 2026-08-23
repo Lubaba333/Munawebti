@@ -21,148 +21,148 @@ class QrScannerController extends GetxController {
 
 
 
-  // Future<void> scanQr(String qrToken) async {
-  //
-  //
-  //   if(_isScanning){
-  //     return;
-  //   }
-  //
-  //
-  //   _isScanning = true;
-  //
-  //   isLoading.value = true;
-  //
-  //
-  //
-  //   try{
-  //
-  //
-  //     final response =
-  //     await apiService.post(
-  //
-  //       "/supervisor/attendance/scan-qr-code",
-  //
-  //       {
-  //         "qr_token":qrToken,
-  //       },
-  //
-  //     );
-  //
-  //
-  //
-  //     final result =
-  //     AttendanceScanResponse.fromJson(response);
-  //
-  //
-  //
-  //     if(Get.isRegistered<AttendanceController>()){
-  //
-  //       await Get.find<AttendanceController>()
-  //           .refresh();
-  //
-  //     }
-  //
-  //
-  //
-  //     Get.back(
-  //         result:true
-  //     );
-  //
-  //
-  //
-  //     Get.snackbar(
-  //
-  //       "تم تسجيل الحضور",
-  //
-  //       result.message,
-  //
-  //       snackPosition:
-  //       SnackPosition.BOTTOM,
-  //
-  //     );
-  //
-  //
-  //
-  //   }
-  //   catch(e){
-  //
-  //
-  //     Get.snackbar(
-  //
-  //       "خطأ",
-  //
-  //       e.toString()
-  //           .replaceFirst(
-  //           "Exception: ",
-  //           ""
-  //       ),
-  //
-  //       snackPosition:
-  //       SnackPosition.BOTTOM,
-  //
-  //     );
-  //
-  //
-  //   }
-  //   finally{
-  //
-  //
-  //     isLoading.value=false;
-  //
-  //     _isScanning=false;
-  //
-  //
-  //   }
-  //
-  //
-  // }
-
   Future<void> scanQr(String qrToken) async {
-    if (_isScanning) {
+
+
+    if(_isScanning){
       return;
     }
 
+
     _isScanning = true;
+
     isLoading.value = true;
 
-    try {
-      final response = await apiService.post(
+
+
+    try{
+
+
+      final response =
+      await apiService.post(
+
         "/supervisor/attendance/scan-qr-code",
+
         {
-          "qr_token": qrToken,
+          "qr_token":qrToken,
         },
+
       );
+
+
 
       final result =
       AttendanceScanResponse.fromJson(response);
 
-      if (Get.isRegistered<AttendanceController>()) {
-        await Get.find<AttendanceController>().refresh();
+
+
+      if(Get.isRegistered<AttendanceController>()){
+
+        await Get.find<AttendanceController>()
+            .refresh();
+
       }
 
+
+
+      Get.back(
+          result:true
+      );
+
+
+
       Get.snackbar(
+
         "تم تسجيل الحضور",
+
         result.message,
-        snackPosition: SnackPosition.BOTTOM,
+
+        snackPosition:
+        SnackPosition.BOTTOM,
+
       );
 
-      Get.back(result: true);
-    } catch (e) {
-      Get.snackbar(
-        "خطأ",
-        e.toString().replaceFirst(
-          "Exception: ",
-          "",
-        ),
-        snackPosition: SnackPosition.BOTTOM,
-      );
 
-      rethrow;
-    } finally {
-      isLoading.value = false;
-      _isScanning = false;
+
     }
-  }
+    catch(e){
 
+
+      Get.snackbar(
+
+        "خطأ",
+
+        e.toString()
+            .replaceFirst(
+            "Exception: ",
+            ""
+        ),
+
+        snackPosition:
+        SnackPosition.BOTTOM,
+
+      );
+
+
+    }
+    finally{
+
+
+      isLoading.value=false;
+
+      _isScanning=false;
+
+
+    }
+
+
+  }
+//
+//   Future<void> scanQr(String qrToken) async {
+//     if (_isScanning) {
+//       return;
+//     }
+//
+//     _isScanning = true;
+//     isLoading.value = true;
+//
+//     try {
+//       final response = await apiService.post(
+//         "/supervisor/attendance/scan-qr-code",
+//         {
+//           "qr_token": qrToken,
+//         },
+//       );
+//
+//       final result =
+//       AttendanceScanResponse.fromJson(response);
+//
+//       if (Get.isRegistered<AttendanceController>()) {
+//         await Get.find<AttendanceController>().refresh();
+//       }
+//
+//       Get.snackbar(
+//         "تم تسجيل الحضور",
+//         result.message,
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//
+//       Get.back(result: true);
+//     } catch (e) {
+//       Get.snackbar(
+//         "خطأ",
+//         e.toString().replaceFirst(
+//           "Exception: ",
+//           "",
+//         ),
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//
+//       rethrow;
+//     } finally {
+//       isLoading.value = false;
+//       _isScanning = false;
+//     }
+//   }
+//
 }

@@ -201,7 +201,7 @@ class HomeController extends GetxController {
   // Loading
   // ============================================================
 
-  var isLoading = false.obs;
+  final RxBool isLoading = false.obs;
 
   // ============================================================
   // User Name
@@ -214,24 +214,31 @@ class HomeController extends GetxController {
   // Current Lecture
   // ============================================================
 
-  var currentShift = <String, String>{
-    "title": "لا توجد محاضرة حالياً",
-    "type": "lecture",
-    "time": "--",
-    "status": "",
-  }.obs;
+  final RxMap<String, String> currentShift =
+      <String, String>{
+        "title": "لا توجد محاضرة حالياً",
+        "type": "lecture",
+        "time": "--",
+        "status": "",
+        "teacher": "",
+        "lab": "",
+        "specialization": "",
+        "year": "",
+      }.obs;
 
   // ============================================================
   // Today's Schedule
   // ============================================================
 
-  var todaySchedule = <Map<String, String>>[].obs;
+  final RxList<Map<String, String>> todaySchedule =
+      <Map<String, String>>[].obs;
 
   // ============================================================
   // Notifications
   // ============================================================
 
-  var notifications = <String>[].obs;
+  final RxList<String> notifications =
+      <String>[].obs;
 
   // ============================================================
   // Timer
@@ -247,10 +254,10 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // جلب مناوبات اليوم
+    // جلب محاضرات ومناوبات اليوم
     getTodayShifts();
 
-    // فحص المحاضرة الحالية كل 30 ثانية
+    // تحديث المحاضرة الحالية كل 30 ثانية
     _shiftTimer = Timer.periodic(
       const Duration(seconds: 30),
           (_) {
@@ -266,7 +273,6 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     _shiftTimer?.cancel();
-
     super.onClose();
   }
 
@@ -278,11 +284,11 @@ class HomeController extends GetxController {
     try {
       isLoading.value = true;
 
-      // تنظيف الجدول القديم
+      // تنظيف البيانات القديمة
       todaySchedule.clear();
 
       // ========================================================
-      // API Request
+      // API REQUEST
       // ========================================================
 
       final response = await apiService.get(
@@ -294,92 +300,143 @@ class HomeController extends GetxController {
         },
       );
 
-      final data = response["data"] ?? {};
+      print("====================================");
+      print("TODAY SHIFTS RESPONSE:");
+      print(response);
+      print("====================================");
+
+      final data = response["data"];
+
+      if (data == null) {
+        print("No data returned from API");
+        updateCurrentLecture();
+        return;
+      }
 
       // ========================================================
       // LECTURES
       // ========================================================
 
-      if (data["lecture"] != null) {
-        for (var lecture in data["lecture"]) {
+      final lectures = data["lecture"];
+
+      if (lectures is List) {
+        for (final lecture in lectures) {
+          if (lecture is! Map) {
+            continue;
+          }
+
+          // ----------------------------------------------------
+          // Assignment
+          // ----------------------------------------------------
+
           final assignment =
           lecture["lecture_supervisor_assignment"];
 
-          if (assignment == null) {
+          if (assignment is! Map) {
+            print("Lecture assignment is null");
             continue;
           }
+
+          // ----------------------------------------------------
+          // Lecture
+          // ----------------------------------------------------
 
           final lec = assignment["lecture"];
 
-          if (lec == null) {
+          if (lec is! Map) {
+            print("Lecture object is null");
             continue;
           }
 
-          // ------------------------------------------------------
-          // Lecture Time
-          // ------------------------------------------------------
+          // ----------------------------------------------------
+          // Time
+          // ----------------------------------------------------
 
           final fromHour =
-              lecture["from_hour"]?.toString() ?? "";
+              lecture["from_hour"]?.toString() ??
+                  assignment["from_hour"]?.toString() ??
+                  lec["from_hour"]?.toString() ??
+                  "";
 
           final toHour =
-              lecture["to_hour"]?.toString() ?? "";
+              lecture["to_hour"]?.toString() ??
+                  assignment["to_hour"]?.toString() ??
+                  lec["to_hour"]?.toString() ??
+                  "";
 
-          // ------------------------------------------------------
+          // ----------------------------------------------------
           // Subject
-          // ------------------------------------------------------
+          // ----------------------------------------------------
 
-          final subject =
-          lec["subject"];
+          final subject = lec["subject"];
 
-          // ------------------------------------------------------
+          String subjectName = "";
+
+          if (subject is Map) {
+            subjectName =
+                subject["name"]?.toString() ?? "";
+          }
+
+          // ----------------------------------------------------
           // Location
-          // ------------------------------------------------------
+          // ----------------------------------------------------
 
           final locationAssignment =
           assignment["lecture_location_assignment"];
 
-          // ------------------------------------------------------
+          String labName = "";
+
+          if (locationAssignment is Map) {
+            labName =
+                locationAssignment["lab_name"]
+                    ?.toString() ??
+                    "";
+          }
+
+          // ----------------------------------------------------
           // Add Lecture
-          // ------------------------------------------------------
+          // ----------------------------------------------------
 
-          todaySchedule.add({
-            // الوقت للعرض
-            "time":
-            "${_formatTime(fromHour)} - ${_formatTime(toHour)}",
+          final from = _formatTime(fromHour);
+          final to = _formatTime(toHour);
 
-            // وقت البداية للمقارنة
-            "from":
-            _formatTime(fromHour),
+          final lectureItem = <String, String>{
+            "time": "$from - $to",
 
-            // وقت النهاية للمقارنة
-            "to":
-            _formatTime(toHour),
+            // نحتفظ بها للمقارنة
+            "from": from,
+            "to": to,
 
             // اسم المادة
-            "place":
-            subject?["name"]?.toString() ?? "",
+            "place": subjectName,
 
-            // اسم المدرس
+            // المدرس
             "teacher":
             lec["teacher_name"]?.toString() ?? "",
 
-            // المختبر
-            "lab":
-            locationAssignment?["lab_name"]?.toString() ?? "",
+            // المدرج / المختبر
+            "lab": labName,
 
             // الاختصاص
             "specialization":
-            lec["specialization"]?.toString() ?? "",
+            lec["specialization"]
+                ?.toString() ??
+                "",
 
             // السنة
             "year":
             lec["year"]?.toString() ?? "",
 
             // النوع
-            "type":
-            "lecture",
-          });
+            "type": "lecture",
+          };
+
+          todaySchedule.add(lectureItem);
+
+          print(
+            "Added lecture: "
+                "$subjectName | $from -> $to",
+          );
         }
       }
 
@@ -387,52 +444,68 @@ class HomeController extends GetxController {
       // HOUSING
       // ========================================================
 
-      if (data["housing"] != null) {
-        for (var housing in data["housing"]) {
-          final assignment =
-          housing["housing_supervisor_assignment"];
+      final housingList = data["housing"];
 
-          if (assignment == null) {
+      if (housingList is List) {
+        for (final housing in housingList) {
+          if (housing is! Map) {
             continue;
           }
 
-          // ------------------------------------------------------
+          final assignment =
+          housing["housing_supervisor_assignment"];
+
+          if (assignment is! Map) {
+            continue;
+          }
+
+          // ----------------------------------------------------
           // Housing Time
-          // ------------------------------------------------------
+          // ----------------------------------------------------
 
           final fromHour =
-              housing["from_hour"]?.toString() ?? "";
+              housing["from_hour"]?.toString() ??
+                  assignment["from_hour"]?.toString() ??
+                  "";
 
           final toHour =
-              housing["to_hour"]?.toString() ?? "";
+              housing["to_hour"]?.toString() ??
+                  assignment["to_hour"]?.toString() ??
+                  "";
 
-          // ------------------------------------------------------
+          // ----------------------------------------------------
           // Dormitory
-          // ------------------------------------------------------
+          // ----------------------------------------------------
 
           final dormitory =
           assignment["dormitory_unit"];
 
-          // ------------------------------------------------------
+          String dormitoryName = "";
+
+          if (dormitory is Map) {
+            dormitoryName =
+                dormitory["name"]?.toString() ?? "";
+          }
+
+          // ----------------------------------------------------
           // Add Housing
-          // ------------------------------------------------------
+          // ----------------------------------------------------
+
+          final from = _formatTime(fromHour);
+          final to = _formatTime(toHour);
 
           todaySchedule.add({
-            "time":
-            "${_formatTime(fromHour)} - ${_formatTime(toHour)}",
-
-            "from":
-            _formatTime(fromHour),
-
-            "to":
-            _formatTime(toHour),
-
-            "place":
-            dormitory?["name"]?.toString() ?? "",
-
-            "type":
-            "housing",
+            "time": "$from - $to",
+            "from": from,
+            "to": to,
+            "place": dormitoryName,
+            "type": "housing",
           });
+
+          print(
+            "Added housing: "
+                "$dormitoryName | $from -> $to",
+          );
         }
       }
 
@@ -440,39 +513,36 @@ class HomeController extends GetxController {
       // SORT SCHEDULE
       // ========================================================
 
-      todaySchedule.sort((a, b) {
-        final aTime =
-        _timeToMinutes(a["from"] ?? "");
+      todaySchedule.sort(
+            (a, b) {
+          final aTime =
+          _timeToMinutes(a["from"] ?? "");
 
-        final bTime =
-        _timeToMinutes(b["from"] ?? "");
+          final bTime =
+          _timeToMinutes(b["from"] ?? "");
 
-        return aTime.compareTo(bTime);
-      });
+          return aTime.compareTo(bTime);
+        },
+      );
+
+      print("====================================");
+      print("TODAY SCHEDULE:");
+      print(todaySchedule);
+      print("====================================");
 
       // ========================================================
       // UPDATE CURRENT LECTURE
       // ========================================================
 
       updateCurrentLecture();
+    } catch (e, stackTrace) {
+      print("====================================");
+      print("getTodayShifts ERROR:");
+      print(e);
+      print(stackTrace);
+      print("====================================");
 
-    } catch (e) {
-      print("getTodayShifts error: $e");
-
-      // في حالة حدوث خطأ
-      currentShift.value = {
-        "title":
-        "لا توجد محاضرة حالياً",
-
-        "time":
-        "--",
-
-        "type":
-        "lecture",
-
-        "status":
-        "",
-      };
+      _setNoCurrentLecture();
     } finally {
       isLoading.value = false;
     }
@@ -483,16 +553,17 @@ class HomeController extends GetxController {
   // ============================================================
 
   void updateCurrentLecture() {
-    // ----------------------------------------------------------
-    // الوقت الحالي
-    // ----------------------------------------------------------
-
     final now = DateTime.now();
 
     final currentMinutes =
         now.hour * 60 + now.minute;
 
-    // المحاضرة الحالية
+    print("====================================");
+    print("CHECK CURRENT LECTURE");
+    print("Current Date: $now");
+    print("Current Minutes: $currentMinutes");
+    print("====================================");
+
     Map<String, String>? currentLecture;
 
     // ==========================================================
@@ -505,31 +576,30 @@ class HomeController extends GetxController {
         continue;
       }
 
-      // --------------------------------------------------------
-      // وقت البداية
-      // --------------------------------------------------------
-
       final from =
-      _timeToMinutes(
-        item["from"] ?? "",
-      );
-
-      // --------------------------------------------------------
-      // وقت النهاية
-      // --------------------------------------------------------
+      _timeToMinutes(item["from"] ?? "");
 
       final to =
-      _timeToMinutes(
-        item["to"] ?? "",
+      _timeToMinutes(item["to"] ?? "");
+
+      print(
+        "Lecture: ${item["place"]} | "
+            "${item["from"]} -> ${item["to"]} | "
+            "$from -> $to",
       );
 
-      // --------------------------------------------------------
-      // هل المحاضرة جارية الآن؟
-      // --------------------------------------------------------
+      // ========================================================
+      // CURRENT TIME IS INSIDE LECTURE TIME
+      // ========================================================
 
       if (currentMinutes >= from &&
           currentMinutes < to) {
         currentLecture = item;
+
+        print(
+          "CURRENT LECTURE FOUND: "
+              "${item["place"]}",
+        );
 
         break;
       }
@@ -547,11 +617,9 @@ class HomeController extends GetxController {
         "time":
         currentLecture["time"] ?? "--",
 
-        "type":
-        "lecture",
+        "type": "lecture",
 
-        "status":
-        "active",
+        "status": "active",
 
         "teacher":
         currentLecture["teacher"] ?? "",
@@ -566,6 +634,11 @@ class HomeController extends GetxController {
         currentLecture["year"] ?? "",
       };
 
+      print(
+        "HOME CURRENT SHIFT: "
+            "${currentShift["title"]}",
+      );
+
       return;
     }
 
@@ -573,18 +646,25 @@ class HomeController extends GetxController {
     // NO CURRENT LECTURE
     // ==========================================================
 
+    print("NO CURRENT LECTURE");
+
+    _setNoCurrentLecture();
+  }
+
+  // ============================================================
+  // SET NO CURRENT LECTURE
+  // ============================================================
+
+  void _setNoCurrentLecture() {
     currentShift.value = {
-      "title":
-      "لا توجد محاضرة حالياً",
-
-      "time":
-      "--",
-
-      "type":
-      "lecture",
-
-      "status":
-      "",
+      "title": "لا توجد محاضرة حالياً",
+      "time": "--",
+      "type": "lecture",
+      "status": "",
+      "teacher": "",
+      "lab": "",
+      "specialization": "",
+      "year": "",
     };
   }
 
@@ -594,22 +674,28 @@ class HomeController extends GetxController {
 
   int _timeToMinutes(String time) {
     try {
-      final parts =
-      time.split(":");
+      if (time.isEmpty) {
+        return 0;
+      }
+
+      final parts = time.split(":");
 
       if (parts.length < 2) {
         return 0;
       }
 
       final hour =
-          int.tryParse(parts[0]) ?? 0;
+          int.tryParse(parts[0].trim()) ?? 0;
 
       final minute =
-          int.tryParse(parts[1]) ?? 0;
+          int.tryParse(parts[1].trim()) ?? 0;
 
       return hour * 60 + minute;
-
     } catch (e) {
+      print(
+        "_timeToMinutes error: $e | time=$time",
+      );
+
       return 0;
     }
   }
@@ -619,6 +705,11 @@ class HomeController extends GetxController {
   // ============================================================
 
   String _formatTime(String time) {
+    if (time.isEmpty) {
+      return "";
+    }
+
+    // 08:30:00 -> 08:30
     if (time.length >= 5) {
       return time.substring(0, 5);
     }
@@ -631,7 +722,8 @@ class HomeController extends GetxController {
   // ============================================================
 
   Future<HousingComplaint> getComplaintById(
-      int id) async {
+      int id,
+      ) async {
     try {
       final response =
       await apiService.get(
@@ -641,7 +733,6 @@ class HomeController extends GetxController {
       return HousingComplaint.fromJson(
         response['data'],
       );
-
     } catch (e) {
       throw Exception(
         "Failed to load complaint: $e",
